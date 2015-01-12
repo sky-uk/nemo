@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": "true",
+  "engine": "node >= 0.10.28",
   "repository": {
     "type": "git",
     "url": "gitlab@git.bskyb.com:kim.westley/nemo.git"
