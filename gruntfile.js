@@ -1,6 +1,13 @@
 module.exports = function (grunt) {
 
 	grunt.initConfig({
+		bower: {
+			install: {
+				options: {
+					targetDir: 'app/lib'
+				}
+			}
+		},
 		concat: {
 			dist: {
 				src: ['app/**/*.js', '!app/lib/angular/**/*.js'],
@@ -34,6 +41,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-express');
+	grunt.loadNpmTasks('grunt-bower-task');
 	
 	grunt.registerTask('build', ['concat']);
 	grunt.registerTask('build-and-min', ['concat', 'uglify']);
