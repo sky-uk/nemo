@@ -12,12 +12,31 @@ module.exports = function (grunt) {
 				src: ['dist/build.js'],
 				dest: 'dist/build.min.js'
 			}
+		},
+		express: {
+			default_option: {
+				options: {
+					bases: './app',
+					hostname: 'localhost',
+					port: 3333
+				}
+			}
+		},
+		watch: {
+			scripts: {
+				files: ['app/**/*.js'],
+				tasks: ['build']
+			}
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-express');
+	
+	grunt.registerTask('build', ['concat']);
+	grunt.registerTask('build-and-min', ['concat', 'uglify']);
 
-	grunt.registerTask('build', ['concat'])
-	grunt.registerTask('build-and-min', ['concat', 'uglify'])
+	grunt.registerTask('dev', ['build', 'express', 'watch'])
 }
