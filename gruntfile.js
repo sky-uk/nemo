@@ -34,17 +34,23 @@ module.exports = function (grunt) {
 				files: ['app/**/*.js'],
 				tasks: ['build']
 			}
-		}
+		},
+        clean: {
+            bower: {
+                src: ['bower_components']
+            }
+        }
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-express');
 	grunt.loadNpmTasks('grunt-bower-task');
-	
-	grunt.registerTask('build', ['concat']);
-	grunt.registerTask('build-and-min', ['concat', 'uglify']);
+
+	grunt.registerTask('build', ['clean:bower', 'bower:install', 'concat']);
+	grunt.registerTask('build-and-min', ['build', 'uglify']);
 
 	grunt.registerTask('dev', ['build', 'express', 'watch'])
 }
