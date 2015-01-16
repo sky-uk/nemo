@@ -15,6 +15,7 @@
   "author": "dl-nowtv-webteam@bskyb.com dl-id-rango@bskyb.com",
   "license": "ISC",
   "devDependencies": {
+    "bower": "^1.3.12",
     "grunt": "^0.4.5",
     "grunt-bower-task": "^0.4.0",
     "grunt-cli": "^0.1.13",
@@ -24,8 +25,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-express": "^1.4.1",
     "jasmine-core": "^2.1.3",
-    "karma": "^0.12.31",
+    "karma": "~0.12.0",
     "karma-chrome-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.4"
+    "karma-jasmine": "~0.1.0"
   }
 }
