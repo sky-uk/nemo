@@ -5,6 +5,39 @@
     <script src="/nemo.js"></script>
     <script src="/input.js"></script>
 
+    <style type="text/css">
+
+        .container {
+            background-color: #eee;
+            border: 1px solid #00aaef;
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        .column {
+            float: left;
+            box-sizing: border-box;
+            padding: 10px 20px;
+            width: 50%;
+        }
+
+        .label {
+            text-align: right;
+        }
+
+        .field {
+            text-align: left;
+        }
+
+        .field * {
+            width: 100%;
+        }
+
+        .clearfix {
+            overflow: auto;
+        }
+    </style>
+
     <script>
 
         angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
@@ -46,9 +79,15 @@
 
 <body ng-controller="MainController">
 
-    <div ng-repeat="field in fields">
-        <nemo model="field"></nemo>
-        <span>{{field.name}}: {{field.value}}</span>
+    <div class="container">
+        <div class="clearfix" ng-repeat="field in fields">
+            <div class="column label">
+                {{field.name}}: {{field.value}}
+            </div>
+            <div class="column field">
+                <nemo model="field"></nemo>
+            </div>
+        </div>
     </div>
 
 </body>
