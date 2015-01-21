@@ -9,18 +9,17 @@ angular.module('nemo')
         }
 
         function input(type, options) {
-            var parentTemplateElement = angular.element('<div>' + options.template + '</div>'),
-                templateElement = parentTemplateElement.find(' > *');
-            templateElement.attr('ng-model', 'field.value');
-
-            //<input /> --> <input ng-model=field.value />
-            //<div><div></div><div>
+            var parentTemplateElement, templateElement;
+            parentTemplateElement = document.createElement('div');
+            parentTemplateElement.innerHTML = options.template;
+            templateElement = parentTemplateElement.firstChild;
+            templateElement.setAttribute('ng-model', 'model.value');
 
             $compileProvider.directive
                 .apply(null, [ 'input' + capitaliseFirstLetter(type), ['$compile', '$http', function ($compile, $http) {
                     return {
                         require: ['ngModel', '^form', '^formHandler'],
-                        template: parentTemplateElement.html(),
+                        template: parentTemplateElement.innerHTML,
                         replace: true,
                         restrict: 'A',
                         link: function (scope, element, attrs, controllers) {

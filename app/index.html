@@ -2,11 +2,12 @@
 <head>
     <script src="/lib/angular/angular.js"></script>
     <script src="/app.js"></script>
-    <!--<script src="/input/inputDirective.js"></script>-->
+    <script src="/nemo.js"></script>
+    <script src="/input.js"></script>
 
     <script>
 
-        angular.module('nemo').controller('MainController', ['$scope', function($scope) {
+        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
 
             $scope.fields = [
                 {
@@ -14,13 +15,15 @@
                     "name": "username",
                     "value": 'unicorn',
                     "type": "text"
-                }, {
+                },
+                {
                     "mandatory": true,
                     "name": "password",
                     "value": '',
                     "type": "password"
-                }, {
-                    type : 'select',
+                },
+                {
+                    type: 'select',
                     name: 'title',
                     options: [
                         {
@@ -32,7 +35,7 @@
                             value: 'MrsValue'
                         }
                     ],
-                    value : 'MrsValue'
+                    value: 'MrsValue'
                 }
             ]
 
@@ -43,11 +46,10 @@
 
 <body ng-controller="MainController">
 
-<div ng-repeat="field in fields">
-    <!--<nemo-input model="field"></nemo-input>-->
-    <div input="field"></div>
-    <span>{{field.name}}: {{field.value}}</span>
-</div>
+    <div ng-repeat="field in fields">
+        <nemo model="field"></nemo>
+        <span>{{field.name}}: {{field.value}}</span>
+    </div>
 
 </body>
 </html>
