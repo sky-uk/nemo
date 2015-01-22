@@ -19,7 +19,7 @@ describe('app config', function () {
 
     scenarios.forEach(function (scenario) {
 
-        it('should define the proper model and HTML structure for type "' + scenario.model.type + '"', function () {
+        it('must define the proper model and HTML structure for type "' + scenario.model.type + '"', function () {
 
             given(function () {
                 formElement = compileDirective(
@@ -37,6 +37,45 @@ describe('app config', function () {
                 expect(fieldElement.attr('type')).toBe(scenario.expectedType);
                 expect(fieldElement.attr('input-' + scenario.model.type)).not.toBeUndefined();
                 expect(fieldElement.attr('ng-model')).toBe('model.value');
+            });
+        });
+    });
+
+    describe('error handling', function () {
+
+        it('must throw an error if no parent form is found', function () {
+
+            var compilationWrapper;
+
+            given(function () {
+                compilationWrapper = function() {
+                    formElement = compileDirective(
+                        '<div form-handler><nemo model="field"></nemo></div>',
+                        { $rootScope: { field: { "value": 'foo', "type": "text" } }});
+                }
+
+            });
+
+            then(function () {
+                expect(compilationWrapper).toThrow();
+            });
+        });
+
+        it('must throw an error if no parent form handler is found', function () {
+
+            var compilationWrapper;
+
+            given(function () {
+                compilationWrapper = function() {
+                    formElement = compileDirective(
+                        '<form><nemo model="field"></nemo></form>',
+                        { $rootScope: { field: { "value": 'foo', "type": "text" } }});
+                }
+
+            });
+
+            then(function () {
+                expect(compilationWrapper).toThrow();
             });
         });
     });
