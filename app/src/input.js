@@ -8,34 +8,46 @@ angular.module('nemo')
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        function input(type, options) {
+        function getTemplateWithNgModel(template) {
             var parentTemplateElement, templateElement;
             parentTemplateElement = document.createElement('div');
-            parentTemplateElement.innerHTML = options.template;
+            parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            return parentTemplateElement.innerHTML;
+        }
 
+        function getLinkFn(options, $compile, $http) {
+            return function (scope, element, attrs, controllers) {
+                var formHandlerController = controllers[2];
+                if (options.linkFn) {
+                    options.linkFn(scope, element, attrs, formHandlerController, $compile, $http);
+                }
+            }
+        }
+
+        function getDDO(options, $compile, $http) {
+            return {
+                require: ['ngModel', '^form', '^formHandler'],
+                template: getTemplateWithNgModel(options.template),
+                replace: true,
+                restrict: 'A',
+                link: getLinkFn(options, $compile, $http)
+            }
+        }
+
+        function input(type, options) {
             $compileProvider.directive
-                .apply(null, [ 'input' + capitaliseFirstLetter(type), ['$compile', '$http', function ($compile, $http) {
-                    return {
-                        require: ['ngModel', '^form', '^formHandler'],
-                        template: parentTemplateElement.innerHTML,
-                        replace: true,
-                        restrict: 'A',
-                        link: function (scope, element, attrs, controllers) {
-                            var formHandlerController = controllers[2];
-                            if (options.linkFn) {
-                                options.linkFn(scope, element, attrs, formHandlerController, $compile, $http)
-                            }
-                        }
-                    }
+                .apply(null, [
+                    'input' + capitaliseFirstLetter(type),
+                    ['$compile', '$http', function ($compile, $http) {
+                        return getDDO(options, $compile, $http);
                 }]]);
-
             return this;
         }
 
         return {
             input: input,
-            $get: {}
+            $get: angular.noop
         }
     }]);

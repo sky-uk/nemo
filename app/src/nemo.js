@@ -3,6 +3,29 @@
 angular.module('nemo')
 
     .directive('nemo', ['$compile', function ($compile) {
+
+        function toSnakeCase(str) {
+            return str.replace(/([A-Z])/g, function ($1) {
+                return "-" + $1.toLowerCase();
+            });
+        }
+
+        function creatElement() {
+            return angular.element('<div></div>');
+        }
+
+        function addInputAttributeToElement(type, element) {
+            element.attr('input-' + toSnakeCase(type), '');
+        }
+
+        function addValidationAttributesToElement(validationList, element) {
+            if(validationList && validationList.length) {
+                validationList.forEach(function (validation, $index) {
+                    element.attr('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + ']')
+                });
+            }
+        }
+
         return {
             transclude: 'element',
             restrict: 'E',
@@ -10,23 +33,11 @@ angular.module('nemo')
                 model: '='
             },
             link: function (scope, element) {
-
-                var inputElement = angular.element('<div input-' + toSnakeCase(scope.model.type) + ' name="{{model.name}}"></div>');
-
-                if(scope.model.validation && scope.model.validation.length) {
-                    scope.model.validation.forEach(function (validation, $index) {
-                        inputElement.attr('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + ']')
-                    });
-                }
-
-                element.replaceWith(inputElement);
-                $compile(inputElement)(scope);
-
-                function toSnakeCase(str) {
-                    return str.replace(/([A-Z])/g, function ($1) {
-                        return "-" + $1.toLowerCase();
-                    });
-                }
+                var fieldElement = creatElement();
+                addInputAttributeToElement(scope.model.type, fieldElement);
+                addValidationAttributesToElement(scope.model.validation, fieldElement);
+                element.replaceWith(fieldElement);
+                $compile(fieldElement)(scope);
             }
         }
     }]);

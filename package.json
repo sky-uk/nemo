@@ -26,7 +26,7 @@
     "grunt-express": "^1.4.1",
     "jasmine-jquery": "^2.0.5",
     "karma": "~0.12.0",
-    "karma-chrome-launcher": "^0.1.7",
-    "karma-jasmine": "~0.1.0"
+    "karma-jasmine": "~0.1.0",
+    "karma-chrome-launcher": "^0.1.7"
   }
 }

@@ -4,6 +4,7 @@
     <script src="/src/app.js"></script>
     <script src="/src/nemo.js"></script>
     <script src="/src/input.js"></script>
+    <script src="/src/formHandler.js"></script>
 
     <style type="text/css">
 
@@ -51,9 +52,27 @@
                 },
                 {
                     "mandatory": true,
+                    "name": "email",
+                    "value": "your@email.com",
+                    "type": "email"
+                },
+                {
+                    "mandatory": true,
                     "name": "password",
                     "value": '',
                     "type": "password"
+                },
+                {
+                    "mandatory": true,
+                    "name": "checkbox",
+                    "value": true,
+                    "type": "checkbox"
+                },
+                {
+                    "mandatory": true,
+                    "name": "hidden",
+                    "value": '',
+                    "type": "hidden"
                 },
                 {
                     type: 'select',
@@ -79,7 +98,7 @@
 
 <body ng-controller="MainController">
 
-    <div class="container">
+    <form form-handler class="container">
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
                 {{field.name}}: {{field.value}}
@@ -88,7 +107,7 @@
                 <nemo model="field"></nemo>
             </div>
         </div>
-    </div>
+    </form>
 
 </body>
 </html>
