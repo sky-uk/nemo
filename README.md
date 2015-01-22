@@ -8,7 +8,9 @@ The ususal `npm install` and `node_modules/grunt-cli/bin/grunt bower:install`.
 
 `node_modules/grunt-cli/bin/grunt dev`
 
-This will concat the js and start an express server on localhost:3333 with / pointing to the app folder, along with a watcher.
+This will concat the js and start an express server on `localhost:3333` with / pointing to the app folder, along with a watcher.
+</br>
+There's a sample page available at `localhost:3333/sample`
 
 #### For creating a distributable (unminifined):
 
@@ -20,4 +22,6 @@ This will concat the js and start an express server on localhost:3333 with / poi
 
 ## Tests 
 
-There aren't any (yet)
+The test suite can be launched by triggerind the following command:
+
+`{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
