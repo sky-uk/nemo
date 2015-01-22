@@ -9,7 +9,7 @@ The ususal `npm install` and `node_modules/grunt-cli/bin/grunt bower:install`.
 `node_modules/grunt-cli/bin/grunt dev`
 
 This will concat the js and start an express server on `localhost:3333` with / pointing to the app folder, along with a watcher.
-</br>
+
 There's a sample page available at `localhost:3333/sample`
 
 #### For creating a distributable (unminifined):
