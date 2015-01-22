@@ -9,7 +9,7 @@ angular.module('nemo', [])
             })
 
             .input('select', {
-                template: '<select ng-options="option.value as option.text for option in model.options"></select>'
+                template: '<select data-ng-options="option.value as option.text for option in model.options"></select>'
             })
 
             .input('hidden', {
