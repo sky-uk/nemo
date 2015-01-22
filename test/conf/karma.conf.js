@@ -16,7 +16,8 @@ module.exports = function(config) {
     files: [
       'app/lib/angular/angular.js',
       'app/lib/angular-mocks/angular-mocks.js',
-      'app/app.js',
+      'app/src/app.js',
+      'app/src/*.js',
       'test/helpers/**/*.js',
       'test/specs/**/*Spec.js'
     ],
@@ -49,7 +50,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_WARN,
 
 
     // enable / disable watching file and executing tests whenever any file changes
