@@ -3,6 +3,6 @@ node_modules
 *.iml
 dist
 bower_components
-app/lib
 *.log
 cleanup.sh
+test-results.xml

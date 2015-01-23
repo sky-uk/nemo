@@ -1,0 +1,113 @@
+<html ng-app="nemo">
+<head>
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/src/app.js"></script>
+    <script src="/src/nemo.js"></script>
+    <script src="/src/input.js"></script>
+    <script src="/src/formHandler.js"></script>
+
+    <style type="text/css">
+
+        .container {
+            background-color: #eee;
+            border: 1px solid #00aaef;
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        .column {
+            float: left;
+            box-sizing: border-box;
+            padding: 10px 20px;
+            width: 50%;
+        }
+
+        .label {
+            text-align: right;
+        }
+
+        .field {
+            text-align: left;
+        }
+
+        .field * {
+            width: 100%;
+        }
+
+        .clearfix {
+            overflow: auto;
+        }
+    </style>
+
+    <script>
+
+        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
+
+            $scope.fields = [
+                {
+                    "mandatory": true,
+                    "name": "username",
+                    "value": 'unicorn',
+                    "type": "text"
+                },
+                {
+                    "mandatory": true,
+                    "name": "email",
+                    "value": "your@email.com",
+                    "type": "email"
+                },
+                {
+                    "mandatory": true,
+                    "name": "password",
+                    "value": '',
+                    "type": "password"
+                },
+                {
+                    "mandatory": true,
+                    "name": "checkbox",
+                    "value": true,
+                    "type": "checkbox"
+                },
+                {
+                    "mandatory": true,
+                    "name": "hidden",
+                    "value": '',
+                    "type": "hidden"
+                },
+                {
+                    type: 'select',
+                    name: 'title',
+                    options: [
+                        {
+                            text: 'MrText',
+                            value: 'MrValue'
+                        },
+                        {
+                            text: 'MrsText',
+                            value: 'MrsValue'
+                        }
+                    ],
+                    value: 'MrsValue'
+                }
+            ]
+
+        }]);
+
+    </script>
+</head>
+
+<body ng-controller="MainController">
+
+    <form form-handler class="container">
+        <div class="clearfix" ng-repeat="field in fields">
+            <div class="column label">
+                {{field.name}}: {{field.value}}
+            </div>
+            <div class="column field">
+                <nemo model="field"></nemo>
+            </div>
+        </div>
+    </form>
+
+</body>
+</html>
