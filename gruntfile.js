@@ -1,13 +1,6 @@
 module.exports = function (grunt) {
 
 	grunt.initConfig({
-		bower: {
-			install: {
-				options: {
-					targetDir: 'app/lib'
-				}
-			}
-		},
 		concat: {
 			dist: {
 				src: ['app/**/*.js', '!app/lib/angular/**/*.js'],
@@ -36,8 +29,8 @@ module.exports = function (grunt) {
 			}
 		},
         clean: {
-            bower: {
-                src: ['bower_components']
+            npm: {
+                src: ['node_modules']
             }
         }
 	});
@@ -47,9 +40,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-express');
-	grunt.loadNpmTasks('grunt-bower-task');
 
-	grunt.registerTask('build', ['clean:bower', 'bower:install', 'concat']);
+	grunt.registerTask('build', ['concat']);
 	grunt.registerTask('build-and-min', ['build', 'uglify']);
 
 	grunt.registerTask('dev', ['build', 'express', 'watch'])
