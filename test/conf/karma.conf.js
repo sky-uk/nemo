@@ -15,7 +15,6 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'app/lib/angular/angular.js',
-//      'app/lib/angular-mocks/angular-mocks.js',
             'test/helpers/**/*.js',
             'app/src/app.js',
             'app/src/*.js',
@@ -27,6 +26,10 @@ module.exports = function (config) {
         exclude: [
         ],
 
+
+        junitReporter: {
+            outputFile: '../../test-results.xml'
+        },
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
