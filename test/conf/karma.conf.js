@@ -28,7 +28,7 @@ module.exports = function (config) {
 
 
         junitReporter: {
-            outputFile: '../../test-results.xml'
+            outputFile: 'test-results.xml'
         },
 
         // preprocess matching files before serving them to the browser
