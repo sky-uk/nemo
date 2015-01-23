@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		concat: {
 			dist: {
-				src: ['app/**/*.js', '!app/lib/angular/**/*.js'],
+				src: ['app/src/app.js', 'app/src/*.js'],
 				dest: 'dist/build.js'
 			}
 		},
@@ -45,4 +45,4 @@ module.exports = function (grunt) {
 	grunt.registerTask('build-and-min', ['build', 'uglify']);
 
 	grunt.registerTask('dev', ['build', 'express', 'watch'])
-}
+};

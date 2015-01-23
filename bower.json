@@ -6,7 +6,7 @@
     "dl-id-rango@bskyb.com"
   ],
   "description": "A small library for rendering and validating forms based on siren (Rango) data",
-  "main": "./app/**/*.js",
+  "main": "dist/build.js",
   "license": "MIT",
   "private": true,
   "ignore": [

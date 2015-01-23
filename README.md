@@ -22,6 +22,6 @@ There's a sample page available at `localhost:3333/sample`
 
 ## Tests 
 
-The test suite can be launched by triggerind the following command:
+The test suite can be launched by triggering the following command:
 
 `{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
