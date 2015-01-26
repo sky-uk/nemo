@@ -15,13 +15,13 @@ angular.module('nemo')
         }
 
         function addInputAttributeToElement(type, element) {
-            element.attr('input-' + toSnakeCase(type), '');
+            element[0].setAttribute('input-' + toSnakeCase(type), '');
         }
 
         function addValidationAttributesToElement(validationList, element) {
             if(validationList && validationList.length) {
                 validationList.forEach(function (validation, $index) {
-                    element.attr('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + ']')
+                    element[0].setAttribute('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + '].rules')
                 });
             }
         }

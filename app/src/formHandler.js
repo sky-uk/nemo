@@ -2,14 +2,18 @@
 
 angular.module('nemo')
 
-    .directive('formHandler', [function () {
+    .directive('formHandler', ['$timeout', function ($timeout) {
         return {
-            controller: ['$scope', function ($scope) {
+            controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
-                this.getFieldValue = function(name) {
-                    return _.find($scope.action.fields, function(field) {
-                        return field.name === name;
-                    }).value;
+                var self = this;
+
+                this.getFieldValue = function(fieldName) {
+                    return $scope[$attrs.name][fieldName].$viewValue;
+                };
+
+                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
+                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
                 };
 
                 this.getLink = function(rel) {
@@ -17,6 +21,10 @@ angular.module('nemo')
                         return _.contains(value.rel, rel);
                     }).href;
                 };
+
+                $scope.$evalAsync(function () {
+                    $scope[$attrs.name].forceValidity = self.forceValidity;
+                });
             }]
         }
     }]);

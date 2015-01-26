@@ -8,12 +8,13 @@ angular.module('nemo')
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        function getTemplateWithNgModel(template) {
+        function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
             parentTemplateElement = document.createElement('div');
             parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            templateElement.setAttribute('name', '{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
 
@@ -29,7 +30,7 @@ angular.module('nemo')
         function getDDO(options, $compile, $http) {
             return {
                 require: ['ngModel', '^form', '^formHandler'],
-                template: getTemplateWithNgModel(options.template),
+                template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
                 link: getLinkFn(options, $compile, $http)
