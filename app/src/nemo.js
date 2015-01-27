@@ -21,9 +21,19 @@ angular.module('nemo')
         function addValidationAttributesToElement(validationList, element) {
             if(validationList && validationList.length) {
                 validationList.forEach(function (validation, $index) {
-                    element[0].setAttribute('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + '].rules')
+                    var attributeKey = 'validation-' + toSnakeCase(validation.type),
+                        attributeValue = 'model.validation[' + $index + '].rules';
+                    element[0].setAttribute(attributeKey, attributeValue);
                 });
             }
+        }
+
+        function replaceTemplate(oldTempate, newTemplate) {
+            oldTempate.replaceWith(newTemplate);
+        }
+
+        function compileTemplate(template, scope) {
+            $compile(template)(scope);
         }
 
         return {
@@ -36,8 +46,8 @@ angular.module('nemo')
                 var fieldElement = creatElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 addValidationAttributesToElement(scope.model.validation, fieldElement);
-                element.replaceWith(fieldElement);
-                $compile(fieldElement)(scope);
+                replaceTemplate(element, fieldElement);
+                compileTemplate(fieldElement, scope);
             }
         }
     }]);

@@ -1,6 +1,6 @@
 angular.module('nemo', [])
 
-    .config(['inputProvider', 'validationProvider', function (inputProvider, validationProvider) {
+    .config(['inputProvider', 'validationProvider', 'utilsProvider', function (inputProvider, validationProvider, utilsProvider) {
 
         inputProvider
 
@@ -21,7 +21,7 @@ angular.module('nemo', [])
             })
 
             .input('email', {
-                template: '<input type="email" />'
+                template: '<input type="text" />'
             })
 
             .input('checkbox', {
@@ -31,71 +31,67 @@ angular.module('nemo', [])
         validationProvider
 
             .validation('required', {
-                validateFn: function (value, validationRule) {
-                    return (validationRule) ?
-                        value != '' &&  !_.isEmpty(value) && !_.isNull(value) && !_.isUndefined(value)  :
-                        true;
+                validateFn: function (value, validationRuleValue, formHandlerController, ngModelController) {
+                    return (validationRuleValue) ? !ngModelController.$isEmpty(value) : true;
                 }
             })
 
             .validation('inlist', {
-                validateFn: function (value, validationRule) {
-                    return _.find(validationRule, function(validValue) {
-                        return value === validValue;
-                    });
+                validateFn: function (value, validationRuleValue) {
+                    return utilsProvider.contains(validationRuleValue, value);
                 }
             })
 
             .validation('pattern', {
-                validateFn: function (value, validationRule) {
-                    var regex = new RegExp(validationRule);
-                    return value && validationRule && regex.test(value);
+                validateFn: function (value, validationRuleValue) {
+                    return value && validationRuleValue && new RegExp(validationRuleValue).test(value);
                 }
             })
 
 //            .validation('notpattern', {
-//                validateFn: function (value, validationRule) {
-//                    var regex = new RegExp(validationRule);
-//                    return value && validationRule && !regex.test(value);
+//                validateFn: function (value, validationRuleValue) {
+//                    return value && validationRuleValue && !(new RegExp(validationRuleValue));
 //                }
 //            })
 
             .validation('mustnotcontain', {
-                validateFn: function (value, validationRule, formHandlerController) {
-                    var targetValue = formHandlerController.getFieldValue(validationRule);
+                validateFn: function (value, validationRuleValue, formHandlerController) {
+                    var targetValue = formHandlerController.getFieldValue(validationRuleValue);
                     return (value && targetValue) ? value.indexOf(targetValue) < 0 : true;
                 }
             })
 
             .validation('mustmatch', {
-                validateFn: function (value, validationRule, formHandlerController) {
-                    var targetValue = formHandlerController.getFieldValue(validationRule);
+                validateFn: function (value, validationRuleValue, formHandlerController) {
+                    var targetValue = formHandlerController.getFieldValue(validationRuleValue);
                     return (value) ? value === targetValue : true;
                 }
             })
 
             .validation('minlength', {
-                validateFn: function (value, validationRule) {
-                    return (value && validationRule) ? value.length >= validationRule : true;
+                validateFn: function (value, validationRuleValue) {
+                    return (value && validationRuleValue) ? value.length >= validationRuleValue : true;
                 }
             })
 
             .validation('maxlength', {
-                validateFn: function (value, validationRule) {
-                    return (value && validationRule) ? value.length <= validationRule : true;
+                validateFn: function (value, validationRuleValue) {
+                    return (value && validationRuleValue) ? value.length <= validationRuleValue : true;
                 }
             })
 
             .validation('email', {
-                validateFn: function (value, validationRule) {
-                    var regex = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-                    return value && validationRule && regex.test(value);
+                validateFn: function (value, validationRuleValue) {
+                    if (value && validationRuleValue) {
+                        return new RegExp(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i).test(value);
+                    }
+                    return true;
                 }
             })
 
             .validation('mustbetrue', {
-                validateFn: function (value, validationRule) {
-                    return value === validationRule;
+                validateFn: function (value, validationRuleValue) {
+                    return value === validationRuleValue;
                 }
             });
     }]);
@@ -103,8 +99,9 @@ angular.module('nemo', [])
 
 angular.module('nemo')
 
-    .directive('formHandler', ['$timeout', function ($timeout) {
+    .directive('formHandler', [function () {
         return {
+            require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
                 var self = this;
@@ -117,12 +114,6 @@ angular.module('nemo')
                     $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
                 };
 
-                this.getLink = function(rel) {
-                    return _.find($scope.links, function (value) {
-                        return _.contains(value.rel, rel);
-                    }).href;
-                };
-
                 $scope.$evalAsync(function () {
                     $scope[$attrs.name].forceValidity = self.forceValidity;
                 });
@@ -133,11 +124,7 @@ angular.module('nemo')
 
 angular.module('nemo')
 
-    .provider('input', ['$compileProvider', function ($compileProvider) {
-
-        function capitaliseFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
+    .provider('input', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
         function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
@@ -150,8 +137,7 @@ angular.module('nemo')
         }
 
         function getLinkFn(options, $compile, $http) {
-            return function (scope, element, attrs, controllers) {
-                var formHandlerController = controllers[2];
+            return function (scope, element, attrs, formHandlerController) {
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, formHandlerController, $compile, $http);
                 }
@@ -160,7 +146,7 @@ angular.module('nemo')
 
         function getDDO(options, $compile, $http) {
             return {
-                require: ['ngModel', '^form', '^formHandler'],
+                require: '^formHandler',
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
@@ -171,7 +157,7 @@ angular.module('nemo')
         function input(type, options) {
             $compileProvider.directive
                 .apply(null, [
-                    'input' + capitaliseFirstLetter(type),
+                    'input' + utilsProvider.capitalise(type),
                     ['$compile', '$http', function ($compile, $http) {
                         return getDDO(options, $compile, $http);
                 }]]);
@@ -181,6 +167,26 @@ angular.module('nemo')
         return {
             input: input,
             $get: angular.noop
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
+    .factory('messages', [function () {
+
+        var messages = {};
+
+        function set(key, value) {
+            messages[key] = value;
+        }
+
+        function get(key) {
+            return messages[key]
+        }
+
+        return {
+            set: set,
+            get: get
         }
     }]);
 'use strict';
@@ -206,9 +212,19 @@ angular.module('nemo')
         function addValidationAttributesToElement(validationList, element) {
             if(validationList && validationList.length) {
                 validationList.forEach(function (validation, $index) {
-                    element[0].setAttribute('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + '].rules')
+                    var attributeKey = 'validation-' + toSnakeCase(validation.type),
+                        attributeValue = 'model.validation[' + $index + '].rules';
+                    element[0].setAttribute(attributeKey, attributeValue);
                 });
             }
+        }
+
+        function replaceTemplate(oldTempate, newTemplate) {
+            oldTempate.replaceWith(newTemplate);
+        }
+
+        function compileTemplate(template, scope) {
+            $compile(template)(scope);
         }
 
         return {
@@ -221,55 +237,76 @@ angular.module('nemo')
                 var fieldElement = creatElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 addValidationAttributesToElement(scope.model.validation, fieldElement);
-                element.replaceWith(fieldElement);
-                $compile(fieldElement)(scope);
+                replaceTemplate(element, fieldElement);
+                compileTemplate(fieldElement, scope);
             }
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
+    .provider('utils', [function () {
+
+        function capitalise(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function contains(list, item) {
+            var isFound = false;
+            if(list && list.length) {
+                angular.forEach(list, function (listItem) {
+                    isFound = isFound || (item === listItem);
+                });
+            }
+            return isFound;
+        }
+
+        return {
+            capitalise: capitalise,
+            contains: contains,
+            $get: angular.noop
         }
     }]);
 'use strict';
 
 angular.module('nemo')
 
-    .provider('validation', ['$compileProvider', function ($compileProvider) {
+    .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
-        function capitaliseFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn) {
+        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
             ngModelController.$validators[validationRule.code] = function (viewValue) {
                 var isValid = (validateFn) ?
-                    validateFn(viewValue, validationRule.value, formHandlerController) :
+                    validateFn(viewValue, validationRule.value, formHandlerController, ngModelController) :
                     true;
-                validationRule.show = (isValid) ? false : ngModelController.$dirty;
                 return isValid;
             };
+            messages.set(validationRule.code, validationRule.message);
         }
 
-        function getLinkFn(directiveName, validateFn) {
+        function getLinkFn(directiveName, validateFn, messages) {
             return function (scope, element, attrs, controllers) {
                 var validationRules = scope.$eval(attrs[directiveName]),
                     ngModelController = controllers[0],
                     formHandlerController = controllers[1];
                 validationRules.forEach(function (validationRule) {
-                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn);
+                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
                 });
             }
         }
 
-        function getDDO(directiveName, validateFn) {
+        function getDDO(directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^formHandler'],
                 restrict: 'A',
-                link: getLinkFn(directiveName, validateFn)
+                link: getLinkFn(directiveName, validateFn, messages)
             };
         }
 
         function validation(type, options) {
-            var directiveName = 'validation' + capitaliseFirstLetter(type);
+            var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
-                .apply(null, [directiveName, [function () {
-                    return getDDO(directiveName, options.validateFn);
+                .apply(null, [directiveName, ['messages', function (messages) {
+                    return getDDO(directiveName, options.validateFn, messages);
                 }]]);
             return this;
         }

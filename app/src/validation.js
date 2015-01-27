@@ -2,46 +2,42 @@
 
 angular.module('nemo')
 
-    .provider('validation', ['$compileProvider', function ($compileProvider) {
+    .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
-        function capitaliseFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn) {
+        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
             ngModelController.$validators[validationRule.code] = function (viewValue) {
                 var isValid = (validateFn) ?
-                    validateFn(viewValue, validationRule.value, formHandlerController) :
+                    validateFn(viewValue, validationRule.value, formHandlerController, ngModelController) :
                     true;
-                validationRule.show = (isValid) ? false : ngModelController.$dirty;
                 return isValid;
             };
+            messages.set(validationRule.code, validationRule.message);
         }
 
-        function getLinkFn(directiveName, validateFn) {
+        function getLinkFn(directiveName, validateFn, messages) {
             return function (scope, element, attrs, controllers) {
                 var validationRules = scope.$eval(attrs[directiveName]),
                     ngModelController = controllers[0],
                     formHandlerController = controllers[1];
                 validationRules.forEach(function (validationRule) {
-                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn);
+                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
                 });
             }
         }
 
-        function getDDO(directiveName, validateFn) {
+        function getDDO(directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^formHandler'],
                 restrict: 'A',
-                link: getLinkFn(directiveName, validateFn)
+                link: getLinkFn(directiveName, validateFn, messages)
             };
         }
 
         function validation(type, options) {
-            var directiveName = 'validation' + capitaliseFirstLetter(type);
+            var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
-                .apply(null, [directiveName, [function () {
-                    return getDDO(directiveName, options.validateFn);
+                .apply(null, [directiveName, ['messages', function (messages) {
+                    return getDDO(directiveName, options.validateFn, messages);
                 }]]);
             return this;
         }

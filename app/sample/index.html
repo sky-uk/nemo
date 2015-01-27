@@ -1,12 +1,13 @@
 <html ng-app="nemo">
 <head>
     <script src="/lib/angular/angular.js"></script>
-    <script src="/lib/underscore/underscore.js"></script>
     <script src="/src/app.js"></script>
     <script src="/src/nemo.js"></script>
+    <script src="/src/utils.js"></script>
     <script src="/src/input.js"></script>
     <script src="/src/validation.js"></script>
     <script src="/src/formHandler.js"></script>
+    <script src="/src/messages.js"></script>
 
     <style type="text/css">
 
@@ -44,7 +45,7 @@
 
     <script>
 
-        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
+        angular.module('nemo').controller('MainController', ['$scope', 'messages', function ($scope, messages) {
 
             $scope.fields = [
                 {
@@ -171,7 +172,7 @@
                                                 {
                                                     "value" : "^[^-\\']",
                                                     "code" : "firstName.invalid.characters.startorend",
-                                                    "message" : "Sorry, your first name can only start and end with a letter"
+                                                    "message" : " Sorry, your first name canonly start and end with a letter"
                                                 },
                                                 {
                                                     "value" : "[^-\\']$",
@@ -646,24 +647,27 @@
 
             $scope.fakeSubmit = function (formName) {
                 $scope[formName].forceValidity('firstName', 'firstName.blank', false);
-            }
+            };
+
+            $scope.getValidationMessage = function(validationCode) {
+                return messages.get(validationCode);
+            };
         }]);
     </script>
 </head>
 
 <body ng-controller="MainController">
 
-    <form form-handler="fields" name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')">
+    <form form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
                 {{field.label.message}}: {{field.value}}
             </div>
             <div class="column field">
                 <nemo model="field"></nemo>
-                <div ng-repeat="validation in field.validation">
-                    <div ng-repeat="rule in validation.rules" ng-if="rule.show">{{rule.message}}</div>
+                <div ng-repeat="(key, value) in sampleForm[field.name].$error" ng-if="sampleForm[field.name].$dirty && $index < 1">
+                    {{getValidationMessage(key)}}
                 </div>
-                <div ng-repeat="(key, value) in sampleForm[field.name].$error" ng-if="sampleForm[field.name].$dirty && $index < 1">{{key}}</div>
             </div>
         </div>
         Is form valid? {{sampleForm.$valid}}
