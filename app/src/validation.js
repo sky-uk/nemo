@@ -5,9 +5,9 @@ angular.module('nemo')
     .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
         function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
-            ngModelController.$validators[validationRule.code] = function (viewValue) {
+            ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
                 var isValid = (validateFn) ?
-                    validateFn(viewValue, validationRule.value, formHandlerController, ngModelController) :
+                    validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
                     true;
                 return isValid;
             };

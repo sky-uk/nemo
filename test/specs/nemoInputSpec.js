@@ -1,4 +1,4 @@
-describe('app config', function () {
+describe('nemo input', function () {
 
     beforeEach(function () {
         module('nemo');
