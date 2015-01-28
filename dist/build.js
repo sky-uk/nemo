@@ -193,7 +193,7 @@ angular.module('nemo')
 
 angular.module('nemo')
 
-    .directive('nemo', ['$compile', function ($compile) {
+    .directive('nemoInput', ['$compile', function ($compile) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -239,6 +239,26 @@ angular.module('nemo')
                 addValidationAttributesToElement(scope.model.validation, fieldElement);
                 replaceTemplate(element, fieldElement);
                 compileTemplate(fieldElement, scope);
+            }
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
+    .directive('nemoValidationMessages', ['messages', function (messages) {
+
+        return {
+            scope: {
+                model: '='
+            },
+            template:   '<div data-ng-repeat="(key, value) in model.$error" data-ng-if="model.$dirty && $index < 1">' +
+                            '{{getValidationMessage(key)}}' +
+                        '</div>',
+            link: function(scope) {
+
+                scope.getValidationMessage = function(validationCode) {
+                    return messages.get(validationCode);
+                };
             }
         }
     }]);

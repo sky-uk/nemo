@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .directive('nemo', ['$compile', function ($compile) {
+    .directive('nemoInput', ['$compile', function ($compile) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {

@@ -2,7 +2,8 @@
 <head>
     <script src="/lib/angular/angular.js"></script>
     <script src="/src/app.js"></script>
-    <script src="/src/nemo.js"></script>
+    <script src="/src/nemoInput.js"></script>
+    <script src="/src/nemoValidationMessages.js"></script>
     <script src="/src/utils.js"></script>
     <script src="/src/input.js"></script>
     <script src="/src/validation.js"></script>
@@ -45,7 +46,7 @@
 
     <script>
 
-        angular.module('nemo').controller('MainController', ['$scope', 'messages', function ($scope, messages) {
+        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
 
             $scope.fields = [
                 {
@@ -648,10 +649,6 @@
             $scope.fakeSubmit = function (formName) {
                 $scope[formName].forceValidity('firstName', 'firstName.blank', false);
             };
-
-            $scope.getValidationMessage = function(validationCode) {
-                return messages.get(validationCode);
-            };
         }]);
     </script>
 </head>
@@ -664,10 +661,8 @@
                 {{field.label.message}}: {{field.value}}
             </div>
             <div class="column field">
-                <nemo model="field"></nemo>
-                <div ng-repeat="(key, value) in sampleForm[field.name].$error" ng-if="sampleForm[field.name].$dirty && $index < 1">
-                    {{getValidationMessage(key)}}
-                </div>
+                <nemo-input model="field"></nemo-input>
+                <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
             </div>
         </div>
         Is form valid? {{sampleForm.$valid}}
