@@ -38,21 +38,21 @@ angular.module('nemo', [])
 
             .validation('inlist', {
                 validateFn: function (value, validationRuleValue) {
-                    return utilsProvider.contains(validationRuleValue, value);
+                    return (value) ? utilsProvider.contains(validationRuleValue, value) : true;
                 }
             })
 
             .validation('pattern', {
                 validateFn: function (value, validationRuleValue) {
-                    return value && validationRuleValue && new RegExp(validationRuleValue).test(value);
+                    return (value) ? new RegExp(validationRuleValue).test(value) : true;
                 }
             })
 
-//            .validation('notpattern', {
-//                validateFn: function (value, validationRuleValue) {
-//                    return value && validationRuleValue && !(new RegExp(validationRuleValue));
-//                }
-//            })
+            .validation('notpattern', {
+                validateFn: function (value, validationRuleValue) {
+                    return (value) ? !(new RegExp(validationRuleValue).test(value)) : true;
+                }
+            })
 
             .validation('mustnotcontain', {
                 validateFn: function (value, validationRuleValue, formHandlerController) {
@@ -90,8 +90,8 @@ angular.module('nemo', [])
             })
 
             .validation('mustbetrue', {
-                validateFn: function (value, validationRuleValue) {
-                    return value === validationRuleValue;
+                validateFn: function (value) {
+                    return (value || value === false) ? value === true : true;
                 }
             });
     }]);

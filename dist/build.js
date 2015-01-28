@@ -38,21 +38,21 @@ angular.module('nemo', [])
 
             .validation('inlist', {
                 validateFn: function (value, validationRuleValue) {
-                    return utilsProvider.contains(validationRuleValue, value);
+                    return (value) ? utilsProvider.contains(validationRuleValue, value) : true;
                 }
             })
 
             .validation('pattern', {
                 validateFn: function (value, validationRuleValue) {
-                    return value && validationRuleValue && new RegExp(validationRuleValue).test(value);
+                    return (value) ? new RegExp(validationRuleValue).test(value) : true;
                 }
             })
 
-//            .validation('notpattern', {
-//                validateFn: function (value, validationRuleValue) {
-//                    return value && validationRuleValue && !(new RegExp(validationRuleValue));
-//                }
-//            })
+            .validation('notpattern', {
+                validateFn: function (value, validationRuleValue) {
+                    return (value) ? !(new RegExp(validationRuleValue).test(value)) : true;
+                }
+            })
 
             .validation('mustnotcontain', {
                 validateFn: function (value, validationRuleValue, formHandlerController) {
@@ -90,8 +90,8 @@ angular.module('nemo', [])
             })
 
             .validation('mustbetrue', {
-                validateFn: function (value, validationRuleValue) {
-                    return value === validationRuleValue;
+                validateFn: function (value) {
+                    return (value || value === false) ? value === true : true;
                 }
             });
     }]);
@@ -251,13 +251,15 @@ angular.module('nemo')
             scope: {
                 model: '='
             },
-            template:   '<div data-ng-repeat="(key, value) in model.$error" data-ng-if="model.$dirty && $index < 1">' +
-                            '{{getValidationMessage(key)}}' +
-                        '</div>',
+            template: '<div data-ng-if="model.$dirty && model.$invalid">{{getValidationMessage()}}</div>',
             link: function(scope) {
 
-                scope.getValidationMessage = function(validationCode) {
-                    return messages.get(validationCode);
+                scope.getValidationMessage = function() {
+                    for(var validationCode in scope.model.$error) {
+                        if(scope.model.$error.hasOwnProperty(validationCode)) {
+                            return messages.get(validationCode);
+                        }
+                    }
                 };
             }
         }

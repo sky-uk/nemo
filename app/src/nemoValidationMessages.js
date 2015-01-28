@@ -7,13 +7,15 @@ angular.module('nemo')
             scope: {
                 model: '='
             },
-            template:   '<div data-ng-repeat="(key, value) in model.$error" data-ng-if="model.$dirty && $index < 1">' +
-                            '{{getValidationMessage(key)}}' +
-                        '</div>',
+            template: '<div data-ng-if="model.$dirty && model.$invalid">{{getValidationMessage()}}</div>',
             link: function(scope) {
 
-                scope.getValidationMessage = function(validationCode) {
-                    return messages.get(validationCode);
+                scope.getValidationMessage = function() {
+                    for(var validationCode in scope.model.$error) {
+                        if(scope.model.$error.hasOwnProperty(validationCode)) {
+                            return messages.get(validationCode);
+                        }
+                    }
                 };
             }
         }
