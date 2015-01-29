@@ -25,7 +25,7 @@ angular.module('nemo')
             }
         }
 
-        function getDDO(directiveName, validateFn, messages) {
+        function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^formHandler'],
                 restrict: 'A',
@@ -37,7 +37,7 @@ angular.module('nemo')
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['messages', function (messages) {
-                    return getDDO(directiveName, options.validateFn, messages);
+                    return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
                 }]]);
             return this;
         }

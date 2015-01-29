@@ -22,7 +22,7 @@ angular.module('nemo')
             }
         }
 
-        function getDDO(options, $compile, $http) {
+        function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
                 require: '^formHandler',
                 template: getTemplateWithAttributes(options.template),
@@ -37,7 +37,7 @@ angular.module('nemo')
                 .apply(null, [
                     'input' + utilsProvider.capitalise(type),
                     ['$compile', '$http', function ($compile, $http) {
-                        return getDDO(options, $compile, $http);
+                        return getDirectiveDefinitionObject(options, $compile, $http);
                 }]]);
             return this;
         }
