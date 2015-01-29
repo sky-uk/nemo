@@ -1,8 +1,16 @@
 ## Getting Started
 
+If you don't have node run:
+
+`./setup_node.sh`
+
+Which will install nvm and node and run the npm install
+
 (You can install grunt globally and replace all local paths to grunt-cli with just `grunt`)
 
-The ususal `npm install` and `node_modules/grunt-cli/bin/grunt bower:install`.
+If you do have node:
+
+The usual `npm install`
 
 #### For developement locally:
 
