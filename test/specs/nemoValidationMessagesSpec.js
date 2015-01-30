@@ -121,7 +121,7 @@ describe('nemo validation messages', function () {
                     ]
             }
         }
-    }
+    };
 
     var scenarios = [
         {
@@ -205,7 +205,7 @@ describe('nemo validation messages', function () {
                     ]
                 }
             ]
-        },
+        }
 //        { type: 'password', validValue: 'foo', invalidValue: '' },
 //        { type: 'email', validValue: 'foo', invalidValue: '' },
 //        { type: 'select', validValue: 'foo', invalidValue: '' },
@@ -217,7 +217,7 @@ describe('nemo validation messages', function () {
 
         scenario.validationScenarios.forEach(function (validationScenario) {
 
-            iit('must check the validity of the field of type ' + scenario.type + ' for the validation ' + validationScenario.validation.type, function () {
+            it('must check the validity of the field of type ' + scenario.type + ' for the validation ' + validationScenario.validation.type, function () {
 
                 var model, formElement, fieldElement, validationMessagesElement;
 
