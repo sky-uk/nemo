@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		concat: {
 			dist: {
-				src: ['app/src/app.js', 'app/src/*.js'],
+				src: ['app/src/app.js', 'app/src/**/*.js'],
 				dest: 'dist/build.js'
 			}
 		},

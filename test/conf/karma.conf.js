@@ -18,7 +18,7 @@ module.exports = function (config) {
             'test/helpers/**/*.js',
             'app/src/app.js',
             'app/src/utils.js',
-            'app/src/*.js',
+            'app/src/**/*.js',
             'test/specs/**/*Spec.js'
         ],
 

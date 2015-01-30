@@ -171,26 +171,6 @@ angular.module('nemo')
     }]);
 
 'use strict';
-angular.module('nemo')
-
-    .factory('messages', [function () {
-
-        var messages = {};
-
-        function set(key, value) {
-            messages[key] = value;
-        }
-
-        function get(key) {
-            return messages[key]
-        }
-
-        return {
-            set: set,
-            get: get
-        }
-    }]);
-'use strict';
 
 angular.module('nemo')
 
@@ -246,28 +226,6 @@ angular.module('nemo')
 'use strict';
 angular.module('nemo')
 
-    .directive('nemoValidationMessages', ['messages', function (messages) {
-
-        return {
-            scope: {
-                model: '='
-            },
-            template: '<div data-ng-if="model.$dirty && model.$invalid">{{getValidationMessage()}}</div>',
-            link: function(scope) {
-
-                scope.getValidationMessage = function() {
-                    for(var validationCode in scope.model.$error) {
-                        if(scope.model.$error.hasOwnProperty(validationCode)) {
-                            return messages.get(validationCode);
-                        }
-                    }
-                };
-            }
-        }
-    }]);
-'use strict';
-angular.module('nemo')
-
     .provider('utils', [function () {
 
         function capitalise(string) {
@@ -288,6 +246,48 @@ angular.module('nemo')
             capitalise: capitalise,
             contains: contains,
             $get: angular.noop
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
+    .factory('messages', [function () {
+
+        var messages = {};
+
+        function set(key, value) {
+            messages[key] = value;
+        }
+
+        function get(key) {
+            return messages[key]
+        }
+
+        return {
+            set: set,
+            get: get
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
+    .directive('nemoValidationMessages', ['messages', function (messages) {
+
+        return {
+            scope: {
+                model: '='
+            },
+            template: '<div data-ng-if="model.$dirty && model.$invalid">{{getValidationMessage()}}</div>',
+            link: function(scope) {
+
+                scope.getValidationMessage = function() {
+                    for(var validationCode in scope.model.$error) {
+                        if(scope.model.$error.hasOwnProperty(validationCode)) {
+                            return messages.get(validationCode);
+                        }
+                    }
+                };
+            }
         }
     }]);
 'use strict';
