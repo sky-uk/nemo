@@ -254,15 +254,18 @@ describe('nemo validation messages', function () {
                         }
                     });
 
-                    and(function () {
+                    then(function () {
                         expect(fieldElement.controller('ngModel').$valid).toBe(flow.fieldValidity);
+                        expect(formElement.controller('form').$valid).toBe(flow.fieldValidity);
                     });
 
-                    and(function () {
-                        expect(formElement.controller('form').$valid).toBe(flow.fieldValidity);
-                        if(!flow.fieldValidityErrorCodes) {
-                          flow.fieldValidityErrorCodes = [ validationScenario.validation.rules[0].code ];
+                    when(function () {
+                        if (!flow.fieldValidityErrorCodes) {
+                            flow.fieldValidityErrorCodes = [validationScenario.validation.rules[0].code];
                         }
+                    });
+
+                    then(function () {
                         expect(Object.keys(formElement.controller('form').$error)).toEqual(flow.fieldValidity ? [] : flow.fieldValidityErrorCodes);
                     });
 
