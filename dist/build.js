@@ -96,28 +96,28 @@ angular.module('nemo', [])
             });
     }]);
 'use strict';
-
 angular.module('nemo')
 
-    .directive('formHandler', [function () {
-        return {
-            require: 'form',
-            controller: ['$scope', '$attrs', function ($scope, $attrs) {
+    .provider('utils', [function () {
 
-                var self = this;
+        function capitalise(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
 
-                this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName].$viewValue;
-                };
-
-                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
-                };
-
-                $scope.$evalAsync(function () {
-                    $scope[$attrs.name].forceValidity = self.forceValidity;
+        function contains(list, item) {
+            var isFound = false;
+            if(list && list.length) {
+                angular.forEach(list, function (listItem) {
+                    isFound = isFound || (item === listItem);
                 });
-            }]
+            }
+            return isFound;
+        }
+
+        return {
+            capitalise: capitalise,
+            contains: contains,
+            $get: angular.noop
         }
     }]);
 'use strict';
@@ -174,6 +174,81 @@ angular.module('nemo')
 
 angular.module('nemo')
 
+    .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
+
+        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
+            ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
+                var isValid = (validateFn) ?
+                    validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
+                    true;
+                return isValid;
+            };
+            messages.set(validationRule.code, validationRule.message);
+        }
+
+        function getLinkFn(directiveName, validateFn, messages) {
+            return function (scope, element, attrs, controllers) {
+                var validationRules = scope.$eval(attrs[directiveName]),
+                    ngModelController = controllers[0],
+                    formHandlerController = controllers[1];
+                validationRules.forEach(function (validationRule) {
+                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
+                });
+            }
+        }
+
+        function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
+            return {
+                require: ['ngModel', '^formHandler'],
+                restrict: 'A',
+                link: getLinkFn(directiveName, validateFn, messages)
+            };
+        }
+
+        function validation(type, options) {
+            var directiveName = 'validation' + utilsProvider.capitalise(type);
+            $compileProvider.directive
+                .apply(null, [directiveName, ['messages', function (messages) {
+                    return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
+                }]]);
+            return this;
+        }
+
+        return {
+            validation: validation,
+            $get: angular.noop
+        }
+    }]);
+
+'use strict';
+
+angular.module('nemo')
+
+    .directive('formHandler', [function () {
+        return {
+            require: 'form',
+            controller: ['$scope', '$attrs', function ($scope, $attrs) {
+
+                var self = this;
+
+                this.getFieldValue = function(fieldName) {
+                    return $scope[$attrs.name][fieldName].$viewValue;
+                };
+
+                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
+                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
+                };
+
+                $scope.$evalAsync(function () {
+                    $scope[$attrs.name].forceValidity = self.forceValidity;
+                });
+            }]
+        }
+    }]);
+'use strict';
+
+angular.module('nemo')
+
     .directive('nemoInput', ['$compile', function ($compile) {
 
         function toSnakeCase(str) {
@@ -226,31 +301,6 @@ angular.module('nemo')
 'use strict';
 angular.module('nemo')
 
-    .provider('utils', [function () {
-
-        function capitalise(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function contains(list, item) {
-            var isFound = false;
-            if(list && list.length) {
-                angular.forEach(list, function (listItem) {
-                    isFound = isFound || (item === listItem);
-                });
-            }
-            return isFound;
-        }
-
-        return {
-            capitalise: capitalise,
-            contains: contains,
-            $get: angular.noop
-        }
-    }]);
-'use strict';
-angular.module('nemo')
-
     .factory('messages', [function () {
 
         var messages = {};
@@ -288,54 +338,5 @@ angular.module('nemo')
                     }
                 };
             }
-        }
-    }]);
-'use strict';
-
-angular.module('nemo')
-
-    .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
-
-        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
-            ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
-                var isValid = (validateFn) ?
-                    validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
-                    true;
-                return isValid;
-            };
-            messages.set(validationRule.code, validationRule.message);
-        }
-
-        function getLinkFn(directiveName, validateFn, messages) {
-            return function (scope, element, attrs, controllers) {
-                var validationRules = scope.$eval(attrs[directiveName]),
-                    ngModelController = controllers[0],
-                    formHandlerController = controllers[1];
-                validationRules.forEach(function (validationRule) {
-                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
-                });
-            }
-        }
-
-        function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
-            return {
-                require: ['ngModel', '^formHandler'],
-                restrict: 'A',
-                link: getLinkFn(directiveName, validateFn, messages)
-            };
-        }
-
-        function validation(type, options) {
-            var directiveName = 'validation' + utilsProvider.capitalise(type);
-            $compileProvider.directive
-                .apply(null, [directiveName, ['messages', function (messages) {
-                    return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
-                }]]);
-            return this;
-        }
-
-        return {
-            validation: validation,
-            $get: angular.noop
         }
     }]);

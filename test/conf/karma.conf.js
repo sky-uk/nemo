@@ -17,7 +17,7 @@ module.exports = function (config) {
             'app/lib/angular/angular.js',
             'test/helpers/**/*.js',
             'app/src/app.js',
-            'app/src/utils.js',
+            'app/src/utilsProvider.js',
             'app/src/**/*.js',
             'test/specs/**/*Spec.js'
         ],

@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		concat: {
 			dist: {
-				src: ['app/src/app.js', 'app/src/**/*.js'],
+				src: ['app/src/app.js', 'app/src/utilsProvider.js', 'app/src/**/*Provider.js', 'app/src/**/*.js'],
 				dest: 'dist/build.js'
 			}
 		},
@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 		express: {
 			default_option: {
 				options: {
-					bases: './app',
+					bases: './',
 					hostname: '0.0.0.0',
 					port: 3333
 				}
