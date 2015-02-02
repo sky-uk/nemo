@@ -7,6 +7,7 @@ It will NOT:
 - Render help text/tool tips for elements
 - Submit the form
 - Fetch any data
+- Ensure that validation codes/rules are unique see [here](https://git.bskyb.com/kim.westley/nemo/wikis/unique-codes) for more info.
 
 ## Getting Started
 
