@@ -50,9 +50,9 @@ TESTDATA.validation = {
                 ]
         };
     },
-    mustbetrue: function () {
+    mustbeequal: function () {
         return {
-            "type" : "mustbetrue",
+            "type" : "mustbeequal",
             "rules" :
                 [
                     {

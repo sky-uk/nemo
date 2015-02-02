@@ -89,9 +89,9 @@ angular.module('nemo', [])
                 }
             })
 
-            .validation('mustbetrue', {
-                validateFn: function (value) {
-                    return (value || value === false) ? value === true : true;
+            .validation('mustbeequal', {
+                validateFn: function (value, validationRuleValue) {
+                    return (value || value === false) ? value === validationRuleValue : true;
                 }
             });
     }]);

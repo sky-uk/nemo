@@ -46,7 +46,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.mustbetrue(),
+                    validation: validation.mustbeequal(),
                     flows: [
                         { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         { viewValue: false, fieldValidity: false, validationMessagesText: 'The value must be true' },
