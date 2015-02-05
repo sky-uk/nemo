@@ -2,34 +2,30 @@
 
 angular.module('nemo')
 
-    .provider('input', ['$compileProvider', function ($compileProvider) {
+    .provider('input', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
-        function capitaliseFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function getTemplateWithNgModel(template) {
+        function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
             parentTemplateElement = document.createElement('div');
             parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            templateElement.setAttribute('name', '{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
 
         function getLinkFn(options, $compile, $http) {
-            return function (scope, element, attrs, controllers) {
-                var formHandlerController = controllers[2];
+            return function (scope, element, attrs, formHandlerController) {
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, formHandlerController, $compile, $http);
                 }
             }
         }
 
-        function getDDO(options, $compile, $http) {
+        function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^form', '^formHandler'],
-                template: getTemplateWithNgModel(options.template),
+                require: '^formHandler',
+                template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
                 link: getLinkFn(options, $compile, $http)
@@ -39,9 +35,9 @@ angular.module('nemo')
         function input(type, options) {
             $compileProvider.directive
                 .apply(null, [
-                    'input' + capitaliseFirstLetter(type),
+                    'input' + utilsProvider.capitalise(type),
                     ['$compile', '$http', function ($compile, $http) {
-                        return getDDO(options, $compile, $http);
+                        return getDirectiveDefinitionObject(options, $compile, $http);
                 }]]);
             return this;
         }

@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .directive('nemo', ['$compile', function ($compile) {
+    .directive('nemoInput', ['$compile', function ($compile) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -15,15 +15,25 @@ angular.module('nemo')
         }
 
         function addInputAttributeToElement(type, element) {
-            element.attr('input-' + toSnakeCase(type), '');
+            element[0].setAttribute('input-' + toSnakeCase(type), '');
         }
 
         function addValidationAttributesToElement(validationList, element) {
             if(validationList && validationList.length) {
                 validationList.forEach(function (validation, $index) {
-                    element.attr('validation-' + toSnakeCase(validation.type), 'model.validation[' + $index + ']')
+                    var attributeKey = 'validation-' + toSnakeCase(validation.type),
+                        attributeValue = 'model.validation[' + $index + '].rules';
+                    element[0].setAttribute(attributeKey, attributeValue);
                 });
             }
+        }
+
+        function replaceTemplate(oldTempate, newTemplate) {
+            oldTempate.replaceWith(newTemplate);
+        }
+
+        function compileTemplate(template, scope) {
+            $compile(template)(scope);
         }
 
         return {
@@ -36,8 +46,8 @@ angular.module('nemo')
                 var fieldElement = creatElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 addValidationAttributesToElement(scope.model.validation, fieldElement);
-                element.replaceWith(fieldElement);
-                $compile(fieldElement)(scope);
+                replaceTemplate(element, fieldElement);
+                compileTemplate(fieldElement, scope);
             }
         }
     }]);

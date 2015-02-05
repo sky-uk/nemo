@@ -1,4 +1,4 @@
-describe('app config', function () {
+describe('nemo input', function () {
 
     beforeEach(function () {
         module('nemo');
@@ -8,7 +8,7 @@ describe('app config', function () {
         { model: { "value": 'foo', "type": "text" },        expectedType: 'text',       expectedTag: 'input', expectedValue: 'foo' },
         { model: { "value": 'bar', "type": "password" },    expectedType: 'password',   expectedTag: 'input', expectedValue: 'bar' },
         { model: { "value": 'bla', "type": "hidden" },      expectedType: 'hidden',     expectedTag: 'input', expectedValue: 'bla' },
-        { model: { "value": 'test', "type": "email" },      expectedType: 'email',      expectedTag: 'input', expectedValue: 'test' },
+        { model: { "value": 'test', "type": "email" },      expectedType: 'text',       expectedTag: 'input', expectedValue: 'test' },
         { model: { "value": true, "type": "checkbox" },     expectedType: 'checkbox',   expectedTag: 'input', expectedValue: true },
         { model: { "value": false, "type": "checkbox" },    expectedType: 'checkbox',   expectedTag: 'input', expectedValue: false },
         { model: { "value": 'false', "type": "checkbox" },  expectedType: 'checkbox',   expectedTag: 'input', expectedValue: false },
@@ -23,7 +23,7 @@ describe('app config', function () {
 
             given(function () {
                 formElement = compileDirective(
-                    '<form form-handler><nemo model="field"></nemo></form>',
+                    '<form name="foo" form-handler><nemo-input model="field"></nemo-input></form>',
                     { $rootScope: { field: scenario.model } });
             });
 
@@ -43,39 +43,30 @@ describe('app config', function () {
 
     describe('error handling', function () {
 
-        it('must throw an error if no parent form is found', function () {
+        var scenarios = [
+            { template: '<div name="foo" form-handler><nemo-input model="field"></nemo-input></div>', throwIfMessage: 'no parent form is found'},
+            { template: '<form name="foo"><nemo-input model="field"></nemo-input></form>', expectation: 'no parent form handler is found'},
+            { template: '<form form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'no name attribute is found at the form level'},
+            { template: '<form name="" form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'an empty name attribute is found at the form level'}
+        ];
 
-            var compilationWrapper;
+        scenarios.forEach(function (scenario) {
 
-            given(function () {
-                compilationWrapper = function() {
-                    formElement = compileDirective(
-                        '<div form-handler><nemo model="field"></nemo></div>',
-                        { $rootScope: { field: { "value": 'foo', "type": "text" } }});
-                }
+            it('must throw an error if ' + scenario.throwIfMessage, function () {
 
-            });
+                var compilationWrapper;
 
-            then(function () {
-                expect(compilationWrapper).toThrow();
-            });
-        });
+                given(function () {
+                    compilationWrapper = function() {
+                        formElement = compileDirective(
+                            scenario.template,
+                            { $rootScope: { field: { "value": 'foo', "type": "text" } }});
+                    }
+                });
 
-        it('must throw an error if no parent form handler is found', function () {
-
-            var compilationWrapper;
-
-            given(function () {
-                compilationWrapper = function() {
-                    formElement = compileDirective(
-                        '<form><nemo model="field"></nemo></form>',
-                        { $rootScope: { field: { "value": 'foo', "type": "text" } }});
-                }
-
-            });
-
-            then(function () {
-                expect(compilationWrapper).toThrow();
+                then(function () {
+                    expect(compilationWrapper).toThrow();
+                });
             });
         });
     });

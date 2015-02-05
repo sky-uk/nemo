@@ -16,8 +16,10 @@ module.exports = function (config) {
         files: [
             'app/lib/angular/angular.js',
             'test/helpers/**/*.js',
+            'test/validationData.js',
             'app/src/app.js',
-            'app/src/*.js',
+            'app/src/utilsProvider.js',
+            'app/src/**/*.js',
             'test/specs/**/*Spec.js'
         ],
 
