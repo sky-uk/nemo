@@ -83,561 +83,521 @@
                         }
                     ],
                     value: 'RevValue',
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "title.blank",
-                                                    "message" : "Please enter your title"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "inlist",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" :
-                                                            [
-                                                                "MrValue",
-                                                                "MrsValue",
-                                                                "MsValue",
-                                                                "MissValue",
-                                                                "DrValue",
-                                                                "RevValue",
-                                                                "ProfValue",
-                                                                "OtherValue"
-                                                            ],
-                                                    "code" : "title.invalid",
-                                                    "message" : "Title was not a valid choice"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "title.help",
-                        "message" : "Please choose your title"
-                    },
-                    "label" :
-                    {
-                        "code" : "title.label",
-                        "message" : "Title"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "title.blank",
+                                        "message": "Please enter your title"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "inlist",
+                                "rules": [
+                                    {
+                                        "value": [
+                                            "MrValue",
+                                            "MrsValue",
+                                            "MsValue",
+                                            "MissValue",
+                                            "DrValue",
+                                            "RevValue",
+                                            "ProfValue",
+                                            "OtherValue"
+                                        ],
+                                        "code": "title.invalid",
+                                        "message": "Title was not a valid choice"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "title.help",
+                            "message": "Please choose your title"
+                        },
+                        "label": {
+                            "code": "title.label",
+                            "message": "Title"
+                        }
                     }
                 },
                 {
                     "name": "firstName",
                     "value": '',
                     "type": "text",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "firstName.blank",
-                                                    "message" : "Please enter your first name"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "maxlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 50,
-                                                    "code" : "firstName.size.toobig",
-                                                    "message" : "Your first name needs to be less than 50 characters long"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "pattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "^[a-zA-Z \\'-]+$",
-                                                    "code" : "firstName.invalid.characters",
-                                                    "message" : "Sorry, your first name can only include letters and spaces"
-                                                },
-                                                {
-                                                    "value" : "^[^-\\']",
-                                                    "code" : "firstName.invalid.characters.startorend",
-                                                    "message" : " Sorry, your first name canonly start and end with a letter"
-                                                },
-                                                {
-                                                    "value" : "[^-\\']$",
-                                                    "code" : "firstName.invalid.characters.startorend",
-                                                    "message" : "Sorry, your first name can only start and end with a letter"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "firstName.help",
-                        "message" : "Please enter your first name"
-                    },
-                    "label" :
-                    {
-                        "code" : "firstName.label",
-                        "message" : "First name"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "firstName.blank",
+                                        "message": "Please enter your first name"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "maxlength",
+                                "rules": [
+                                    {
+                                        "value": 50,
+                                        "code": "firstName.size.toobig",
+                                        "message": "Your first name needs to be less than 50 characters long"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "pattern",
+                                "rules": [
+                                    {
+                                        "value": "^[a-zA-Z \\'-]+$",
+                                        "code": "firstName.invalid.characters",
+                                        "message": "Sorry, your first name can only include letters and spaces"
+                                    },
+                                    {
+                                        "value": "^[^-\\']",
+                                        "code": "firstName.invalid.characters.startorend",
+                                        "message": " Sorry, your first name canonly start and end with a letter"
+                                    },
+                                    {
+                                        "value": "[^-\\']$",
+                                        "code": "firstName.invalid.characters.startorend",
+                                        "message": "Sorry, your first name can only start and end with a letter"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "firstName.help",
+                            "message": "Please enter your first name"
+                        },
+                        "label": {
+                            "code": "firstName.label",
+                            "message": "First name"
+                        }
                     }
                 },
                 {
                     "name": "lastName",
                     "value": "y",
                     "type": "text",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "lastName.blank",
-                                                    "message" : "Please enter your last name"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "maxlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 50,
-                                                    "code" : "lastName.size.toobig",
-                                                    "message" : "Your last name needs to be less than 50 characters long"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "pattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "^[a-zA-Z \\'-]+$",
-                                                    "code" : "lastName.invalid.characters",
-                                                    "message" : "Sorry, your last name can only include letters and spaces"
-                                                },
-                                                {
-                                                    "value" : "^[^-\\']",
-                                                    "code" : "lastName.invalid.characters.startorend",
-                                                    "message" : "Sorry, your last name can only start and end with a letter"
-                                                },
-                                                {
-                                                    "value" : "[^-\\']$",
-                                                    "code" : "lastName.invalid.characters.startorend",
-                                                    "message" : "Sorry, your last name can only start and end with a letter"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "lastName.help",
-                        "message" : "Please enter your last name"
-                    },
-                    "label" :
-                    {
-                        "code" : "lastName.label",
-                        "message" : "Last name"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "lastName.blank",
+                                        "message": "Please enter your last name"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "maxlength",
+                                "rules": [
+                                    {
+                                        "value": 50,
+                                        "code": "lastName.size.toobig",
+                                        "message": "Your last name needs to be less than 50 characters long"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "pattern",
+                                "rules": [
+                                    {
+                                        "value": "^[a-zA-Z \\'-]+$",
+                                        "code": "lastName.invalid.characters",
+                                        "message": "Sorry, your last name can only include letters and spaces"
+                                    },
+                                    {
+                                        "value": "^[^-\\']",
+                                        "code": "lastName.invalid.characters.startorend",
+                                        "message": "Sorry, your last name can only start and end with a letter"
+                                    },
+                                    {
+                                        "value": "[^-\\']$",
+                                        "code": "lastName.invalid.characters.startorend",
+                                        "message": "Sorry, your last name can only start and end with a letter"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "lastName.help",
+                            "message": "Please enter your last name"
+                        },
+                        "label": {
+                            "code": "lastName.label",
+                            "message": "Last name"
+                        }
                     }
                 },
                 {
                     "name": "email",
                     "value": "your@email.com",
                     "type": "email",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "email.blank",
-                                                    "message" : "Please enter your email address"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "email",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "email.email.invalid",
-                                                    "message" : "Sorry, we do not recognise that email address, please check and try again"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "notpattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "(\\@sky\\.co\\.uk)|(\\@sky\\.com)",
-                                                    "code" : "email.is.skycom",
-                                                    "message" : "You cannot choose a Sky email address"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "server",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : null,
-                                                    "code" : "email.taken",
-                                                    "message" : "You've already created a Sky iD with this email address"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "email.help",
-                        "message" : "Tell us your email address"
-                    },
-                    "label" :
-                    {
-                        "code" : "email.label",
-                        "message" : "Email address"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "email.blank",
+                                        "message": "Please enter your email address"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "email",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "email.email.invalid",
+                                        "message": "Sorry, we do not recognise that email address, please check and try again"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "notpattern",
+                                "rules": [
+                                    {
+                                        "value": "(\\@sky\\.co\\.uk)|(\\@sky\\.com)",
+                                        "code": "email.is.skycom",
+                                        "message": "You cannot choose a Sky email address"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "server",
+                                "rules": [
+                                    {
+                                        "value": null,
+                                        "code": "email.taken",
+                                        "message": "You've already created a Sky iD with this email address"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "email.help",
+                            "message": "Tell us your email address"
+                        },
+                        "label": {
+                            "code": "email.label",
+                            "message": "Email address"
+                        }
                     }
                 },
                 {
                     "name": "confirmEmail",
                     "value": "your@email.com",
                     "type": "email",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "confirmEmail.blank",
-                                                    "message" : "Please type your email address again"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "mustmatch",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "email",
-                                                    "code" : "confirmEmail.must.match.email",
-                                                    "message" : "Sorry, your email addresses do not match. Please try again"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "confirmEmail.help",
-                        "message" : "Please type your email address again"
-                    },
-                    "label" :
-                    {
-                        "code" : "confirmEmail.label",
-                        "message" : "Confirm email address"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "confirmEmail.blank",
+                                        "message": "Please type your email address again"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mustmatch",
+                                "rules": [
+                                    {
+                                        "value": "email",
+                                        "code": "confirmEmail.must.match.email",
+                                        "message": "Sorry, your email addresses do not match. Please try again"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "confirmEmail.help",
+                            "message": "Please type your email address again"
+                        },
+                        "label": {
+                            "code": "confirmEmail.label",
+                            "message": "Confirm email address"
+                        }
                     }
                 },
                 {
                     "name": "username",
                     "value": '',
                     "type": "text",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "username.blank",
-                                                    "message" : "Please choose a username"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "minlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 3,
-                                                    "code" : "username.size.toosmall",
-                                                    "message" : "Your username can only have 3 - 32 characters"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "maxlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 32,
-                                                    "code" : "username.size.toobig",
-                                                    "message" : "Your username can only have 3 - 32 characters"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "pattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "^[a-zA-Z]+",
-                                                    "code" : "username.must.start.with.letter",
-                                                    "message" : "Your username can only start with a letter"
-                                                },
-                                                {
-                                                    "value" : "^[a-zA-Z0-9\\-\\._]+[a-zA-Z0-9]$",
-                                                    "code" : "username.invalid.characters",
-                                                    "message" : "Your username can only contain letters and numbers"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "notpattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "[\\-\\.\\_][\\-\\.\\_]",
-                                                    "code" : "username.invalid.characters",
-                                                    "message" : "Your username can only contain letters and numbers"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "server",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : null,
-                                                    "code" : "username.taken",
-                                                    "message" : "Sorry, someone already has that username"
-                                                },
-                                                {
-                                                    "value" : null,
-                                                    "code" : "username.contains.profanity",
-                                                    "message" : "This is not a valid username"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "username.help",
-                        "message" : "Your username must have 3-32 characters and must only contain letters and numbers"
-                    },
-                    "label" :
-                    {
-                        "code" : "username.label",
-                        "message" : "Username"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "username.blank",
+                                        "message": "Please choose a username"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "minlength",
+                                "rules": [
+                                    {
+                                        "value": 3,
+                                        "code": "username.size.toosmall",
+                                        "message": "Your username can only have 3 - 32 characters"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "maxlength",
+                                "rules": [
+                                    {
+                                        "value": 32,
+                                        "code": "username.size.toobig",
+                                        "message": "Your username can only have 3 - 32 characters"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "pattern",
+                                "rules": [
+                                    {
+                                        "value": "^[a-zA-Z]+",
+                                        "code": "username.must.start.with.letter",
+                                        "message": "Your username can only start with a letter"
+                                    },
+                                    {
+                                        "value": "^[a-zA-Z0-9\\-\\._]+[a-zA-Z0-9]$",
+                                        "code": "username.invalid.characters",
+                                        "message": "Your username can only contain letters and numbers"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "notpattern",
+                                "rules": [
+                                    {
+                                        "value": "[\\-\\.\\_][\\-\\.\\_]",
+                                        "code": "username.invalid.characters",
+                                        "message": "Your username can only contain letters and numbers"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "server",
+                                "rules": [
+                                    {
+                                        "value": null,
+                                        "code": "username.taken",
+                                        "message": "Sorry, someone already has that username"
+                                    },
+                                    {
+                                        "value": null,
+                                        "code": "username.contains.profanity",
+                                        "message": "This is not a valid username"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "username.help",
+                            "message": "Your username must have 3-32 characters and must only contain letters and numbers"
+                        },
+                        "label": {
+                            "code": "username.label",
+                            "message": "Username"
+                        }
                     }
                 },
                 {
                     "name": "password",
                     "value": '',
                     "type": "password",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "password.blank",
-                                                    "message" : "Please enter a valid password, it can't contain your username or the word 'password'"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "minlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 8,
-                                                    "code" : "password.size.toosmall",
-                                                    "message" : "Your password can only have 8 - 32 characters"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "maxlength",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : 32,
-                                                    "code" : "password.size.toobig",
-                                                    "message" : "Your password can only have 8 - 32 characters"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "mustnotcontain",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "username",
-                                                    "code" : "password.contains.username",
-                                                    "message" : "Please enter a valid password, it can't contain your username or the word 'password'"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "pattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "[A-Za-z]",
-                                                    "code" : "password.must.contain.letter",
-                                                    "message" : "Your password needs to contain at least one letter"
-                                                },
-                                                {
-                                                    "value" : "^[\\!-\\%\\'-;=\\?-~]+$",
-                                                    "code" : "password.invalid.characters",
-                                                    "message" : "Your password contains invalid characters"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "notpattern",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "(password)",
-                                                    "code" : "password.invalid",
-                                                    "message" : "Please enter a valid password, it can't contain your username or the word 'password'"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "password.help",
-                        "message" : "Must have 8-32 characters and cannot contain your username or the word 'password'"
-                    },
-                    "label" :
-                    {
-                        "code" : "password.label",
-                        "message" : "Password"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "password.blank",
+                                        "message": "Please enter a valid password, it can't contain your username or the word 'password'"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "minlength",
+                                "rules": [
+                                    {
+                                        "value": 8,
+                                        "code": "password.size.toosmall",
+                                        "message": "Your password can only have 8 - 32 characters"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "maxlength",
+                                "rules": [
+                                    {
+                                        "value": 32,
+                                        "code": "password.size.toobig",
+                                        "message": "Your password can only have 8 - 32 characters"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mustnotcontain",
+                                "rules": [
+                                    {
+                                        "value": "username",
+                                        "code": "password.contains.username",
+                                        "message": "Please enter a valid password, it can't contain your username or the word 'password'"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "pattern",
+                                "rules": [
+                                    {
+                                        "value": "[A-Za-z]",
+                                        "code": "password.must.contain.letter",
+                                        "message": "Your password needs to contain at least one letter"
+                                    },
+                                    {
+                                        "value": "^[\\!-\\%\\'-;=\\?-~]+$",
+                                        "code": "password.invalid.characters",
+                                        "message": "Your password contains invalid characters"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "notpattern",
+                                "rules": [
+                                    {
+                                        "value": "(password)",
+                                        "code": "password.invalid",
+                                        "message": "Please enter a valid password, it can't contain your username or the word 'password'"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "password.help",
+                            "message": "Must have 8-32 characters and cannot contain your username or the word 'password'"
+                        },
+                        "label": {
+                            "code": "password.label",
+                            "message": "Password"
+                        }
                     }
                 },
                 {
                     "name": "confirmPassword",
                     "value": '',
                     "type": "password",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "required",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "confirmPassword.blank",
-                                                    "message" : "Please type your password again"
-                                                }
-                                            ]
-                                },
-                                {
-                                    "type" : "mustmatch",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : "password",
-                                                    "code" : "confirmPassword.must.match.password",
-                                                    "message" : "The passwords you entered didn't match. Please try again"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                        "code" : "confirmPassword.help",
-                        "message" : "Please type your password again"
-                    },
-                    "label" :
-                    {
-                        "code" : "confirmPassword.label",
-                        "message" : "Confirm password"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "confirmPassword.blank",
+                                        "message": "Please type your password again"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "mustmatch",
+                                "rules": [
+                                    {
+                                        "value": "password",
+                                        "code": "confirmPassword.must.match.password",
+                                        "message": "The passwords you entered didn't match. Please try again"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {
+                            "code": "confirmPassword.help",
+                            "message": "Please type your password again"
+                        },
+                        "label": {
+                            "code": "confirmPassword.label",
+                            "message": "Confirm password"
+                        }
                     }
                 },
                 {
                     "name": "terms",
                     "value": true,
                     "type": "checkbox",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "mustbeequal",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "terms.notequal",
-                                                    "message" : "You need to agree to the terms and conditions"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" :
-                    {
-                    },
-                    "label" :
-                    {
-                        "code" : "terms.label",
-                        "message" : "I have read and agree to the Sky terms & conditions and privacy & cookies notice"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "mustbeequal",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "terms.notequal",
+                                        "message": "You need to agree to the terms and conditions"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {},
+                        "label": {
+                            "code": "terms.label",
+                            "message": "I have read and agree to the Sky terms & conditions and privacy & cookies notice"
+                        }
                     }
                 },
                 {
                     "name": "marketingConsent",
                     "value": false,
                     "type": "checkbox",
-                    "validation" : [],
-                    "help" : {},
-                    "label" :
-                    {
-                        "code" : "marketingConsent.label",
-                        "message" : "Sky may contact you about products and services you may like unless you click to opt out"
+                    properties: {
+                        "validation": [],
+                        "help": {},
+                        "label": {
+                            "code": "marketingConsent.label",
+                            "message": "Sky may contact you about products and services you may like unless you click to opt out"
+                        }
                     }
                 },
                 {
                     "name": "serviceTerms",
                     "value": true,
                     "type": "checkbox",
-                    "validation" :
-                            [
-                                {
-                                    "type" : "mustbeequal",
-                                    "rules" :
-                                            [
-                                                {
-                                                    "value" : true,
-                                                    "code" : "serviceTerms.notequal",
-                                                    "message" : "You need to agree to the terms and conditions"
-                                                }
-                                            ]
-                                }
-                            ],
-                    "help" : {},
-                    "label" :
-                    {
-                        "code" : "serviceTerms.label",
-                        "message" : "I have read and agree to the NOW TV terms & conditions"
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "mustbeequal",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "serviceTerms.notequal",
+                                        "message": "You need to agree to the terms and conditions"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {},
+                        "label": {
+                            "code": "serviceTerms.label",
+                            "message": "I have read and agree to the NOW TV terms & conditions"
+                        }
                     }
                 }
             ];
@@ -654,7 +614,7 @@
     <form form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
-                {{field.label.message}}: {{field.value}}
+                {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
                 <nemo-input model="field"></nemo-input>
