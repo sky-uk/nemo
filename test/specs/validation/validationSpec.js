@@ -89,11 +89,6 @@ describe('nemo validation messages', function () {
                 }
             ]
         }
-//        { type: 'password', validValue: 'foo', invalidValue: '' },
-//        { type: 'email', validValue: 'foo', invalidValue: '' },
-//        { type: 'select', validValue: 'foo', invalidValue: '' },
-//        { type: 'checkbox', validValue: true, invalidValue: false }
-//        { type: 'text' }
     ];
 
     scenarios.forEach(function (scenario) {
@@ -109,7 +104,9 @@ describe('nemo validation messages', function () {
                         type: scenario.inputType,
                         name: 'foo',
                         value: '',
-                        validation: [validationScenario.validation]
+                        properties: {
+                            validation: [validationScenario.validation]
+                        }
                     };
                 });
 
@@ -126,7 +123,7 @@ describe('nemo validation messages', function () {
                 });
 
                 then(function () {
-                    expect(fieldElement.attr('validation-' + validationScenario.validation.type)).toBe('model.validation[0].rules');
+                    expect(fieldElement.attr('validation-' + validationScenario.validation.type)).toBe('model.properties.validation[0].rules');
                 });
 
                 validationScenario.flows.forEach(function (flow) {

@@ -36,14 +36,18 @@ describe('validation', function () {
                     type: 'text',
                     name: 'pwd',
                     value: '',
-                    validation: [validationScenario]
+                    properties: {
+                        validation: [validationScenario]
+                    }
                 };
 
                 username_model = {
                     type: 'text',
                     name: 'username',
                     value: 'fooUsername',
-                    validation: []
+                    properties: {
+                        validation: []
+                    }
                 };
             });
 
@@ -61,7 +65,7 @@ describe('validation', function () {
             });
 
             then(function () {
-                expect(fieldElement.attr('validation-' + validationScenario.type)).toBe('model.validation[0].rules');
+                expect(fieldElement.attr('validation-' + validationScenario.type)).toBe('model.properties.validation[0].rules');
             });
 
             scenario.flows.forEach(function (flow) {
