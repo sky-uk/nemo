@@ -3,11 +3,13 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
         var self = this;
         this.data = data;
 
-        this.data.links.forEach(function (link) {
-            link.rel.forEach(function (relName) {
-                self.data[relName] = link;
-            })
-        });
+        if (this.data.links) {
+            this.data.links.forEach(function (link) {
+                link.rel.forEach(function (relName) {
+                    self.data[relName] = link;
+                })
+            });
+        }
     }
 
     CaptchaModel.prototype = {

@@ -15,7 +15,7 @@ var express = require('express'),
                 "rel": [
                     "captchaAudio"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha.wav"
+                "href": "http://0.0.0.0:3333/app/sample/captcha1.wav"
             }
         ],
         "properties": {
@@ -37,7 +37,7 @@ var express = require('express'),
                 "rel": [
                     "captchaAudio"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha.wav"
+                "href": "http://0.0.0.0:3333/app/sample/captcha2.wav"
             }
         ],
         "properties": {

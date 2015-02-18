@@ -128,7 +128,7 @@ angular.module('nemo').provider('captcha', [function () {
             '<img ng-src="{{captchaModel.getImageUri()}}">' +
             '<input type="text" ng-model="model.value">' +
             '<a ng-click="requestAnother()">{{getRequestCaptchaCopy()}}</a>' +
-            '<audio controls><source ng-src="{{captchaModel.getAudioUri()}}"></audio>' +
+            '<audio controls ng-if="captchaModel"><source ng-src="{{captchaModel.getAudioUri()}}"></audio>' +
         '</div>',
         linkFn: function (scope, element, attrs, controllers) {
             var ngModelController = controllers[0],
@@ -264,6 +264,7 @@ angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($h
 angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', function ($scope, Captcha) {
 
     $scope.requestAnother = function () {
+        $scope.captchaModel = undefined;
         Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
@@ -281,11 +282,13 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
         var self = this;
         this.data = data;
 
-        this.data.links.forEach(function (link) {
-            link.rel.forEach(function (relName) {
-                self.data[relName] = link;
-            })
-        });
+        if (this.data.links) {
+            this.data.links.forEach(function (link) {
+                link.rel.forEach(function (relName) {
+                    self.data[relName] = link;
+                })
+            });
+        }
     }
 
     CaptchaModel.prototype = {
