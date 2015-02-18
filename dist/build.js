@@ -265,6 +265,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', function 
 
     $scope.requestAnother = function () {
         $scope.captchaModel = undefined;
+        $scope.model.value = '';
         Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());

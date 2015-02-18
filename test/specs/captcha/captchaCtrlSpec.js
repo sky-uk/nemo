@@ -41,8 +41,9 @@ describe('captcha ctrl', function () {
                 scope.requestAnother();
             });
 
-            then('the model should be undefined', function () {
+            then('the model should be undefined and the value should be emptied', function () {
                 expect(scope.captchaModel).toBeUndefined();
+                expect(scope.model.value).toBe('');
             });
 
             when('the backend responds', function () {

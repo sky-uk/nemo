@@ -63,7 +63,7 @@ describe('nemo input', function () {
             });
 
             then('parent captcha setup correctly', function () {
-                expect(fieldElement.controller('ngModel').$viewValue).toBe('asdd');
+                expect(fieldElement.controller('ngModel').$viewValue).toBe('');
                 expect(fieldElement.prop('tagName').toLowerCase()).toBe('div');
                 expect(fieldElement.attr('input-captcha')).not.toBeUndefined();
                 expect(fieldElement.attr('ng-model')).toBe('model.value');
