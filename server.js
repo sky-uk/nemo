@@ -9,13 +9,13 @@ var express = require('express'),
                 "rel": [
                     "captchaImage"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha1.jpeg"
+                "href": "/app/sample/captcha1.jpeg"
             },
             {
                 "rel": [
                     "captchaAudio"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha1.wav"
+                "href": "/app/sample/captcha1.wav"
             }
         ],
         "properties": {
@@ -31,13 +31,13 @@ var express = require('express'),
                 "rel": [
                     "captchaImage"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha2.jpeg"
+                "href": "/app/sample/captcha2.jpeg"
             },
             {
                 "rel": [
                     "captchaAudio"
                 ],
-                "href": "http://0.0.0.0:3333/app/sample/captcha2.wav"
+                "href": "/app/sample/captcha2.wav"
             }
         ],
         "properties": {

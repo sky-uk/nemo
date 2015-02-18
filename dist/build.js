@@ -128,7 +128,7 @@ angular.module('nemo').provider('captcha', [function () {
             '<img ng-src="{{captchaModel.getImageUri()}}">' +
             '<input type="text" ng-model="model.value">' +
             '<a ng-click="requestAnother()">{{getRequestCaptchaCopy()}}</a>' +
-            '<audio controls ng-if="captchaModel"><source ng-src="{{captchaModel.getAudioUri()}}"></audio>' +
+            '<audio controls ng-if="captchaModel"><source ng-src="{{captchaModel.getAudioUri()}}">Audio tag not supported</audio>' +
         '</div>',
         linkFn: function (scope, element, attrs, controllers) {
             var ngModelController = controllers[0],
