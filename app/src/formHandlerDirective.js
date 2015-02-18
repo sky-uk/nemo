@@ -9,8 +9,14 @@ angular.module('nemo')
 
                 var self = this;
 
+                this.setFieldValue = function(fieldName, value) {
+                    if ($scope[$attrs.name][fieldName]) {
+                        $scope[$attrs.name][fieldName].$setViewValue(value);
+                    }
+                };
+
                 this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName].$viewValue;
+                    return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
                 };
 
                 this.forceValidity = function (fieldName, validationRuleCode, newValidity) {

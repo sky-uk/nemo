@@ -599,6 +599,46 @@
                             "message": "I have read and agree to the NOW TV terms & conditions"
                         }
                     }
+                },
+                {
+                    "name": "captcha",
+                    "value": '',
+                    "type": "captcha",
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "captcha.blank",
+                                        "message": "Please type the characters again"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {},
+                        "label": {
+                            "code": "captcha.label",
+                            "message": "Enter the characters"
+                        }
+                    },
+                    actions: {
+                        'request-captcha': {
+                            href: 'http://0.0.0.0:3333/captcha',
+                            method: 'POST',
+                            properties: {
+                                code: 'requestcaptcha.submit',
+                                message: 'Request another'
+                            }
+                        }
+                    }
+                },
+                {
+                    name: "captchaId",
+                    type: "hidden",
+                    value: null,
+                    mandatory: true
                 }
             ];
 
@@ -614,6 +654,7 @@
     <form form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
+                <span ng-if="field.name == 'captchaId'">Captcha Id</span>
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">

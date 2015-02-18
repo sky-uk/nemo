@@ -15,20 +15,21 @@ angular.module('nemo')
         }
 
         function getLinkFn(options, $compile, $http) {
-            return function (scope, element, attrs, formHandlerController) {
+            return function (scope, element, attrs, controllers) {
                 if (options.linkFn) {
-                    options.linkFn(scope, element, attrs, formHandlerController, $compile, $http);
+                    options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
             }
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: '^formHandler',
+                require: ['ngModel', '^formHandler'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
-                link: getLinkFn(options, $compile, $http)
+                link: getLinkFn(options, $compile, $http),
+                controller: options.controller
             }
         }
 
