@@ -37,6 +37,28 @@
         .clearfix {
             overflow: auto;
         }
+
+        .nemo-captcha-audio-controls {
+            display: none;
+
+        }
+
+        .nemo-captcha-play-btn {
+            background: transparent url('/app/sample/grey-audio-Icon.png') no-repeat 0 0;
+            width: 21px;
+            height: 20px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .nemo-captcha-refresh-btn {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .nemo-captcha-img {
+            display: inline-block;
+        }
     </style>
 
     <script>
@@ -631,7 +653,7 @@
                             properties: {
                                 actionsubmit: {
                                     code: 'requestcaptcha.submit',
-                                    message: 'Request another'
+                                    message: 'Can\'t read it?'
                                 }
                             }
                         }

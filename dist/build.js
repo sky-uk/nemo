@@ -157,11 +157,12 @@ angular.module('nemo')
 angular.module('nemo').provider('captcha', [function () {
     return {
         template: '<div>' +
-            '<img ng-src="{{captchaModel.getImageUri()}}">' +
+            '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
+            '<div class="nemo-captcha-play-btn" ng-click="playAudio($event)"></div>' +
             '<input type="text" ng-model="model.value">' +
-            '<a ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</a>' +
-            '<a ng-click="playAudio($event)">Play</a>' +
-            '<audio controls style="display: none;" ng-src="{{captchaModel.getAudioUri()}}">' +
+
+            '<div class="nemo-captcha-refresh-btn" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</div>' +
+            '<audio controls class="nemo-captcha-audio-controls" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Audio tag not supported' +
             '</audio>' +
         '</div>',
