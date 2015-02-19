@@ -82,11 +82,6 @@ describe('nemo input', function () {
                 expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
             });
 
-            and('request another tag is setup correctly', function () {
-                var requestAnother = fieldElement.find('a');
-                expect(requestAnother[0].getAttribute('ng-click')).toBeDefined();
-            });
-
             and('image tag is setup correctly', function () {
                 var image = fieldElement.find('img');
                 expect(image[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/jpeg/d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
@@ -137,7 +132,7 @@ describe('nemo input', function () {
             });
 
             when('I click on Request Another Captcha link and flush the backend', function () {
-                fieldElement.find('a').triggerHandler('click');
+                angular.element(fieldElement[0].getElementsByClassName('nemo-captcha-refresh-btn')).triggerHandler('click');
                 $httpBackend.flush();
             });
 
