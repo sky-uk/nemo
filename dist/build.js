@@ -116,10 +116,42 @@ angular.module('nemo')
             return isFound;
         }
 
+        // Extracted from Underscore.js 1.5.2
+        function debounce(func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+            return function() {
+                context = this;
+                args = arguments;
+                timestamp = new Date();
+                var later = function() {
+                    var last = (new Date()) - timestamp;
+                    if (last < wait) {
+                        timeout = setTimeout(later, wait - last);
+                    } else {
+                        timeout = null;
+                        if (!immediate) result = func.apply(context, args);
+                    }
+                };
+                var callNow = immediate && !timeout;
+                if (!timeout) {
+                    timeout = setTimeout(later, wait);
+                }
+                if (callNow) result = func.apply(context, args);
+                return result;
+            };
+        }
+
         return {
             capitalise: capitalise,
             contains: contains,
-            $get: angular.noop
+            debounce: debounce,
+            $get: function () {
+                return {
+                    capitalise: capitalise,
+                    contains: contains,
+                    debounce: debounce
+                }
+            }
         }
     }]);
 angular.module('nemo').provider('captcha', [function () {
@@ -127,8 +159,8 @@ angular.module('nemo').provider('captcha', [function () {
         template: '<div>' +
             '<img ng-src="{{captchaModel.getImageUri()}}">' +
             '<input type="text" ng-model="model.value">' +
-            '<a ng-click="requestAnother()">{{getRequestCaptchaCopy()}}</a>' +
-            '<a ng-click="playAudio()">Play</a>' +
+            '<a ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</a>' +
+            '<a ng-click="playAudio($event)">Play</a>' +
             '<audio controls style="display: none;" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Audio tag not supported' +
             '</audio>' +
@@ -147,7 +179,9 @@ angular.module('nemo').provider('captcha', [function () {
                 formHandler.setFieldValue('captchaId', value);
             };
 
-            scope.playAudio = function () {
+            scope.playAudio = function ($event) {
+                $event.stopPropagation();
+                $event.preventDefault();
                 element.find('audio')[0].play();
             };
         },
@@ -268,21 +302,29 @@ angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($h
         getCaptcha: getCaptcha
     }
 }]);
-angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', function ($scope, Captcha) {
+angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'utils', function ($scope, Captcha, utils) {
 
-    $scope.requestAnother = function () {
+    var debouncedGetCaptchaInfo = utils.debounce(getCaptchaInfo, 1000, true);
+
+    function getCaptchaInfo() {
         $scope.model.value = '';
         Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
+    }
+
+    $scope.refreshCaptcha = function ($event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+        debouncedGetCaptchaInfo();
     };
 
     $scope.getRequestCaptchaCopy = function () {
         return $scope.model.actions["request-captcha"].properties.actionsubmit.message;
     };
 
-    $scope.requestAnother();
+    getCaptchaInfo();
 }]);
 angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
     function CaptchaModel(data) {

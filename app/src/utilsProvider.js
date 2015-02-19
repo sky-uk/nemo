@@ -17,9 +17,41 @@ angular.module('nemo')
             return isFound;
         }
 
+        // Extracted from Underscore.js 1.5.2
+        function debounce(func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+            return function() {
+                context = this;
+                args = arguments;
+                timestamp = new Date();
+                var later = function() {
+                    var last = (new Date()) - timestamp;
+                    if (last < wait) {
+                        timeout = setTimeout(later, wait - last);
+                    } else {
+                        timeout = null;
+                        if (!immediate) result = func.apply(context, args);
+                    }
+                };
+                var callNow = immediate && !timeout;
+                if (!timeout) {
+                    timeout = setTimeout(later, wait);
+                }
+                if (callNow) result = func.apply(context, args);
+                return result;
+            };
+        }
+
         return {
             capitalise: capitalise,
             contains: contains,
-            $get: angular.noop
+            debounce: debounce,
+            $get: function () {
+                return {
+                    capitalise: capitalise,
+                    contains: contains,
+                    debounce: debounce
+                }
+            }
         }
     }]);

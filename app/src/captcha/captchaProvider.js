@@ -3,8 +3,8 @@ angular.module('nemo').provider('captcha', [function () {
         template: '<div>' +
             '<img ng-src="{{captchaModel.getImageUri()}}">' +
             '<input type="text" ng-model="model.value">' +
-            '<a ng-click="requestAnother()">{{getRequestCaptchaCopy()}}</a>' +
-            '<a ng-click="playAudio()">Play</a>' +
+            '<a ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</a>' +
+            '<a ng-click="playAudio($event)">Play</a>' +
             '<audio controls style="display: none;" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Audio tag not supported' +
             '</audio>' +
@@ -23,7 +23,9 @@ angular.module('nemo').provider('captcha', [function () {
                 formHandler.setFieldValue('captchaId', value);
             };
 
-            scope.playAudio = function () {
+            scope.playAudio = function ($event) {
+                $event.stopPropagation();
+                $event.preventDefault();
                 element.find('audio')[0].play();
             };
         },
