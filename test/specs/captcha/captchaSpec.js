@@ -35,8 +35,10 @@ describe('nemo input', function () {
                     href: 'http://requestanother.com',
                     method: 'POST',
                     properties: {
-                        code: 'requestcaptcha.submit',
-                        message: 'Captcha message'
+                        actionsubmit: {
+                            code: 'requestcaptcha.submit',
+                            message: 'Captcha message'
+                        }
                     }
                 }
             }
@@ -76,9 +78,8 @@ describe('nemo input', function () {
             });
 
             and('audio tag is setup correctly', function () {
-                var audio = fieldElement.find('audio'),
-                    source = audio.find('source');
-                expect(source[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
+                var audio = fieldElement.find('audio');
+                expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
             });
 
             and('request another tag is setup correctly', function () {
@@ -141,9 +142,8 @@ describe('nemo input', function () {
             });
 
             then('audio tag is setup correctly', function () {
-                var audio = fieldElement.find('audio'),
-                    source = audio.find('source');
-                expect(source[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/sdasdadasd');
+                var audio = fieldElement.find('audio');
+                expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/sdasdadasd');
             });
 
             and('image tag is setup correctly', function () {

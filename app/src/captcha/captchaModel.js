@@ -7,7 +7,7 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
             this.data.links.forEach(function (link) {
                 link.rel.forEach(function (relName) {
                     self.data[relName] = link;
-                })
+                });
             });
         }
     }
