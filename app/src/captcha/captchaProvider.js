@@ -5,7 +5,7 @@ angular.module('nemo').provider('captcha', [function () {
             '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
             '<input class="nemo-captcha-input" type="text" ng-model="model.value">' +
             '<div class="nemo-captcha-refresh" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</div>' +
-            '<audio controls class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
+            '<audio class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Your browser does not support audio' +
             '</audio>' +
         '</div>',
