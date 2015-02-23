@@ -18,18 +18,19 @@ describe('validation', function () {
         },
         {
             validation: validation.mustmatch(),
+            disallowedPaste: true,
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
-                { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: '' },
-                { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username' },
-                { viewValue: '', fieldValidity: true, validationMessagesText: '' }
+                { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
+                { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username'},
+                { viewValue: '', fieldValidity: true, validationMessagesText: ''}
             ]
         }
     ].forEach(function (scenario) {
             var validationScenario = scenario.validation;
         it('must check the cross validity of the field of type password for the validation ' + validationScenario.type, function () {
 
-            var username_model, password_model, formElement, fieldElement, validationMessagesElement;
+            var username_model, password_model, formElement, firstFieldElement, validationMessagesElement;
 
             given(function () {
                 password_model = {
@@ -60,24 +61,25 @@ describe('validation', function () {
             });
 
             and(function () {
-                fieldElement = angular.element(formElement.children()[0]);
+                firstFieldElement = angular.element(formElement.children()[0]);
                 validationMessagesElement = angular.element(formElement.children()[2]);
             });
 
             then(function () {
-                expect(fieldElement.attr('validation-' + validationScenario.type)).toBe('model.properties.validation[0].rules');
+                expect(firstFieldElement.attr('validation-' + validationScenario.type)).toBe('model.properties.validation[0].rules');
+                expect(firstFieldElement.attr('nemo-no-paste')).toBe(scenario.disallowedPaste ? 'true' : undefined);
             });
 
             scenario.flows.forEach(function (flow) {
 
                 when(function () {
                     if (flow.viewValue !== undefined) {
-                        fieldElement.controller('ngModel').$setViewValue(flow.viewValue);
+                        firstFieldElement.controller('ngModel').$setViewValue(flow.viewValue);
                     }
                 });
 
                 then(function () {
-                    expect(fieldElement.controller('ngModel').$valid).toBe(flow.fieldValidity);
+                    expect(firstFieldElement.controller('ngModel').$valid).toBe(flow.fieldValidity);
                     expect(formElement.controller('form').$valid).toBe(flow.fieldValidity);
                 });
 

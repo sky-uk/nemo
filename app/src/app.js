@@ -62,6 +62,9 @@ angular.module('nemo', [])
             })
 
             .validation('mustmatch', {
+                preCompileFn: function (tElement) {
+                    tElement.attr('nemo-no-paste', 'true');
+                },
                 validateFn: function (value, validationRuleValue, formHandlerController) {
                     var targetValue = formHandlerController.getFieldValue(validationRuleValue);
                     return (value) ? value === targetValue : true;

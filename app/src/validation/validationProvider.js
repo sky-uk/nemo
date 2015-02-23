@@ -4,6 +4,8 @@ angular.module('nemo')
 
     .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
+        var validationsCache = {};
+
         function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
             ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
                 var isValid = (validateFn) ?
@@ -34,16 +36,32 @@ angular.module('nemo')
         }
 
         function validation(type, options) {
+
+            storeValidationInCache(type, options);
+
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['messages', function (messages) {
                     return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
                 }]]);
+
             return this;
+        }
+
+        function storeValidationInCache(type, options) {
+            validationsCache[type] = options;
+        }
+
+        function getValidationFromCache(type) {
+            return validationsCache[type];
         }
 
         return {
             validation: validation,
-            $get: angular.noop
+            $get: function () {
+                return {
+                    getValidation: getValidationFromCache
+                }
+            }
         }
     }]);
