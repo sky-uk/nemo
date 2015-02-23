@@ -16,9 +16,9 @@ module.exports = function (grunt) {
 		express: {
 			default_option: {
 				options: {
-					bases: './',
 					hostname: '0.0.0.0',
-					port: 3333
+					port: 3333,
+                    server: './server.js'
 				}
 			}
 		},

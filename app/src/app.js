@@ -1,6 +1,6 @@
 angular.module('nemo', [])
 
-    .config(['inputProvider', 'validationProvider', 'utilsProvider', function (inputProvider, validationProvider, utilsProvider) {
+    .config(['inputProvider', 'validationProvider', 'utilsProvider', 'captchaProvider', function (inputProvider, validationProvider, utilsProvider, captchaProvider) {
 
         inputProvider
 
@@ -26,7 +26,9 @@ angular.module('nemo', [])
 
             .input('checkbox', {
                 template: '<input type="checkbox" />'
-            });
+            })
+
+            .input('captcha', captchaProvider);
 
         validationProvider
 

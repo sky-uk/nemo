@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html ng-app="nemo">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -35,6 +36,27 @@
 
         .clearfix {
             overflow: auto;
+        }
+
+        .nemo-captcha-audio {
+            display: none;
+        }
+
+        .nemo-captcha-play {
+            background: transparent url('/app/sample/grey-audio-Icon.png') no-repeat 0 0;
+            width: 21px;
+            height: 20px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .nemo-captcha-refresh {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .nemo-captcha-img {
+            display: inline-block;
         }
     </style>
 
@@ -599,6 +621,48 @@
                             "message": "I have read and agree to the NOW TV terms & conditions"
                         }
                     }
+                },
+                {
+                    "name": "captcha",
+                    "value": '',
+                    "type": "captcha",
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "required",
+                                "rules": [
+                                    {
+                                        "value": true,
+                                        "code": "captcha.blank",
+                                        "message": "Please type the characters again"
+                                    }
+                                ]
+                            }
+                        ],
+                        "help": {},
+                        "label": {
+                            "code": "captcha.label",
+                            "message": "Enter the characters"
+                        }
+                    },
+                    actions: {
+                        'request-captcha': {
+                            href: '/captcha',
+                            method: 'POST',
+                            properties: {
+                                actionsubmit: {
+                                    code: 'requestcaptcha.submit',
+                                    message: 'Can\'t read it?'
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    name: "captchaId",
+                    type: "hidden",
+                    value: null,
+                    mandatory: true
                 }
             ];
 
@@ -614,6 +678,7 @@
     <form form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
+                <span ng-if="field.name == 'captchaId'">Captcha Id</span>
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">

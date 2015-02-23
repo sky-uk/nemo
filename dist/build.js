@@ -1,6 +1,6 @@
 angular.module('nemo', [])
 
-    .config(['inputProvider', 'validationProvider', 'utilsProvider', function (inputProvider, validationProvider, utilsProvider) {
+    .config(['inputProvider', 'validationProvider', 'utilsProvider', 'captchaProvider', function (inputProvider, validationProvider, utilsProvider, captchaProvider) {
 
         inputProvider
 
@@ -26,7 +26,9 @@ angular.module('nemo', [])
 
             .input('checkbox', {
                 template: '<input type="checkbox" />'
-            });
+            })
+
+            .input('captcha', captchaProvider);
 
         validationProvider
 
@@ -114,12 +116,79 @@ angular.module('nemo')
             return isFound;
         }
 
+        // Extracted from Underscore.js 1.5.2
+        function debounce(func, wait, immediate) {
+            var timeout, args, context, timestamp, result;
+            return function() {
+                context = this;
+                args = arguments;
+                timestamp = new Date();
+                var later = function() {
+                    var last = (new Date()) - timestamp;
+                    if (last < wait) {
+                        timeout = setTimeout(later, wait - last);
+                    } else {
+                        timeout = null;
+                        if (!immediate) result = func.apply(context, args);
+                    }
+                };
+                var callNow = immediate && !timeout;
+                if (!timeout) {
+                    timeout = setTimeout(later, wait);
+                }
+                if (callNow) result = func.apply(context, args);
+                return result;
+            };
+        }
+
         return {
             capitalise: capitalise,
             contains: contains,
-            $get: angular.noop
+            debounce: debounce,
+            $get: function () {
+                return {
+                    capitalise: capitalise,
+                    contains: contains,
+                    debounce: debounce
+                }
+            }
         }
     }]);
+angular.module('nemo').provider('captcha', [function () {
+    return {
+        template: '<div>' +
+            '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
+            '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
+            '<input class="nemo-captcha-input" type="text" ng-model="model.value">' +
+            '<div class="nemo-captcha-refresh" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</div>' +
+            '<audio controls class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
+                'Your browser does not support audio' +
+            '</audio>' +
+        '</div>',
+        linkFn: function (scope, element, attrs, controllers) {
+            var ngModelController = controllers[0],
+                formHandler = controllers[1],
+                watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
+                    if(newVal !== oldVal) {
+                        ngModelController.$setDirty();
+                        watcherUnbind();
+                    }
+                });
+
+            scope.updateCaptchaId = function(value) {
+                formHandler.setFieldValue('captchaId', value);
+            };
+
+            scope.playAudio = function ($event) {
+                $event.stopPropagation();
+                $event.preventDefault();
+                element.find('audio')[0].play();
+            };
+        },
+        controller: 'CaptchaCtrl',
+        $get: {}
+    }
+}]);
 'use strict';
 
 angular.module('nemo')
@@ -137,20 +206,21 @@ angular.module('nemo')
         }
 
         function getLinkFn(options, $compile, $http) {
-            return function (scope, element, attrs, formHandlerController) {
+            return function (scope, element, attrs, controllers) {
                 if (options.linkFn) {
-                    options.linkFn(scope, element, attrs, formHandlerController, $compile, $http);
+                    options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
             }
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: '^formHandler',
+                require: ['ngModel', '^formHandler'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
-                link: getLinkFn(options, $compile, $http)
+                link: getLinkFn(options, $compile, $http),
+                controller: options.controller
             }
         }
 
@@ -220,6 +290,76 @@ angular.module('nemo')
         }
     }]);
 
+angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($http, CaptchaModel) {
+
+    function getCaptcha(captchaAction) {
+        return $http.post(captchaAction.href).then(function (response) {
+            return CaptchaModel.create(response.data);
+        });
+    }
+
+    return {
+        getCaptcha: getCaptcha
+    }
+}]);
+angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'utils', function ($scope, Captcha, utils) {
+
+    var debouncedGetCaptchaInfo = utils.debounce(getCaptchaInfo, 1000, true);
+
+    function getCaptchaInfo() {
+        $scope.model.value = '';
+        Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
+            $scope.captchaModel = captchaModel;
+            $scope.updateCaptchaId($scope.captchaModel.getId());
+        });
+    }
+
+    $scope.refreshCaptcha = function ($event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+        debouncedGetCaptchaInfo();
+    };
+
+    $scope.getRequestCaptchaCopy = function () {
+        return $scope.model.actions["request-captcha"].properties.actionsubmit.message;
+    };
+
+    getCaptchaInfo();
+}]);
+angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
+    function CaptchaModel(data) {
+        var self = this;
+        this.data = data;
+
+        if (this.data.links) {
+            this.data.links.forEach(function (link) {
+                link.rel.forEach(function (relName) {
+                    self.data[relName] = link;
+                });
+            });
+        }
+    }
+
+    CaptchaModel.prototype = {
+        getImageUri: function () {
+            return this.data.captchaImage.href;
+        },
+
+        getAudioUri: function () {
+            return $sce.trustAsResourceUrl(this.data.captchaAudio.href);
+        },
+
+        getId: function () {
+            return this.data.properties.captchaId;
+        }
+    };
+
+    return {
+        create: function (data) {
+            return new CaptchaModel(data);
+        }
+    }
+}]);
 'use strict';
 
 angular.module('nemo')
@@ -231,8 +371,14 @@ angular.module('nemo')
 
                 var self = this;
 
+                this.setFieldValue = function(fieldName, value) {
+                    if ($scope[$attrs.name][fieldName]) {
+                        $scope[$attrs.name][fieldName].$setViewValue(value);
+                    }
+                };
+
                 this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName].$viewValue;
+                    return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
                 };
 
                 this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
