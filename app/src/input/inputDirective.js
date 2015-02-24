@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .directive('nemoInput', ['$compile', 'validation', function ($compile, validationProvider) {
+    .directive('nemoInput', ['$compile', 'validation', function ($compile, validation) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -24,18 +24,16 @@ angular.module('nemo')
 
             if(validationList && validationList.length) {
 
-                validationList.forEach(function (validation, $index) {
+                validationList.forEach(function (validationListItem, $index) {
 
-                    validationOptions = validationProvider.getValidation(validation.type);
-                    if (validationOptions) {
+                    attributeKey = 'validation-' + toSnakeCase(validationListItem.type);
+                    attributeValue = 'model.properties.validation[' + $index + '].rules';
+                    tElement.attr(attributeKey, attributeValue);
 
-                        attributeKey = 'validation-' + toSnakeCase(validation.type);
-                        attributeValue = 'model.properties.validation[' + $index + '].rules',
-                        tElement.attr(attributeKey, attributeValue);
+                    validationOptions = validation.getValidationOptions(validationListItem.type);
 
-                        if (angular.isFunction(validationOptions.preCompileFn)) {
-                            validationOptions.preCompileFn(tElement);
-                        }
+                    if (angular.isFunction(validationOptions.preCompileFn)) {
+                        validationOptions.preCompileFn(tElement);
                     }
                 });
             }

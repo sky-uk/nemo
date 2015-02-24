@@ -96,7 +96,10 @@ angular.module('nemo', [])
                 validateFn: function (value, validationRuleValue) {
                     return (value || value === false) ? value === validationRuleValue : true;
                 }
-            });
+            })
+
+            .validation('server', {});
+
     }]);
 'use strict';
 angular.module('nemo')
@@ -179,11 +182,11 @@ angular.module('nemo')
 
     .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
-        var validationsCache = {};
+        var validationOptionsCache = {};
 
         function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
             ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
-                var isValid = (validateFn) ?
+                var isValid = angular.isFunction(validateFn) ?
                     validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
                     true;
                 return isValid;
@@ -212,7 +215,7 @@ angular.module('nemo')
 
         function validation(type, options) {
 
-            storeValidationInCache(type, options);
+            storeValidationOptionsInCache(type, options);
 
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
@@ -223,19 +226,19 @@ angular.module('nemo')
             return this;
         }
 
-        function storeValidationInCache(type, options) {
-            validationsCache[type] = options;
+        function storeValidationOptionsInCache(type, options) {
+            validationOptionsCache[type] = options;
         }
 
-        function getValidationFromCache(type) {
-            return validationsCache[type];
+        function getValidationOptionsFromCache(type) {
+            return validationOptionsCache[type];
         }
 
         return {
             validation: validation,
             $get: function () {
                 return {
-                    getValidation: getValidationFromCache
+                    getValidationOptions: getValidationOptionsFromCache
                 }
             }
         }
@@ -270,7 +273,7 @@ angular.module('nemo')
 
 angular.module('nemo')
 
-    .directive('nemoInput', ['$compile', 'validation', function ($compile, validationProvider) {
+    .directive('nemoInput', ['$compile', 'validation', function ($compile, validation) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -292,18 +295,16 @@ angular.module('nemo')
 
             if(validationList && validationList.length) {
 
-                validationList.forEach(function (validation, $index) {
+                validationList.forEach(function (validationListItem, $index) {
 
-                    validationOptions = validationProvider.getValidation(validation.type);
-                    if (validationOptions) {
+                    attributeKey = 'validation-' + toSnakeCase(validationListItem.type);
+                    attributeValue = 'model.properties.validation[' + $index + '].rules';
+                    tElement.attr(attributeKey, attributeValue);
 
-                        attributeKey = 'validation-' + toSnakeCase(validation.type);
-                        attributeValue = 'model.properties.validation[' + $index + '].rules',
-                        tElement.attr(attributeKey, attributeValue);
+                    validationOptions = validation.getValidationOptions(validationListItem.type);
 
-                        if (angular.isFunction(validationOptions.preCompileFn)) {
-                            validationOptions.preCompileFn(tElement);
-                        }
+                    if (angular.isFunction(validationOptions.preCompileFn)) {
+                        validationOptions.preCompileFn(tElement);
                     }
                 });
             }
@@ -342,6 +343,7 @@ angular.module('nemo')
             link: function(scope, element, attributes) {
                 if (scope.$eval(attributes.nemoNoPaste)) {
                     element.on('paste', function (ev) {
+                        console.log(ev);
                         ev.preventDefault();
                         ev.stopPropagation();
                     });

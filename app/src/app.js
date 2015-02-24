@@ -96,5 +96,8 @@ angular.module('nemo', [])
                 validateFn: function (value, validationRuleValue) {
                     return (value || value === false) ? value === validationRuleValue : true;
                 }
-            });
+            })
+
+            .validation('server', {});
+
     }]);
