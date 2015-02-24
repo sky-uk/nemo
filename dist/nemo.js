@@ -343,7 +343,6 @@ angular.module('nemo')
             link: function(scope, element, attributes) {
                 if (scope.$eval(attributes.nemoNoPaste)) {
                     element.on('paste', function (ev) {
-                        console.log(ev);
                         ev.preventDefault();
                         ev.stopPropagation();
                     });

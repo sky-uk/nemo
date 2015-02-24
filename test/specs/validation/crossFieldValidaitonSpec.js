@@ -18,7 +18,6 @@ describe('validation', function () {
         },
         {
             validation: validation.mustmatch(),
-            disallowedPaste: true,
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
@@ -67,7 +66,6 @@ describe('validation', function () {
 
             then(function () {
                 expect(firstFieldElement.attr('validation-' + validationScenario.type)).toBe('model.properties.validation[0].rules');
-                expect(firstFieldElement.attr('nemo-no-paste')).toBe(scenario.disallowedPaste ? 'true' : undefined);
             });
 
             scenario.flows.forEach(function (flow) {
