@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .directive('nemoInput', ['$compile', function ($compile) {
+    .directive('nemoInput', ['$compile', 'validation', function ($compile, validation) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -18,12 +18,23 @@ angular.module('nemo')
             element[0].setAttribute('input-' + toSnakeCase(type), '');
         }
 
-        function addValidationAttributesToElement(validationList, element) {
+        function addAttributesToElement(validationList, tElement) {
+
+            var attributeKey, attributeValue, validationOptions;
+
             if(validationList && validationList.length) {
-                validationList.forEach(function (validation, $index) {
-                    var attributeKey = 'validation-' + toSnakeCase(validation.type),
-                        attributeValue = 'model.properties.validation[' + $index + '].rules';
-                    element[0].setAttribute(attributeKey, attributeValue);
+
+                validationList.forEach(function (validationListItem, $index) {
+
+                    attributeKey = 'validation-' + toSnakeCase(validationListItem.type);
+                    attributeValue = 'model.properties.validation[' + $index + '].rules';
+                    tElement.attr(attributeKey, attributeValue);
+
+                    validationOptions = validation.getValidationOptions(validationListItem.type);
+
+                    if (angular.isFunction(validationOptions.preCompileFn)) {
+                        validationOptions.preCompileFn(tElement);
+                    }
                 });
             }
         }
@@ -46,7 +57,7 @@ angular.module('nemo')
                 var fieldElement = creatElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 if (scope.model.properties && scope.model.properties.validation) {
-                    addValidationAttributesToElement(scope.model.properties.validation, fieldElement);
+                    addAttributesToElement(scope.model.properties.validation, fieldElement);
                 }
                 replaceTemplate(element, fieldElement);
                 compileTemplate(fieldElement, scope);

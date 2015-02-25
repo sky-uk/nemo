@@ -4,13 +4,13 @@ module.exports = function (grunt) {
 		concat: {
 			dist: {
 				src: ['app/src/app.js', 'app/src/utilsProvider.js', 'app/src/**/*Provider.js', 'app/src/**/*.js'],
-				dest: 'dist/build.js'
+				dest: 'dist/nemo.js'
 			}
 		},
 		uglify: {
 			build: {
-				src: ['dist/build.js'],
-				dest: 'dist/build.min.js'
+				src: ['dist/nemo.js'],
+				dest: 'dist/nemo.min.js'
 			}
 		},
 		express: {

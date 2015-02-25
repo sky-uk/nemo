@@ -64,6 +64,9 @@ angular.module('nemo', [])
             })
 
             .validation('mustmatch', {
+                preCompileFn: function (tElement) {
+                    tElement.attr('nemo-no-paste', 'true');
+                },
                 validateFn: function (value, validationRuleValue, formHandlerController) {
                     var targetValue = formHandlerController.getFieldValue(validationRuleValue);
                     return (value) ? value === targetValue : true;
@@ -95,7 +98,10 @@ angular.module('nemo', [])
                 validateFn: function (value, validationRuleValue) {
                     return (value || value === false) ? value === validationRuleValue : true;
                 }
-            });
+            })
+
+            .validation('server', {});
+
     }]);
 'use strict';
 angular.module('nemo')
@@ -246,9 +252,11 @@ angular.module('nemo')
 
     .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
 
+        var validationOptionsCache = {};
+
         function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
             ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
-                var isValid = (validateFn) ?
+                var isValid = angular.isFunction(validateFn) ?
                     validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
                     true;
                 return isValid;
@@ -276,17 +284,33 @@ angular.module('nemo')
         }
 
         function validation(type, options) {
+
+            storeValidationOptionsInCache(type, options);
+
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['messages', function (messages) {
                     return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
                 }]]);
+
             return this;
+        }
+
+        function storeValidationOptionsInCache(type, options) {
+            validationOptionsCache[type] = options;
+        }
+
+        function getValidationOptionsFromCache(type) {
+            return validationOptionsCache[type];
         }
 
         return {
             validation: validation,
-            $get: angular.noop
+            $get: function () {
+                return {
+                    getValidationOptions: getValidationOptionsFromCache
+                }
+            }
         }
     }]);
 
@@ -395,7 +419,7 @@ angular.module('nemo')
 
 angular.module('nemo')
 
-    .directive('nemoInput', ['$compile', function ($compile) {
+    .directive('nemoInput', ['$compile', 'validation', function ($compile, validation) {
 
         function toSnakeCase(str) {
             return str.replace(/([A-Z])/g, function ($1) {
@@ -411,12 +435,23 @@ angular.module('nemo')
             element[0].setAttribute('input-' + toSnakeCase(type), '');
         }
 
-        function addValidationAttributesToElement(validationList, element) {
+        function addAttributesToElement(validationList, tElement) {
+
+            var attributeKey, attributeValue, validationOptions;
+
             if(validationList && validationList.length) {
-                validationList.forEach(function (validation, $index) {
-                    var attributeKey = 'validation-' + toSnakeCase(validation.type),
-                        attributeValue = 'model.properties.validation[' + $index + '].rules';
-                    element[0].setAttribute(attributeKey, attributeValue);
+
+                validationList.forEach(function (validationListItem, $index) {
+
+                    attributeKey = 'validation-' + toSnakeCase(validationListItem.type);
+                    attributeValue = 'model.properties.validation[' + $index + '].rules';
+                    tElement.attr(attributeKey, attributeValue);
+
+                    validationOptions = validation.getValidationOptions(validationListItem.type);
+
+                    if (angular.isFunction(validationOptions.preCompileFn)) {
+                        validationOptions.preCompileFn(tElement);
+                    }
                 });
             }
         }
@@ -439,10 +474,25 @@ angular.module('nemo')
                 var fieldElement = creatElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 if (scope.model.properties && scope.model.properties.validation) {
-                    addValidationAttributesToElement(scope.model.properties.validation, fieldElement);
+                    addAttributesToElement(scope.model.properties.validation, fieldElement);
                 }
                 replaceTemplate(element, fieldElement);
                 compileTemplate(fieldElement, scope);
+            }
+        }
+    }]);
+'use strict';
+
+angular.module('nemo')
+    .directive('nemoNoPaste', [function () {
+        return {
+            link: function(scope, element, attributes) {
+                if (scope.$eval(attributes.nemoNoPaste)) {
+                    element.on('paste', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                    });
+                }
             }
         }
     }]);
