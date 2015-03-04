@@ -52,7 +52,7 @@ describe('validation', function () {
             });
 
             when(function () {
-                formElement = compileDirective('<form name="bla" form-handler>' +
+                formElement = compileDirective('<form name="bla" nemo-form-handler>' +
                 '<nemo-input model="field"></nemo-input>' +
                 '<nemo-input model="field2"></nemo-input>' +
                 '<nemo-validation-messages model="bla[field.name]"></nemo-validation-messages>' +

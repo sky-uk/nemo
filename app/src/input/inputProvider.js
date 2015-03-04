@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .provider('input', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
+    .provider('nemoInputDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
 
         function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
@@ -24,7 +24,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^formHandler'],
+                require: ['ngModel', '^nemoFormHandler'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',

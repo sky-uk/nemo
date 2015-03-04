@@ -60,7 +60,7 @@ describe('nemo input', function () {
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
                 formElement = compileDirective(
-                    '<form name="foo" form-handler><nemo-input model="field"></nemo-input></form>',
+                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
                     { $rootScope: { field: captchaField } });
             });
 
@@ -123,7 +123,7 @@ describe('nemo input', function () {
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
                 formElement = compileDirective(
-                    '<form name="foo" form-handler><nemo-input model="field"></nemo-input></form>',
+                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
                     { $rootScope: { field: captchaField } });
             });
 
@@ -166,7 +166,7 @@ describe('nemo input', function () {
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
                 formElement = compileDirective(
-                    '<form name="foo" form-handler>' +
+                    '<form name="foo" nemo-form-handler>' +
                     '<nemo-input model="field"></nemo-input>' +
                     '<nemo-input model="field2"></nemo-input>' +
                     '</form>',

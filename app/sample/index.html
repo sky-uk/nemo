@@ -675,7 +675,7 @@
 
 <body ng-controller="MainController">
 
-    <form form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
+    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
                 <span ng-if="field.name == 'captchaId'">Captcha Id</span>

@@ -111,7 +111,7 @@ describe('nemo validation messages', function () {
                 });
 
                 when(function () {
-                    formElement = compileDirective('<form name="bla" form-handler>' +
+                    formElement = compileDirective('<form name="bla" nemo-form-handler>' +
                         '<nemo-input model="field"></nemo-input>' +
                         '<nemo-validation-messages model="bla[field.name]"></nemo-validation-messages>' +
                         '</form>', { $rootScope: { field: model } });
