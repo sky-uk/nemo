@@ -221,7 +221,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^formHandler'],
+                require: ['ngModel', '^nemoFormHandler'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
@@ -277,7 +277,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
             return {
-                require: ['ngModel', '^formHandler'],
+                require: ['ngModel', '^nemoFormHandler'],
                 restrict: 'A',
                 link: getLinkFn(directiveName, validateFn, messages)
             };
@@ -289,7 +289,7 @@ angular.module('nemo')
 
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
-                .apply(null, [directiveName, ['messages', function (messages) {
+                .apply(null, [directiveName, ['nemoMessages', function (messages) {
                     return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
                 }]]);
 
@@ -388,7 +388,7 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
 
 angular.module('nemo')
 
-    .directive('formHandler', [function () {
+    .directive('nemoFormHandler', [function () {
         return {
             require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {
@@ -499,7 +499,7 @@ angular.module('nemo')
 'use strict';
 angular.module('nemo')
 
-    .factory('messages', [function () {
+    .factory('nemoMessages', [function () {
 
         var messages = {};
 
@@ -519,7 +519,7 @@ angular.module('nemo')
 'use strict';
 angular.module('nemo')
 
-    .directive('nemoValidationMessages', ['messages', function (messages) {
+    .directive('nemoValidationMessages', ['nemoMessages', function (messages) {
 
         return {
             scope: {

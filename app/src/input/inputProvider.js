@@ -24,7 +24,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^formHandler'],
+                require: ['ngModel', '^nemoFormHandler'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',

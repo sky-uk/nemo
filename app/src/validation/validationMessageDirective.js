@@ -1,7 +1,7 @@
 'use strict';
 angular.module('nemo')
 
-    .directive('nemoValidationMessages', ['messages', function (messages) {
+    .directive('nemoValidationMessages', ['nemoMessages', function (messages) {
 
         return {
             scope: {

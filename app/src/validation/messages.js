@@ -1,7 +1,7 @@
 'use strict';
 angular.module('nemo')
 
-    .factory('messages', [function () {
+    .factory('nemoMessages', [function () {
 
         var messages = {};
 

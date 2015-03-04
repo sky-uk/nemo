@@ -43,7 +43,7 @@ describe('noPasteDirective', function () {
             });
 
             when(function () {
-                formElement = compileDirective('<form name="formName" form-handler>' +
+                formElement = compileDirective('<form name="formName" nemo-form-handler>' +
                 '<nemo-input model="username"></nemo-input>' +
                 '<nemo-input model="confirmUsername"></nemo-input>' +
                 '</form>', { $rootScope: { username: usernameModel, confirmUsername: confirmUsernameModel } });

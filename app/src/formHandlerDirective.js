@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .directive('formHandler', [function () {
+    .directive('nemoFormHandler', [function () {
         return {
             require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {

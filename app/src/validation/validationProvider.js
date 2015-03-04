@@ -29,7 +29,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
             return {
-                require: ['ngModel', '^formHandler'],
+                require: ['ngModel', '^nemoFormHandler'],
                 restrict: 'A',
                 link: getLinkFn(directiveName, validateFn, messages)
             };
@@ -41,7 +41,7 @@ angular.module('nemo')
 
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
-                .apply(null, [directiveName, ['messages', function (messages) {
+                .apply(null, [directiveName, ['nemoMessages', function (messages) {
                     return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
                 }]]);
 
