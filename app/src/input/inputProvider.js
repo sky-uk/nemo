@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .provider('input', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
+    .provider('nemoInputDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
 
         function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;

@@ -1,4 +1,4 @@
-angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'utils', function ($scope, Captcha, utils) {
+angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtils', function ($scope, Captcha, utils) {
 
     var debouncedGetCaptchaInfo = utils.debounce(getCaptchaInfo, 1000, true);
 

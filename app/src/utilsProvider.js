@@ -1,7 +1,7 @@
 'use strict';
 angular.module('nemo')
 
-    .provider('utils', [function () {
+    .provider('nemoUtils', [function () {
 
         function capitalise(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);

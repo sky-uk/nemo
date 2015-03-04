@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .provider('validation', ['$compileProvider', 'utilsProvider', function ($compileProvider, utilsProvider) {
+    .provider('nemoValidationDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
 
         var validationOptionsCache = {};
 
