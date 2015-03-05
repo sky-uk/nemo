@@ -1,6 +1,6 @@
 angular.module('nemo').provider('captcha', [function () {
     return {
-        template: '<div>' +
+        template: '<div class="nemo-captcha">' +
             '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
             '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
             '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput">' +
