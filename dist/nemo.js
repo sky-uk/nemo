@@ -198,6 +198,7 @@ angular.module('nemo').provider('captcha', [function () {
 
             scope.releaseFocus = function () {
                 scope.isFocused = false;
+                ngModelController.$setTouched();
             };
         },
         controller: 'CaptchaCtrl',
