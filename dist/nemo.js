@@ -26,7 +26,7 @@ angular.module('nemo', [])
                 })
 
                 .input('checkbox', {
-                    template: '<input type="checkbox" />'
+                    template: '<input type="checkbox" ng-click="setActiveField()" />'
                 })
 
                 .input('captcha', captchaProvider);
@@ -217,6 +217,7 @@ angular.module('nemo')
             parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
@@ -226,7 +227,20 @@ angular.module('nemo')
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
+                handleActivationState(scope, controllers);
             }
+        }
+
+        function handleActivationState(scope, controllers) {
+            var ngModelCtrl = controllers[0],
+                formHandlerCtrl = controllers[1];
+            scope.setActiveField = function () {
+                console.log('active!!');
+                formHandlerCtrl.setActiveField(scope.model.name);
+            };
+            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
+                ngModelCtrl.isActive = (activeField === scope.model.name);
+            });
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
@@ -403,7 +417,7 @@ angular.module('nemo')
             require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
-                var self = this;
+                var self = this, registerActiveFieldChangeFns = [];
 
                 this.setFieldValue = function(fieldName, value) {
                     if ($scope[$attrs.name][fieldName]) {
@@ -417,6 +431,16 @@ angular.module('nemo')
 
                 this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
                     $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
+                };
+
+                this.setActiveField = function (fieldName) {
+                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
+                        registerActiveFieldChangeFn(fieldName);
+                    });
+                };
+
+                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
+                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
                 };
 
                 $scope.$evalAsync(function () {

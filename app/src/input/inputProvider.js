@@ -10,6 +10,7 @@ angular.module('nemo')
             parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
@@ -19,7 +20,20 @@ angular.module('nemo')
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
+                handleActivationState(scope, controllers);
             }
+        }
+
+        function handleActivationState(scope, controllers) {
+            var ngModelCtrl = controllers[0],
+                formHandlerCtrl = controllers[1];
+            scope.setActiveField = function () {
+                console.log('active!!');
+                formHandlerCtrl.setActiveField(scope.model.name);
+            };
+            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
+                ngModelCtrl.isActive = (activeField === scope.model.name);
+            });
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {

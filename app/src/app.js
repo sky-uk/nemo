@@ -26,7 +26,7 @@ angular.module('nemo', [])
                 })
 
                 .input('checkbox', {
-                    template: '<input type="checkbox" />'
+                    template: '<input type="checkbox" ng-click="setActiveField()" />'
                 })
 
                 .input('captcha', captchaProvider);

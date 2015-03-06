@@ -682,7 +682,7 @@
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
-                <nemo-input model="field"></nemo-input>
+                <nemo-input model="field"></nemo-input>-{{sampleForm[field.name].isActive}}-
                 <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
             </div>
         </div>
