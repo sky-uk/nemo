@@ -28,7 +28,6 @@ angular.module('nemo')
             var ngModelCtrl = controllers[0],
                 formHandlerCtrl = controllers[1];
             scope.setActiveField = function () {
-                console.log('active!!');
                 formHandlerCtrl.setActiveField(scope.model.name);
             };
             formHandlerCtrl.registerActiveFieldChange(function (activeField) {

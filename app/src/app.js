@@ -26,7 +26,14 @@ angular.module('nemo', [])
                 })
 
                 .input('checkbox', {
-                    template: '<input type="checkbox" ng-click="setActiveField()" />'
+                    template: '<input type="checkbox" ng-click="setActiveCheckboxField()" />',
+                    linkFn: function(scope, element, attrs, controllers) {
+                        scope.setActiveCheckboxField = function () {
+                            var ngModelCtrl = controllers[0];
+                            ngModelCtrl.$setTouched();
+                            scope.setActiveField();
+                        }
+                    }
                 })
 
                 .input('captcha', captchaProvider);
