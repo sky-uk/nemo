@@ -17,22 +17,40 @@ angular.module('nemo')
 
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
+                var ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                handleActivationState(scope, controllers);
+                registerField(scope, ngModelCtrl, formHandlerCtrl);
+                handleActivationState(scope, formHandlerCtrl);
             }
         }
 
-        function handleActivationState(scope, controllers) {
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1];
+        function handleActivationState(scope, formHandlerCtrl) {
             scope.setActiveField = function () {
                 formHandlerCtrl.setActiveField(scope.model.name);
             };
-            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
-                ngModelCtrl.isActive = (activeField === scope.model.name);
+        }
+
+        function registerField(scope, ngModelCtrl, formHandlerCtrl) {
+            formHandlerCtrl.registerField(scope.model.name, {
+                activeFieldChange: function (activeField) {
+                    activeFieldChange(scope, ngModelCtrl, activeField)
+                },
+                validityChange: function (validationRuleCode, newValidity) {
+                    validityChange(ngModelCtrl, validationRuleCode, newValidity);
+                }
             });
+        }
+
+        function activeFieldChange(scope, ngModelCtrl, activeField) {
+            ngModelCtrl.isActive = (activeField === scope.model.name);
+        }
+
+        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
+            ngModelCtrl.$setTouched();
+            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {

@@ -230,22 +230,40 @@ angular.module('nemo')
 
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
+                var ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                handleActivationState(scope, controllers);
+                registerField(scope, ngModelCtrl, formHandlerCtrl);
+                handleActivationState(scope, formHandlerCtrl);
             }
         }
 
-        function handleActivationState(scope, controllers) {
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1];
+        function handleActivationState(scope, formHandlerCtrl) {
             scope.setActiveField = function () {
                 formHandlerCtrl.setActiveField(scope.model.name);
             };
-            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
-                ngModelCtrl.isActive = (activeField === scope.model.name);
+        }
+
+        function registerField(scope, ngModelCtrl, formHandlerCtrl) {
+            formHandlerCtrl.registerField(scope.model.name, {
+                activeFieldChange: function (activeField) {
+                    activeFieldChange(scope, ngModelCtrl, activeField)
+                },
+                validityChange: function (validationRuleCode, newValidity) {
+                    validityChange(ngModelCtrl, validationRuleCode, newValidity);
+                }
             });
+        }
+
+        function activeFieldChange(scope, ngModelCtrl, activeField) {
+            ngModelCtrl.isActive = (activeField === scope.model.name);
+        }
+
+        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
+            ngModelCtrl.$setTouched();
+            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
@@ -417,41 +435,42 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
 
 angular.module('nemo')
 
+    .controller('nemoFormHandlerCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
+
+        var registerFieldsFns = {};
+
+        if (!$attrs.name) {
+            angular.toThrow();
+        }
+
+        this.setFieldValue = function (fieldName, value) {
+            if ($scope[$attrs.name][fieldName]) {
+                $scope[$attrs.name][fieldName].$setViewValue(value);
+            }
+        };
+
+        this.getFieldValue = function (fieldName) {
+            return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
+        };
+
+        this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
+            registerFieldsFns[fieldName].validityChange(validationRuleCode, newValidity);
+        };
+
+        this.setActiveField = function (activeFieldName) {
+            for (var currentFieldName in registerFieldsFns) {
+                registerFieldsFns[currentFieldName].activeFieldChange(activeFieldName);
+            }
+        };
+
+        this.registerField = function (fieldName, registerFieldFns) {
+            registerFieldsFns[fieldName] = registerFieldFns;
+        };
+    }])
+
     .directive('nemoFormHandler', [function () {
         return {
-            require: 'form',
-            controller: ['$scope', '$attrs', function ($scope, $attrs) {
-
-                var self = this, registerActiveFieldChangeFns = [];
-
-                this.setFieldValue = function(fieldName, value) {
-                    if ($scope[$attrs.name][fieldName]) {
-                        $scope[$attrs.name][fieldName].$setViewValue(value);
-                    }
-                };
-
-                this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
-                };
-
-                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
-                };
-
-                this.setActiveField = function (fieldName) {
-                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
-                        registerActiveFieldChangeFn(fieldName);
-                    });
-                };
-
-                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
-                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
-                };
-
-                $scope.$evalAsync(function () {
-                    $scope[$attrs.name].forceValidity = self.forceValidity;
-                });
-            }]
+            controller: 'nemoFormHandlerCtrl'
         }
     }]);
 'use strict';

@@ -1,18 +1,17 @@
 Namespace.use('jasmine.grammar.GWT.*');
 
-compileController = function(ctrlName, dependencies) {
+compileController = function(ctrlName, customDependencies) {
 
-    var ctrl, scope;
+    var ctrl = null, scope, dependencies;
 
     inject(function(_$rootScope_, _$controller_) {
         scope = _$rootScope_.$new();
-
-        angular.extend(scope, dependencies);
-
-        ctrl = _$controller_(ctrlName, { $scope: scope });
+        dependencies = { $scope: scope };
+        angular.extend(dependencies, customDependencies);
+        ctrl = _$controller_(ctrlName, dependencies);
     });
 
-    return scope;
+    return ctrl;
 };
 
 compileDirective = function(_el_, _config_) {

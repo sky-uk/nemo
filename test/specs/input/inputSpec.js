@@ -44,7 +44,6 @@ describe('nemo input', function () {
     describe('error handling', function () {
 
         var scenarios = [
-            { template: '<div name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></div>', throwIfMessage: 'no parent form is found'},
             { template: '<form name="foo"><nemo-input model="field"></nemo-input></form>', expectation: 'no parent form handler is found'},
             { template: '<form nemo-form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'no name attribute is found at the form level'},
             { template: '<form name="" nemo-form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'an empty name attribute is found at the form level'}
