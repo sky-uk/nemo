@@ -7,7 +7,7 @@ angular.module('nemo')
             require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
-                var self = this;
+                var self = this, registerActiveFieldChangeFns = [];
 
                 this.setFieldValue = function(fieldName, value) {
                     if ($scope[$attrs.name][fieldName]) {
@@ -21,6 +21,16 @@ angular.module('nemo')
 
                 this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
                     $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
+                };
+
+                this.setActiveField = function (fieldName) {
+                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
+                        registerActiveFieldChangeFn(fieldName);
+                    });
+                };
+
+                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
+                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
                 };
 
                 $scope.$evalAsync(function () {

@@ -1,32 +1,40 @@
 angular.module('nemo').provider('captcha', [function () {
     return {
-        template: '<div>' +
+        template: '<div class="nemo-captcha">' +
             '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
             '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
-            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput">' +
+            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput" ng-focus="setActiveCaptchaField()" ng-blur="setTouchedCaptchaField()">' +
             '<div class="nemo-captcha-refresh" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</div>' +
             '<audio class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Your browser does not support audio' +
             '</audio>' +
         '</div>',
         linkFn: function (scope, element, attrs, controllers) {
-            var ngModelController = controllers[0],
-                formHandler = controllers[1],
+            var ngModelCtrl = controllers[0],
+                formHandlerCtrl = controllers[1],
                 watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
                     if(newVal !== oldVal) {
-                        ngModelController.$setDirty();
+                        ngModelCtrl.$setDirty();
                         watcherUnbind();
                     }
                 });
 
             scope.updateCaptchaId = function(value) {
-                formHandler.setFieldValue('captchaId', value);
+                formHandlerCtrl.setFieldValue('captchaId', value);
             };
 
             scope.playAudio = function ($event) {
                 $event.stopPropagation();
                 $event.preventDefault();
                 element.find('audio')[0].play();
+            };
+
+            scope.setActiveCaptchaField = function () {
+                formHandlerCtrl.setActiveField(scope.model.name);
+            };
+
+            scope.setTouchedCaptchaField = function () {
+                ngModelCtrl.$setTouched();
             };
         },
         controller: 'CaptchaCtrl',

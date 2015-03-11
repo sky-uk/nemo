@@ -10,7 +10,7 @@ angular.module('nemo', [])
                 })
 
                 .input('select', {
-                    template: '<select data-ng-options="option.value as option.text for option in model.options"></select>'
+                    template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>'
                 })
 
                 .input('hidden', {
@@ -26,7 +26,14 @@ angular.module('nemo', [])
                 })
 
                 .input('checkbox', {
-                    template: '<input type="checkbox" />'
+                    template: '<input type="checkbox" ng-click="setActiveCheckboxField()" />',
+                    linkFn: function(scope, element, attrs, controllers) {
+                        scope.setActiveCheckboxField = function () {
+                            var ngModelCtrl = controllers[0];
+                            ngModelCtrl.$setTouched();
+                            scope.setActiveField();
+                        }
+                    }
                 })
 
                 .input('captcha', captchaProvider);
@@ -163,33 +170,41 @@ angular.module('nemo')
     }]);
 angular.module('nemo').provider('captcha', [function () {
     return {
-        template: '<div>' +
+        template: '<div class="nemo-captcha">' +
             '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
             '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
-            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput">' +
+            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput" ng-focus="setActiveCaptchaField()" ng-blur="setTouchedCaptchaField()">' +
             '<div class="nemo-captcha-refresh" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</div>' +
             '<audio class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Your browser does not support audio' +
             '</audio>' +
         '</div>',
         linkFn: function (scope, element, attrs, controllers) {
-            var ngModelController = controllers[0],
-                formHandler = controllers[1],
+            var ngModelCtrl = controllers[0],
+                formHandlerCtrl = controllers[1],
                 watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
                     if(newVal !== oldVal) {
-                        ngModelController.$setDirty();
+                        ngModelCtrl.$setDirty();
                         watcherUnbind();
                     }
                 });
 
             scope.updateCaptchaId = function(value) {
-                formHandler.setFieldValue('captchaId', value);
+                formHandlerCtrl.setFieldValue('captchaId', value);
             };
 
             scope.playAudio = function ($event) {
                 $event.stopPropagation();
                 $event.preventDefault();
                 element.find('audio')[0].play();
+            };
+
+            scope.setActiveCaptchaField = function () {
+                formHandlerCtrl.setActiveField(scope.model.name);
+            };
+
+            scope.setTouchedCaptchaField = function () {
+                ngModelCtrl.$setTouched();
             };
         },
         controller: 'CaptchaCtrl',
@@ -208,6 +223,7 @@ angular.module('nemo')
             parentTemplateElement.innerHTML = template;
             templateElement = parentTemplateElement.firstChild;
             templateElement.setAttribute('ng-model', 'model.value');
+            templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
@@ -217,7 +233,19 @@ angular.module('nemo')
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
+                handleActivationState(scope, controllers);
             }
+        }
+
+        function handleActivationState(scope, controllers) {
+            var ngModelCtrl = controllers[0],
+                formHandlerCtrl = controllers[1];
+            scope.setActiveField = function () {
+                formHandlerCtrl.setActiveField(scope.model.name);
+            };
+            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
+                ngModelCtrl.isActive = (activeField === scope.model.name);
+            });
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
@@ -394,7 +422,7 @@ angular.module('nemo')
             require: 'form',
             controller: ['$scope', '$attrs', function ($scope, $attrs) {
 
-                var self = this;
+                var self = this, registerActiveFieldChangeFns = [];
 
                 this.setFieldValue = function(fieldName, value) {
                     if ($scope[$attrs.name][fieldName]) {
@@ -408,6 +436,16 @@ angular.module('nemo')
 
                 this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
                     $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
+                };
+
+                this.setActiveField = function (fieldName) {
+                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
+                        registerActiveFieldChangeFn(fieldName);
+                    });
+                };
+
+                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
+                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
                 };
 
                 $scope.$evalAsync(function () {
@@ -526,7 +564,7 @@ angular.module('nemo')
             scope: {
                 model: '='
             },
-            template:   '<div data-ng-if="model.$dirty && model.$invalid" data-t-validation-code="{{validationCode}}">' +
+            template:   '<div data-ng-if="(model.$dirty || model.$touched) && model.$invalid" data-t-validation-code="{{validationCode}}" class="field-error">' +
                             '{{getValidationMessage()}}' +
                         '</div>',
             link: function(scope) {

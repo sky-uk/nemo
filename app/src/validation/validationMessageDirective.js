@@ -7,7 +7,7 @@ angular.module('nemo')
             scope: {
                 model: '='
             },
-            template:   '<div data-ng-if="model.$dirty && model.$invalid" data-t-validation-code="{{validationCode}}">' +
+            template:   '<div data-ng-if="(model.$dirty || model.$touched) && model.$invalid" data-t-validation-code="{{validationCode}}" class="field-error">' +
                             '{{getValidationMessage()}}' +
                         '</div>',
             link: function(scope) {

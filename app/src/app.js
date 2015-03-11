@@ -10,7 +10,7 @@ angular.module('nemo', [])
                 })
 
                 .input('select', {
-                    template: '<select data-ng-options="option.value as option.text for option in model.options"></select>'
+                    template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>'
                 })
 
                 .input('hidden', {
@@ -26,7 +26,14 @@ angular.module('nemo', [])
                 })
 
                 .input('checkbox', {
-                    template: '<input type="checkbox" />'
+                    template: '<input type="checkbox" ng-click="setActiveCheckboxField()" />',
+                    linkFn: function(scope, element, attrs, controllers) {
+                        scope.setActiveCheckboxField = function () {
+                            var ngModelCtrl = controllers[0];
+                            ngModelCtrl.$setTouched();
+                            scope.setActiveField();
+                        }
+                    }
                 })
 
                 .input('captcha', captchaProvider);
