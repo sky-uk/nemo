@@ -4,7 +4,7 @@ angular.module('nemo')
 
     .controller('nemoFormHandlerCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
 
-        var registerFieldsFns = {};
+        var registerFieldsFns = {}, fieldNameOrder = [];
 
         if (!$attrs.name) {
             angular.toThrow();
@@ -24,6 +24,17 @@ angular.module('nemo')
             registerFieldsFns[fieldName].validityChange(validationRuleCode, newValidity);
         };
 
+        this.giveFirstInvalidFieldFocus = function () {
+            var fieldFns;
+            for(var index = 0; index < fieldNameOrder.length; index++) {
+                fieldFns = registerFieldsFns[fieldNameOrder[index]];
+                if(!fieldFns.isValid()) {
+                    fieldFns.setFocus();
+                    break;
+                }
+            }
+        };
+
         this.setActiveField = function (activeFieldName) {
             for (var currentFieldName in registerFieldsFns) {
                 registerFieldsFns[currentFieldName].activeFieldChange(activeFieldName);
@@ -32,6 +43,7 @@ angular.module('nemo')
 
         this.registerField = function (fieldName, registerFieldFns) {
             registerFieldsFns[fieldName] = registerFieldFns;
+            fieldNameOrder.push(fieldName);
         };
     }])
 

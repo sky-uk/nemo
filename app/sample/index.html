@@ -64,7 +64,9 @@
         window.onerror = function (message) {
             alert(message)
         };
-        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
+        angular.module('nemo')
+
+            .controller('MainController', ['$scope', function ($scope) {
 
             $scope.fields = [
                 {
@@ -665,17 +667,27 @@
                     mandatory: true
                 }
             ];
+        }])
 
-            $scope.fakeSubmit = function (formName) {
-                $scope[formName].forceValidity('firstName', 'firstName.blank', false);
-            };
-        }]);
+            .directive('fakeSubmitHandler', [function () {
+                return{
+                    require: 'nemoFormHandler',
+                    link: function (scope, element, attrs, formHandlerCtrl) {
+                        scope.fakeSubmit = function () {
+                            formHandlerCtrl.forceValidity('firstName', 'firstName.blank', false);
+                            formHandlerCtrl.forceValidity('title', 'title.invalid', false);
+                            formHandlerCtrl.giveFirstInvalidFieldFocus();
+                        };
+                    }
+                }
+            }]);
+
     </script>
 </head>
 
 <body ng-controller="MainController">
 
-    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
+    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit()" fake-submit-handler novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
                 <span ng-if="field.name == 'captchaId'">Captcha Id</span>

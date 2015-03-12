@@ -22,7 +22,7 @@ angular.module('nemo')
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                registerField(scope, ngModelCtrl, formHandlerCtrl);
+                registerField(scope, element, ngModelCtrl, formHandlerCtrl);
                 handleActivationState(scope, formHandlerCtrl);
             }
         }
@@ -33,13 +33,19 @@ angular.module('nemo')
             };
         }
 
-        function registerField(scope, ngModelCtrl, formHandlerCtrl) {
+        function registerField(scope, element, ngModelCtrl, formHandlerCtrl) {
             formHandlerCtrl.registerField(scope.model.name, {
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
                 validityChange: function (validationRuleCode, newValidity) {
                     validityChange(ngModelCtrl, validationRuleCode, newValidity);
+                },
+                isValid: function () {
+                    return ngModelCtrl.$valid;
+                },
+                setFocus: function() {
+                    element[0].focus();
                 }
             });
         }
