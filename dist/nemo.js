@@ -207,6 +207,13 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
+        fieldInterfaceFns: function(element) {
+            return {
+                setFocus: function () {
+                    element.find('input')[0].focus();
+                }
+            }
+        },
         controller: 'CaptchaCtrl',
         $get: {}
     }
@@ -235,7 +242,7 @@ angular.module('nemo')
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                registerField(scope, element, ngModelCtrl, formHandlerCtrl);
+                registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
                 handleActivationState(scope, formHandlerCtrl);
             }
         }
@@ -246,8 +253,16 @@ angular.module('nemo')
             };
         }
 
-        function registerField(scope, element, ngModelCtrl, formHandlerCtrl) {
-            formHandlerCtrl.registerField(scope.model.name, {
+        function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
+            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(element) : {};
+
+            angular.extend(fieldInterfaceFns, customerFieldInterface);
+            formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
+        }
+
+        function getFieldInterfaceFns(scope, element, ngModelCtrl) {
+            return {
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
@@ -260,7 +275,7 @@ angular.module('nemo')
                 setFocus: function() {
                     element[0].focus();
                 }
-            });
+            }
         }
 
         function activeFieldChange(scope, ngModelCtrl, activeField) {
