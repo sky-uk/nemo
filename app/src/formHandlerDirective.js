@@ -26,6 +26,10 @@ angular.module('nemo')
             getRegisteredField(fieldName).validityChange(validationRuleCode, newValidity);
         };
 
+        this.giveFirstFieldFocus = function () {
+            getRegisteredField(fieldNameOrder[0]).setFocus();
+        };
+
         this.giveFirstInvalidFieldFocus = function () {
             var fieldFns;
             for(var index = 0; index < fieldNameOrder.length; index++) {
