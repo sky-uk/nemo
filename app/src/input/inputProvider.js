@@ -54,6 +54,12 @@ angular.module('nemo')
                 },
                 setFocus: function() {
                     element[0].focus();
+                },
+                getValue: function () {
+                    return ngModelCtrl.$viewValue;
+                },
+                setValue: function (value) {
+                    ngModelCtrl.$setViewValue(value);
                 }
             }
         }

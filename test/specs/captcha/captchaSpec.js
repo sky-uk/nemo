@@ -1,5 +1,5 @@
 describe('nemo input', function () {
-    var fakeCaptcha, captchaField;
+    var fakeCaptcha, captchaField, captchaIdModel, captchaMarkup;
 
     function getFakeCaptchaData(captchaId) {
         return {
@@ -24,7 +24,7 @@ describe('nemo input', function () {
                 "captchaId": captchaId
             }
         };
-    };
+    }
 
     function getCaptchaField() {
         return {
@@ -50,6 +50,16 @@ describe('nemo input', function () {
         module('nemo');
         fakeCaptcha = getFakeCaptchaData('d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
         captchaField = getCaptchaField();
+
+        captchaIdModel =  {
+            type: 'hidden',
+            name: 'captchaId',
+            value: ''
+        };
+        captchaMarkup = '<form name="foo" nemo-form-handler>' +
+        '<nemo-input model="field"></nemo-input>' +
+        '<nemo-input model="field2"></nemo-input>' +
+        '</form>'
     });
 
     describe('captchaProvider', function () {
@@ -59,9 +69,7 @@ describe('nemo input', function () {
             given('backend is setup and directive is compiled', function () {
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
-                    { $rootScope: { field: captchaField } });
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
             });
 
             and('I have found the element and flushed the backend', function () {
@@ -122,9 +130,7 @@ describe('nemo input', function () {
 
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
-                    { $rootScope: { field: captchaField } });
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
             });
 
             and('I have found the element, flushed the first post to captcha and expect the next post', function () {
@@ -153,23 +159,13 @@ describe('nemo input', function () {
 
     describe('update id', function () {
         it('should update the captchaId field via the form controller', inject(function ($httpBackend) {
-            var formElement, fieldElement, captchaIdModel;
+            var formElement, fieldElement;
 
             given('backend is setup and directive is compiled', function () {
 
-                captchaIdModel =  {
-                    type: 'hidden',
-                    name: 'captchaId',
-                    value: ''
-                };
-
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler>' +
-                    '<nemo-input model="field"></nemo-input>' +
-                    '<nemo-input model="field2"></nemo-input>' +
-                    '</form>',
+                formElement = compileDirective(captchaMarkup,
                     { $rootScope: { field: captchaField, field2: captchaIdModel } });
 
             });

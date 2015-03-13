@@ -2,32 +2,34 @@
 
 angular.module('nemo')
 
-    .controller('nemoFormHandlerCtrl', ['$scope', '$attrs', function ($scope, $attrs) {
+    .controller('nemoFormHandlerCtrl', [function () {
 
         var registerFieldsFns = {}, fieldNameOrder = [];
 
-        if (!$attrs.name) {
-            angular.toThrow();
+        function getRegisteredField(fieldName) {
+            var registeredField = registerFieldsFns[fieldName];
+            if (!registeredField) {
+                throw new Error(fieldName + ' is not registered in the form.');
+            }
+            return registeredField;
         }
 
         this.setFieldValue = function (fieldName, value) {
-            if ($scope[$attrs.name][fieldName]) {
-                $scope[$attrs.name][fieldName].$setViewValue(value);
-            }
+            getRegisteredField(fieldName).setValue(value);
         };
 
         this.getFieldValue = function (fieldName) {
-            return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
+            return getRegisteredField(fieldName).getValue();
         };
 
         this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-            registerFieldsFns[fieldName].validityChange(validationRuleCode, newValidity);
+            getRegisteredField(fieldName).validityChange(validationRuleCode, newValidity);
         };
 
         this.giveFirstInvalidFieldFocus = function () {
             var fieldFns;
             for(var index = 0; index < fieldNameOrder.length; index++) {
-                fieldFns = registerFieldsFns[fieldNameOrder[index]];
+                fieldFns = getRegisteredField(fieldNameOrder[index]);
                 if(!fieldFns.isValid()) {
                     fieldFns.setFocus();
                     break;
@@ -36,9 +38,9 @@ angular.module('nemo')
         };
 
         this.setActiveField = function (activeFieldName) {
-            for (var currentFieldName in registerFieldsFns) {
-                registerFieldsFns[currentFieldName].activeFieldChange(activeFieldName);
-            }
+            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.activeFieldChange(activeFieldName);
+            });
         };
 
         this.registerField = function (fieldName, registerFieldFns) {
