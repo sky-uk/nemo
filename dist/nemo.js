@@ -207,10 +207,17 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
-        fieldInterfaceFns: function(element) {
+        fieldInterfaceFns: function(scope, element, ngModelCtrl) {
             return {
                 setFocus: function () {
                     element.find('input')[0].focus();
+                },
+                validityChange: function (validationRuleCode, newValidity) {
+                    ngModelCtrl.$setTouched();
+                    ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+                    if (!newValidity) {
+                        scope.refreshCaptcha();
+                    }
                 }
             }
         },
@@ -255,7 +262,7 @@ angular.module('nemo')
 
         function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
             var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
-                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(element) : {};
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
@@ -413,8 +420,10 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
     }
 
     $scope.refreshCaptcha = function ($event) {
-        $event.stopPropagation();
-        $event.preventDefault();
+        if ($event) {
+            $event.stopPropagation();
+            $event.preventDefault();
+        }
         debouncedGetCaptchaInfo();
     };
 

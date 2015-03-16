@@ -11,8 +11,10 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
     }
 
     $scope.refreshCaptcha = function ($event) {
-        $event.stopPropagation();
-        $event.preventDefault();
+        if ($event) {
+            $event.stopPropagation();
+            $event.preventDefault();
+        }
         debouncedGetCaptchaInfo();
     };
 

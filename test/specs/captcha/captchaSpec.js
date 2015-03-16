@@ -157,6 +157,77 @@ describe('nemo input', function () {
         }));
     });
 
+    describe('request another on force validity', function () {
+        it('should call for another captcha and update the urls for images/audio', inject(function ($httpBackend) {
+            var formElement, fieldElement,
+                fakeCaptcha2;
+
+            given(function () {
+                fakeCaptcha2 = getFakeCaptchaData('sdasdadasd');
+
+                $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
+
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
+            });
+
+            and('I have found the element, flushed the first post to captcha and expect the next post', function () {
+                fieldElement = angular.element(formElement.children()[0]);
+
+                $httpBackend.flush();
+                $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha2);
+            });
+
+            when('I force validity to be false and the server responds', function () {
+                formElement.controller('nemoFormHandler').forceValidity('captcha', 'captcha.invalid', false);
+                $httpBackend.flush();
+            });
+
+            then('audio tag is setup correctly', function () {
+                var audio = fieldElement.find('audio');
+                expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/sdasdadasd');
+            });
+
+            and('image tag is setup correctly', function () {
+                var image = fieldElement.find('img');
+                expect(image[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/jpeg/sdasdadasd');
+            });
+        }));
+
+        it('should NOT call for another captcha when the validity is true', inject(function ($httpBackend) {
+            var formElement, fieldElement,
+                fakeCaptcha2;
+
+            given(function () {
+                fakeCaptcha2 = getFakeCaptchaData('sdasdadasd');
+
+                $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
+
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
+            });
+
+            and('I have found the element, flushed the first post to captcha and expect the next post', function () {
+                fieldElement = angular.element(formElement.children()[0]);
+
+                $httpBackend.flush();
+            });
+
+            when('I force validity to be true and an angular lifecycle is triggered', function () {
+                formElement.controller('nemoFormHandler').forceValidity('captcha', 'captcha.invalid', true);
+                formElement.scope().$digest();
+            });
+
+            then('audio tag is setup correctly', function () {
+                var audio = fieldElement.find('audio');
+                expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/' + fakeCaptcha.properties.captchaId);
+            });
+
+            and('image tag is setup correctly', function () {
+                var image = fieldElement.find('img');
+                expect(image[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/jpeg/' + fakeCaptcha.properties.captchaId);
+            });
+        }));
+    });
+
     describe('update id', function () {
         it('should update the captchaId field via the form controller', inject(function ($httpBackend) {
             var formElement, fieldElement;

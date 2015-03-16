@@ -35,7 +35,7 @@ angular.module('nemo')
 
         function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
             var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
-                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(element) : {};
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);

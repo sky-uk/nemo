@@ -37,10 +37,17 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
-        fieldInterfaceFns: function(element) {
+        fieldInterfaceFns: function(scope, element, ngModelCtrl) {
             return {
                 setFocus: function () {
                     element.find('input')[0].focus();
+                },
+                validityChange: function (validationRuleCode, newValidity) {
+                    ngModelCtrl.$setTouched();
+                    ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+                    if (!newValidity) {
+                        scope.refreshCaptcha();
+                    }
                 }
             }
         },
