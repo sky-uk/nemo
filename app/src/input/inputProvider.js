@@ -63,6 +63,7 @@ angular.module('nemo')
                 },
                 forceDirty: function () {
                     ngModelCtrl.$setDirty();
+                    ngModelCtrl.$setTouched();
                 }
             }
         }
