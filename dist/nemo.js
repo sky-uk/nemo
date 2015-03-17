@@ -286,6 +286,9 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
+                },
+                forceDirty: function () {
+                    ngModelCtrl.$setDirty();
                 }
             }
         }
@@ -492,6 +495,12 @@ angular.module('nemo')
 
         this.forceInvalid = function (fieldName, validationRuleCode) {
             getRegisteredField(fieldName).forceInvalid(validationRuleCode);
+        };
+
+        this.forceAllFieldsToBeDirty = function () {
+            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.forceDirty();
+            });
         };
 
         this.giveFirstFieldFocus = function () {

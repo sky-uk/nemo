@@ -60,6 +60,9 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
+                },
+                forceDirty: function () {
+                    ngModelCtrl.$setDirty();
                 }
             }
         }

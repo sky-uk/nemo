@@ -26,6 +26,12 @@ angular.module('nemo')
             getRegisteredField(fieldName).forceInvalid(validationRuleCode);
         };
 
+        this.forceAllFieldsToBeDirty = function () {
+            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.forceDirty();
+            });
+        };
+
         this.giveFirstFieldFocus = function () {
             getRegisteredField(fieldNameOrder[0]).setFocus();
         };
