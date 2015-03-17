@@ -44,8 +44,9 @@ angular.module('nemo').provider('captcha', [function () {
                 },
                 forceInvalid: function (validationRuleCode) {
                     ngModelCtrl.$setTouched();
-                    ngModelCtrl.$setValidity(validationRuleCode, false);
-                    scope.refreshCaptcha();
+                    scope.refreshCaptcha().then(function () {
+                        ngModelCtrl.$setValidity(validationRuleCode, false);
+                    });
                 }
             }
         },

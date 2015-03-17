@@ -42,6 +42,30 @@ describe('nemo input', function () {
                         }
                     }
                 }
+            },
+            properties: {
+                validation: [
+                    {
+                        "type": "required",
+                        "rules": [
+                            {
+                                "value": true,
+                                "code": "captcha.blank",
+                                "message": "Please type the characters again"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "server",
+                        "rules": [
+                            {
+                                "value": null,
+                                "code": "captcha.invalid",
+                                "message": "Sorry, the characters you typed were wrong"
+                            }
+                        ]
+                    }
+                ]
             }
         };
     }
@@ -157,14 +181,13 @@ describe('nemo input', function () {
         }));
     });
 
-    describe('request another on force validity', function () {
+    describe('request another on force invalid', function () {
         it('should call for another captcha and update the urls for images/audio', inject(function ($httpBackend) {
             var formElement, fieldElement,
                 fakeCaptcha2;
 
             given(function () {
                 fakeCaptcha2 = getFakeCaptchaData('sdasdadasd');
-
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
                 formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
@@ -175,6 +198,10 @@ describe('nemo input', function () {
 
                 $httpBackend.flush();
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha2);
+            });
+
+            and('I have typed in the captcha field', function () {
+                fieldElement.controller('ngModel').$setViewValue('22232');
             });
 
             when('I force validity to be false and the server responds', function () {
@@ -190,6 +217,10 @@ describe('nemo input', function () {
             and('image tag is setup correctly', function () {
                 var image = fieldElement.find('img');
                 expect(image[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/jpeg/sdasdadasd');
+            });
+
+            and('validation rule captcha.invalid is marked as invalid', function () {
+                expect(fieldElement.attr('class')).toContain('ng-invalid-captcha.invalid');
             });
         }));
     });

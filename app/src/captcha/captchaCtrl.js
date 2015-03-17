@@ -4,7 +4,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
 
     function getCaptchaInfo() {
         $scope.model.value = '';
-        Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
+        return Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
@@ -15,7 +15,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
             $event.stopPropagation();
             $event.preventDefault();
         }
-        debouncedGetCaptchaInfo();
+        return debouncedGetCaptchaInfo();
     };
 
     $scope.getRequestCaptchaCopy = function () {
