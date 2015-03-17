@@ -42,12 +42,10 @@ angular.module('nemo').provider('captcha', [function () {
                 setFocus: function () {
                     element.find('input')[0].focus();
                 },
-                validityChange: function (validationRuleCode, newValidity) {
+                forceInvalid: function (validationRuleCode) {
                     ngModelCtrl.$setTouched();
-                    ngModelCtrl.$setValidity(validationRuleCode, newValidity);
-                    if (!newValidity) {
-                        scope.refreshCaptcha();
-                    }
+                    ngModelCtrl.$setValidity(validationRuleCode, false);
+                    scope.refreshCaptcha();
                 }
             }
         },

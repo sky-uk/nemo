@@ -684,7 +684,7 @@
                     require: 'nemoFormHandler',
                     link: function (scope, element, attrs, formHandlerCtrl) {
                         scope.fakeSubmit = function () {
-                            formHandlerCtrl.forceValidity('captcha', 'captcha.invalid', false);
+                            formHandlerCtrl.forceInvalid('captcha', 'captcha.invalid', false);
                             formHandlerCtrl.giveFirstInvalidFieldFocus();
                         };
                     }

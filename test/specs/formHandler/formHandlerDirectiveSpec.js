@@ -113,30 +113,30 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    describe('force validity method', function () {
+    describe('force invalid method', function () {
 
-        it('must call a specific field\'s forceValidity function for a set of registered fields', function () {
+        it('must call a specific field\'s forceInvalid function for a set of registered fields', function () {
 
-            var formHandlerCtrl, field1ValidityChange, field2ValidityChange;
+            var formHandlerCtrl, field1forceInvalid, field2forceInvalid;
 
             given(function () {
                 formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                field1ValidityChange = sinon.stub();
-                field2ValidityChange = sinon.stub();
+                field1forceInvalid = sinon.stub();
+                field2forceInvalid = sinon.stub();
             });
 
             when(function () {
-                formHandlerCtrl.registerField('field1', {validityChange: field1ValidityChange});
-                formHandlerCtrl.registerField('field2', {validityChange: field2ValidityChange});
+                formHandlerCtrl.registerField('field1', {forceInvalid: field1forceInvalid});
+                formHandlerCtrl.registerField('field2', {forceInvalid: field2forceInvalid});
             });
 
             and(function () {
-                formHandlerCtrl.forceValidity('field2', 'field2.invalid', false);
+                formHandlerCtrl.forceInvalid('field2', 'field2.invalid', false);
             });
 
             then(function () {
-                expect(field1ValidityChange).not.toHaveBeenCalled();
-                expect(field2ValidityChange).toHaveBeenCalledWith('field2.invalid', false);
+                expect(field1forceInvalid).not.toHaveBeenCalled();
+                expect(field2forceInvalid).toHaveBeenCalledWith('field2.invalid');
             });
         });
 
@@ -159,7 +159,7 @@ describe('nemo form handler directive', function () {
 
             then(function () {
                 expect(function () {
-                    formHandlerCtrl.forceValidity('rarrr', 'rarrr.invalid', false);
+                    formHandlerCtrl.forceInvalid('rarrr', 'rarrr.invalid', false);
                 }).toThrow('rarrr is not registered in the form.');
             });
         });

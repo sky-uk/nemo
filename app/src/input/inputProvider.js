@@ -46,8 +46,8 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
-                validityChange: function (validationRuleCode, newValidity) {
-                    validityChange(ngModelCtrl, validationRuleCode, newValidity);
+                forceInvalid: function (validationRuleCode) {
+                    validityChange(ngModelCtrl, validationRuleCode, false);
                 },
                 isValid: function () {
                     return ngModelCtrl.$valid;

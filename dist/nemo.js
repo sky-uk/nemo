@@ -212,12 +212,10 @@ angular.module('nemo').provider('captcha', [function () {
                 setFocus: function () {
                     element.find('input')[0].focus();
                 },
-                validityChange: function (validationRuleCode, newValidity) {
+                forceInvalid: function (validationRuleCode) {
                     ngModelCtrl.$setTouched();
-                    ngModelCtrl.$setValidity(validationRuleCode, newValidity);
-                    if (!newValidity) {
-                        scope.refreshCaptcha();
-                    }
+                    ngModelCtrl.$setValidity(validationRuleCode, false);
+                    scope.refreshCaptcha();
                 }
             }
         },
@@ -273,8 +271,8 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
-                validityChange: function (validationRuleCode, newValidity) {
-                    validityChange(ngModelCtrl, validationRuleCode, newValidity);
+                forceInvalid: function (validationRuleCode) {
+                    validityChange(ngModelCtrl, validationRuleCode, false);
                 },
                 isValid: function () {
                     return ngModelCtrl.$valid;
@@ -491,8 +489,8 @@ angular.module('nemo')
             return getRegisteredField(fieldName).getValue();
         };
 
-        this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-            getRegisteredField(fieldName).validityChange(validationRuleCode, newValidity);
+        this.forceInvalid = function (fieldName, validationRuleCode) {
+            getRegisteredField(fieldName).forceInvalid(validationRuleCode);
         };
 
         this.giveFirstFieldFocus = function () {
