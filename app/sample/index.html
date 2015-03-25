@@ -300,7 +300,7 @@
                                 ]
                             },
                             {
-                                "type": "server",
+                                "type": "emailserver",
                                 "rules": [
                                     {
                                         "value": null,
@@ -419,7 +419,7 @@
                                 ]
                             },
                             {
-                                "type": "server",
+                                "type": "usernameserver",
                                 "rules": [
                                     {
                                         "value": null,
@@ -565,7 +565,7 @@
                 },
                 {
                     "name": "terms",
-                    "value": true,
+                    "value": false,
                     "type": "checkbox",
                     properties: {
                         "validation": [
@@ -602,7 +602,7 @@
                 },
                 {
                     "name": "serviceTerms",
-                    "value": true,
+                    "value": false,
                     "type": "checkbox",
                     properties: {
                         "validation": [
@@ -641,7 +641,7 @@
                                 ]
                             },
                             {
-                                "type": "server",
+                                "type": "captchaserver",
                                 "rules": [
                                     {
                                         "value": null,
@@ -684,14 +684,13 @@
                     require: 'nemoFormHandler',
                     link: function (scope, element, attrs, formHandlerCtrl) {
                         scope.fakeSubmit = function () {
-                            formHandlerCtrl.forceAllFieldsToBeDirty();
-
-                            if (this.sampleForm.$valid) {
-                                formHandlerCtrl.forceInvalid('captcha', 'captcha.invalid', false);
+                            formHandlerCtrl.validateForm();
+//                            if (this.sampleForm.$valid) {
+                                formHandlerCtrl.forceInvalid('captcha.invalid');
                                 formHandlerCtrl.giveFirstInvalidFieldFocus();
-                            } else {
-                                formHandlerCtrl.giveFirstInvalidFieldFocus();
-                            }
+//                            } else {
+//                                formHandlerCtrl.giveFirstInvalidFieldFocus();
+//                            }
                         };
                     }
                 }
@@ -709,7 +708,7 @@
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
-                <nemo-input model="field"></nemo-input>-{{sampleForm[field.name].isActive}}-
+                <nemo-input model="field"></nemo-input>-{{sampleForm[field.name].$valid}}-
                 <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
             </div>
         </div>

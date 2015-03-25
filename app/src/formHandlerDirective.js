@@ -4,14 +4,22 @@ angular.module('nemo')
 
     .controller('nemoFormHandlerCtrl', [function () {
 
-        var registerFieldsFns = {}, fieldNameOrder = [];
+        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
         function getRegisteredField(fieldName) {
-            var registeredField = registerFieldsFns[fieldName];
-            if (!registeredField) {
-                throw new Error(fieldName + ' is not registered in the form.');
+            return getRegisteredComponent(fieldName, registeredFieldsFns);
+        }
+
+        function getRegisteredValidationRule(validationRuleCode) {
+            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns);
+        }
+
+        function getRegisteredComponent(id, group) {
+            var registeredComponent = group[id];
+            if (!registeredComponent) {
+                throw new Error(id + ' is not registered in the form.');
             }
-            return registeredField;
+            return registeredComponent;
         }
 
         this.setFieldValue = function (fieldName, value) {
@@ -22,12 +30,12 @@ angular.module('nemo')
             return getRegisteredField(fieldName).getValue();
         };
 
-        this.forceInvalid = function (fieldName, validationRuleCode) {
-            getRegisteredField(fieldName).forceInvalid(validationRuleCode);
+        this.forceInvalid = function (validationRuleCode) {
+            getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
         };
 
         this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
                 fieldInterfaceFns.forceDirty();
             });
         };
@@ -48,14 +56,24 @@ angular.module('nemo')
         };
 
         this.setActiveField = function (activeFieldName) {
-            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
                 fieldInterfaceFns.activeFieldChange(activeFieldName);
             });
         };
 
+        this.validateForm = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+        };
+
         this.registerField = function (fieldName, registerFieldFns) {
-            registerFieldsFns[fieldName] = registerFieldFns;
+            registeredFieldsFns[fieldName] = registerFieldFns;
             fieldNameOrder.push(fieldName);
+        };
+
+        this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
+            registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
         };
     }])
 

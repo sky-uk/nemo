@@ -56,7 +56,7 @@ describe('nemo input', function () {
                         ]
                     },
                     {
-                        "type": "server",
+                        "type": "captchaserver",
                         "rules": [
                             {
                                 "value": null,
@@ -205,7 +205,7 @@ describe('nemo input', function () {
             });
 
             when('I force validity to be false and the server responds', function () {
-                formElement.controller('nemoFormHandler').forceInvalid('captcha', 'captcha.invalid', false);
+                formElement.controller('nemoFormHandler').forceInvalid('captcha.invalid');
                 $httpBackend.flush();
             });
 

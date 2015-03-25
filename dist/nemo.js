@@ -108,8 +108,22 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('server', {});
+                .validation('usernameserver', {})
 
+                .validation('emailserver', {})
+
+                .validation('captchaserver', {
+                    validationRuleInterfaceFns: function(scope, ngModelCtrl) {
+                        return {
+                            forceInvalid: function (validationRuleCode) {
+                                ngModelCtrl.$setTouched();
+                                scope.refreshCaptcha().then(function () {
+                                    ngModelCtrl.$setValidity(validationRuleCode, false);
+                                });
+                            }
+                        }
+                    }
+                });
     }]);
 'use strict';
 angular.module('nemo')
@@ -207,16 +221,10 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
-        fieldInterfaceFns: function(scope, element, ngModelCtrl) {
+        fieldInterfaceFns: function(scope, element) {
             return {
                 setFocus: function () {
                     element.find('input')[0].focus();
-                },
-                forceInvalid: function (validationRuleCode) {
-                    ngModelCtrl.$setTouched();
-                    scope.refreshCaptcha().then(function () {
-                        ngModelCtrl.$setValidity(validationRuleCode, false);
-                    });
                 }
             }
         },
@@ -272,9 +280,6 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
-                forceInvalid: function (validationRuleCode) {
-                    validityChange(ngModelCtrl, validationRuleCode, false);
-                },
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },
@@ -296,11 +301,6 @@ angular.module('nemo')
 
         function activeFieldChange(scope, ngModelCtrl, activeField) {
             ngModelCtrl.isActive = (activeField === scope.model.name);
-        }
-
-        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
-            ngModelCtrl.$setTouched();
-            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
@@ -338,32 +338,69 @@ angular.module('nemo')
 
         var validationOptionsCache = {};
 
-        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
-            ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
-                var isValid = angular.isFunction(validateFn) ?
-                    validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
-                    true;
-                return isValid;
+        function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            var isValid = angular.isFunction(validateFn) ?
+                validateFn(ngModelCtrl.$viewValue, validationRule.value, formHandlerCtrl, ngModelCtrl) :
+                true;
+            return isValid;
+        }
+
+        function setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
+            ngModelCtrl.$validators[validationRule.code] = function () {
+                return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             };
             messages.set(validationRule.code, validationRule.message);
         }
 
-        function getLinkFn(directiveName, validateFn, messages) {
-            return function (scope, element, attrs, controllers) {
-                var validationRules = scope.$eval(attrs[directiveName]),
-                    ngModelController = controllers[0],
-                    formHandlerController = controllers[1];
-                validationRules.forEach(function (validationRule) {
-                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
-                });
-            }
+        function registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, customValidationRuleInterfaceFns) {
+            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
+                customerValidationRuleInterface = customValidationRuleInterfaceFns ?
+                    customValidationRuleInterfaceFns(scope, ngModelCtrl) :
+                    {};
+            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+            formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
         }
 
-        function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
+        function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            return {
+                forceInvalid: function () {
+                    validityChange(ngModelCtrl, validationRule.code, false);
+                },
+                refreshValidity: function () {
+                    refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                }
+            };
+        }
+
+        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
+            ngModelCtrl.$setTouched();
+            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+        }
+
+        function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+            ngModelCtrl.$setValidity(validationRule.code, isValid);
+            ngModelCtrl.$setDirty();
+            ngModelCtrl.$setTouched();
+        }
+
+        function getLinkFn(options, directiveName, validateFn, messages) {
+            return function (scope, element, attrs, controllers) {
+                var validationRules = scope.$eval(attrs[directiveName]),
+                    ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
+                validationRules.forEach(function (validationRule) {
+                    setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
+                    registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options.validationRuleInterfaceFns);
+                });
+            };
+        }
+
+        function getDirectiveDefinitionObject(options, directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^nemoFormHandler'],
                 restrict: 'A',
-                link: getLinkFn(directiveName, validateFn, messages)
+                link: getLinkFn(options, directiveName, validateFn, messages)
             };
         }
 
@@ -374,7 +411,7 @@ angular.module('nemo')
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['nemoMessages', function (messages) {
-                    return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
+                    return getDirectiveDefinitionObject(options, directiveName, options.validateFn, messages);
                 }]]);
 
             return this;
@@ -476,14 +513,22 @@ angular.module('nemo')
 
     .controller('nemoFormHandlerCtrl', [function () {
 
-        var registerFieldsFns = {}, fieldNameOrder = [];
+        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
         function getRegisteredField(fieldName) {
-            var registeredField = registerFieldsFns[fieldName];
-            if (!registeredField) {
-                throw new Error(fieldName + ' is not registered in the form.');
+            return getRegisteredComponent(fieldName, registeredFieldsFns);
+        }
+
+        function getRegisteredValidationRule(validationRuleCode) {
+            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns);
+        }
+
+        function getRegisteredComponent(id, group) {
+            var registeredComponent = group[id];
+            if (!registeredComponent) {
+                throw new Error(id + ' is not registered in the form.');
             }
-            return registeredField;
+            return registeredComponent;
         }
 
         this.setFieldValue = function (fieldName, value) {
@@ -494,12 +539,12 @@ angular.module('nemo')
             return getRegisteredField(fieldName).getValue();
         };
 
-        this.forceInvalid = function (fieldName, validationRuleCode) {
-            getRegisteredField(fieldName).forceInvalid(validationRuleCode);
+        this.forceInvalid = function (validationRuleCode) {
+            getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
         };
 
         this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
                 fieldInterfaceFns.forceDirty();
             });
         };
@@ -520,14 +565,24 @@ angular.module('nemo')
         };
 
         this.setActiveField = function (activeFieldName) {
-            angular.forEach(registerFieldsFns, function (fieldInterfaceFns) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
                 fieldInterfaceFns.activeFieldChange(activeFieldName);
             });
         };
 
+        this.validateForm = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+        };
+
         this.registerField = function (fieldName, registerFieldFns) {
-            registerFieldsFns[fieldName] = registerFieldFns;
+            registeredFieldsFns[fieldName] = registerFieldFns;
             fieldNameOrder.push(fieldName);
+        };
+
+        this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
+            registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
         };
     }])
 

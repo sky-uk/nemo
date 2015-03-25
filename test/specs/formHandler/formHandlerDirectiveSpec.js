@@ -115,28 +115,28 @@ describe('nemo form handler directive', function () {
 
     describe('force invalid method', function () {
 
-        it('must call a specific field\'s forceInvalid function for a set of registered fields', function () {
+        it('must call a specific validation rule\'s forceInvalid function for a set of registered validation rules', function () {
 
-            var formHandlerCtrl, field1forceInvalid, field2forceInvalid;
+            var formHandlerCtrl, validationRule11forceInvalid, validationRule2forceInvalid;
 
             given(function () {
                 formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                field1forceInvalid = sinon.stub();
-                field2forceInvalid = sinon.stub();
+                validationRule11forceInvalid = sinon.stub();
+                validationRule2forceInvalid = sinon.stub();
             });
 
             when(function () {
-                formHandlerCtrl.registerField('field1', {forceInvalid: field1forceInvalid});
-                formHandlerCtrl.registerField('field2', {forceInvalid: field2forceInvalid});
+                formHandlerCtrl.registerValidationRule('field.invalid1', {forceInvalid: validationRule11forceInvalid});
+                formHandlerCtrl.registerValidationRule('field.invalid2', {forceInvalid: validationRule2forceInvalid});
             });
 
             and(function () {
-                formHandlerCtrl.forceInvalid('field2', 'field2.invalid');
+                formHandlerCtrl.forceInvalid('field.invalid2');
             });
 
             then(function () {
-                expect(field1forceInvalid).not.toHaveBeenCalled();
-                expect(field2forceInvalid).toHaveBeenCalledWith('field2.invalid');
+                expect(validationRule11forceInvalid).not.toHaveBeenCalled();
+                expect(validationRule2forceInvalid).toHaveBeenCalledWith('field.invalid2');
             });
         });
 
@@ -302,6 +302,39 @@ describe('nemo form handler directive', function () {
                     expect(field2InterfaceFns.setFocus.callCount).toBe(scenario.field2.setFocusCallCount);
                 });
             });
+        });
+    });
+
+    it('must invoke the refreshValidity function of all the registered validation rules whenever the ' +
+    'validateForm function of the formHanderController is invoked', function () {
+
+        var formHandlerCtrl, validationRule1InterfaceFns, validationRule2InterfaceFns;
+
+        given(function () {
+            formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+        });
+
+        and(function () {
+            validationRule1InterfaceFns = {
+                refreshValidity: sinon.stub()
+            };
+            validationRule2InterfaceFns = {
+                refreshValidity: sinon.stub()
+            };
+        });
+
+        when(function () {
+            formHandlerCtrl.registerValidationRule('field.validationRule1', validationRule1InterfaceFns);
+            formHandlerCtrl.registerValidationRule('field.validationRule2', validationRule2InterfaceFns);
+        });
+
+        and(function () {
+            formHandlerCtrl.validateForm();
+        });
+
+        then(function () {
+            expect(validationRule1InterfaceFns.refreshValidity).toHaveBeenCalled();
+            expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
         });
     });
 });

@@ -46,9 +46,6 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField)
                 },
-                forceInvalid: function (validationRuleCode) {
-                    validityChange(ngModelCtrl, validationRuleCode, false);
-                },
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },
@@ -70,11 +67,6 @@ angular.module('nemo')
 
         function activeFieldChange(scope, ngModelCtrl, activeField) {
             ngModelCtrl.isActive = (activeField === scope.model.name);
-        }
-
-        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
-            ngModelCtrl.$setTouched();
-            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
