@@ -685,12 +685,12 @@
                     link: function (scope, element, attrs, formHandlerCtrl) {
                         scope.fakeSubmit = function () {
                             formHandlerCtrl.validateForm();
-//                            if (this.sampleForm.$valid) {
+                            if (this.sampleForm.$valid) {
                                 formHandlerCtrl.forceInvalid('captcha.invalid');
                                 formHandlerCtrl.giveFirstInvalidFieldFocus();
-//                            } else {
-//                                formHandlerCtrl.giveFirstInvalidFieldFocus();
-//                            }
+                            } else {
+                                formHandlerCtrl.giveFirstInvalidFieldFocus();
+                            }
                         };
                     }
                 }
@@ -708,7 +708,7 @@
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
-                <nemo-input model="field"></nemo-input>-{{sampleForm[field.name].$valid}}-
+                <nemo-input model="field" has-focus="$index === 0"></nemo-input>
                 <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
             </div>
         </div>
