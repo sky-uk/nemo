@@ -222,41 +222,6 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    describe('give first field focus method', function () {
-
-        it('must call the setFocus method of the first field', function () {
-
-            var formHandlerCtrl, field1InterfaceFns, field2InterfaceFns;
-
-            given(function () {
-                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-            });
-
-            and(function () {
-                field1InterfaceFns = {
-                    setFocus: sinon.stub()
-                };
-                field2InterfaceFns = {
-                    setFocus: sinon.stub()
-                };
-            });
-
-            when(function () {
-                formHandlerCtrl.registerField('field1', field1InterfaceFns);
-                formHandlerCtrl.registerField('field2', field2InterfaceFns);
-            });
-
-            and(function () {
-                formHandlerCtrl.giveFirstFieldFocus();
-            });
-
-            then(function () {
-                expect(field1InterfaceFns.setFocus).toHaveBeenCalled();
-                expect(field2InterfaceFns.setFocus).not.toHaveBeenCalled();
-            });
-        });
-    });
-
     describe('give first invalid field focus method', function () {
 
         var scenarios = [
