@@ -129,7 +129,7 @@ describe('nemo input', function () {
 
             and('the refresh captcha is setup correctly', function () {
                 var refreshElement = angular.element(fieldElement[0].getElementsByClassName('nemo-captcha-refresh'));
-                expect(refreshElement.prop('tagName').toLowerCase()).toBe("div");
+                expect(refreshElement.prop('tagName').toLowerCase()).toBe("p");
                 expect(refreshElement.attr('ng-click')).toBe('refreshCaptcha($event)');
                 expect(refreshElement.text()).toBe('Refresh');
 
