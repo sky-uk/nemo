@@ -310,7 +310,7 @@ describe('nemo form handler directive', function () {
         { formInterface: 'isFieldTouched', elInterface: 'isTouched' }
     ].forEach(
         function (scenario) {
-            iit('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
+            it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
             'the ' + scenario.formInterface + ' function of the formHanderController is invoked', function () {
 
                 var formHandlerCtrl, fieldOneStub, fieldTwoStub;
