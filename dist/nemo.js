@@ -283,6 +283,12 @@ angular.module('nemo')
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },
+                isTouched: function () {
+                    return ngModelCtrl.$touched;
+                },
+                isActive: function () {
+                    return ngModelCtrl.isActive;
+                },
                 setFocus: function() {
                     element[0].focus();
                 },
@@ -291,6 +297,9 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
+                },
+                getNgModelCtrl: function () {
+                    return ngModelCtrl;
                 },
                 forceDirty: function () {
                     ngModelCtrl.$setDirty();
@@ -539,6 +548,23 @@ angular.module('nemo')
             return getRegisteredField(fieldName).getValue();
         };
 
+
+        this.isFieldValid = function (fieldName) {
+            return getRegisteredField(fieldName).isValid();
+        };
+
+        this.isFieldTouched = function (fieldName) {
+            return getRegisteredField(fieldName).isTouched();
+        };
+
+        this.isFieldActive = function (fieldName) {
+            return getRegisteredField(fieldName).isActive();
+        };
+
+        this.getFieldNgModelCtrl = function (fieldName) {
+            return getRegisteredField(fieldName).getNgModelCtrl();
+        };
+
         this.forceInvalid = function (validationRuleCode) {
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
         };
@@ -584,7 +610,17 @@ angular.module('nemo')
 
     .directive('nemoFormHandler', [function () {
         return {
-            controller: 'nemoFormHandlerCtrl'
+            require: ['nemoFormHandler', 'form'],
+            controller: 'nemoFormHandlerCtrl',
+            link: function (scope, element, attrs, controllers) {
+
+                var formHandlerCtrl = controllers[0],
+                    formCtrl = controllers[1];
+
+                formHandlerCtrl.isFormValid = function () {
+                    return formCtrl.$valid;
+                };
+            }
         }
     }]);
 'use strict';

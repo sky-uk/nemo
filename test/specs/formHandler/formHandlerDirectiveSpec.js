@@ -170,17 +170,17 @@ describe('nemo form handler directive', function () {
 
         it('must call all forceDirty function for a set of registered fields', function () {
 
-            var formHandlerCtrl, field1forceDirty, field2forceDirty;
+            var formHandlerCtrl, field1ForceDirty, field2ForceDirty;
 
             given(function () {
                 formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                field1forceDirty = sinon.stub();
-                field2forceDirty = sinon.stub();
+                field1ForceDirty = sinon.stub();
+                field2ForceDirty = sinon.stub();
             });
 
             when(function () {
-                formHandlerCtrl.registerField('field1', {forceDirty: field1forceDirty});
-                formHandlerCtrl.registerField('field2', {forceDirty: field2forceDirty});
+                formHandlerCtrl.registerField('field1', {forceDirty: field1ForceDirty});
+                formHandlerCtrl.registerField('field2', {forceDirty: field2ForceDirty});
             });
 
             and(function () {
@@ -188,8 +188,8 @@ describe('nemo form handler directive', function () {
             });
 
             then(function () {
-                expect(field1forceDirty).toHaveBeenCalled();
-                expect(field2forceDirty).toHaveBeenCalledWith();
+                expect(field1ForceDirty).toHaveBeenCalled();
+                expect(field2ForceDirty).toHaveBeenCalled();
             });
         });
     });
@@ -302,4 +302,45 @@ describe('nemo form handler directive', function () {
             expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
         });
     });
+
+    [
+        { formInterface: 'getFieldNgModelCtrl', elInterface: 'getNgModelCtrl' },
+        { formInterface: 'isFieldActive', elInterface: 'isActive' },
+        { formInterface: 'isFieldValid', elInterface: 'isValid' },
+        { formInterface: 'isFieldTouched', elInterface: 'isTouched' }
+    ].forEach(
+        function (scenario) {
+            iit('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
+            'the ' + scenario.formInterface + ' function of the formHanderController is invoked', function () {
+
+                var formHandlerCtrl, fieldOneStub, fieldTwoStub;
+
+                given(function () {
+                    formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+                    fieldOneStub = sinon.stub();
+                    fieldTwoStub = sinon.stub();
+                });
+
+                when(function () {
+                    var field2 = {},
+                        field1 = {};
+
+                    field1[scenario.elInterface] = fieldOneStub;
+                    field2[scenario.elInterface] = fieldTwoStub;
+
+                    formHandlerCtrl.registerField('field1', field1);
+                    formHandlerCtrl.registerField('field2', field2);
+                });
+
+                and(function () {
+                    formHandlerCtrl[scenario.formInterface]('field2');
+                });
+
+                then(function () {
+                    expect(fieldOneStub).not.toHaveBeenCalled();
+                    expect(fieldTwoStub).toHaveBeenCalled();
+                });
+            });
+        }
+    );
 });
