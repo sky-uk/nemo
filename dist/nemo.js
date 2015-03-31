@@ -617,7 +617,7 @@ angular.module('nemo')
 
         function preCompileValidationRuleFn(validationListItem, tElement) {
             var validationOptions = validation.getValidationOptions(validationListItem.type);
-            if (angular.isFunction(validationOptions.preCompileFn)) {
+            if (validationOptions && angular.isFunction(validationOptions.preCompileFn)) {
                 validationOptions.preCompileFn(tElement);
             }
         }
