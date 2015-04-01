@@ -44,28 +44,19 @@ describe('nemo input', function () {
     describe('error handling', function () {
 
         var scenarios = [
-            { template: '<div name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></div>', throwIfMessage: 'no parent form is found'},
             { template: '<form name="foo"><nemo-input model="field"></nemo-input></form>', expectation: 'no parent form handler is found'},
-            { template: '<form nemo-form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'no name attribute is found at the form level'},
-            { template: '<form name="" nemo-form-handler><nemo-input model="field"></nemo-input></form>', expectation: 'an empty name attribute is found at the form level'}
         ];
 
         scenarios.forEach(function (scenario) {
 
             it('must throw an error if ' + scenario.throwIfMessage, function () {
 
-                var compilationWrapper;
-
-                given(function () {
-                    compilationWrapper = function() {
+                then(function () {
+                    expect(function() {
                         formElement = compileDirective(
                             scenario.template,
                             { $rootScope: { field: { "value": 'foo', "type": "text" } }});
-                    }
-                });
-
-                then(function () {
-                    expect(compilationWrapper).toThrow();
+                    }).toThrow();
                 });
             });
         });

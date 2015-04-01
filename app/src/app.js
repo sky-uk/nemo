@@ -108,6 +108,22 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('server', {});
+                .validation('usernameserver', {})
 
+                .validation('emailserver', {})
+
+                .validation('signupCompleteserver', {})
+
+                .validation('captchaserver', {
+                    validationRuleInterfaceFns: function(scope, ngModelCtrl) {
+                        return {
+                            forceInvalid: function (validationRuleCode) {
+                                ngModelCtrl.$setTouched();
+                                scope.refreshCaptcha().then(function () {
+                                    ngModelCtrl.$setValidity(validationRuleCode, false);
+                                });
+                            }
+                        }
+                    }
+                });
     }]);

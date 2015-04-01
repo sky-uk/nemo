@@ -108,8 +108,24 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('server', {});
+                .validation('usernameserver', {})
 
+                .validation('emailserver', {})
+
+                .validation('signupCompleteserver', {})
+
+                .validation('captchaserver', {
+                    validationRuleInterfaceFns: function(scope, ngModelCtrl) {
+                        return {
+                            forceInvalid: function (validationRuleCode) {
+                                ngModelCtrl.$setTouched();
+                                scope.refreshCaptcha().then(function () {
+                                    ngModelCtrl.$setValidity(validationRuleCode, false);
+                                });
+                            }
+                        }
+                    }
+                });
     }]);
 'use strict';
 angular.module('nemo')
@@ -207,6 +223,13 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
+        fieldInterfaceFns: function(scope, element) {
+            return {
+                setFocus: function () {
+                    element.find('input')[0].focus();
+                }
+            }
+        },
         controller: 'CaptchaCtrl',
         $get: {}
     }
@@ -230,22 +253,56 @@ angular.module('nemo')
 
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
+                var ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                handleActivationState(scope, controllers);
+                registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+                handleActivationState(scope, formHandlerCtrl);
             }
         }
 
-        function handleActivationState(scope, controllers) {
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1];
+        function handleActivationState(scope, formHandlerCtrl) {
             scope.setActiveField = function () {
                 formHandlerCtrl.setActiveField(scope.model.name);
             };
-            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
-                ngModelCtrl.isActive = (activeField === scope.model.name);
-            });
+        }
+
+        function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
+            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
+
+            angular.extend(fieldInterfaceFns, customerFieldInterface);
+            formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
+        }
+
+        function getFieldInterfaceFns(scope, element, ngModelCtrl) {
+            return {
+                activeFieldChange: function (activeField) {
+                    activeFieldChange(scope, ngModelCtrl, activeField)
+                },
+                isValid: function () {
+                    return ngModelCtrl.$valid;
+                },
+                setFocus: function() {
+                    element[0].focus();
+                },
+                getValue: function () {
+                    return ngModelCtrl.$viewValue;
+                },
+                setValue: function (value) {
+                    ngModelCtrl.$setViewValue(value);
+                },
+                forceDirty: function () {
+                    ngModelCtrl.$setDirty();
+                    ngModelCtrl.$setTouched();
+                }
+            }
+        }
+
+        function activeFieldChange(scope, ngModelCtrl, activeField) {
+            ngModelCtrl.isActive = (activeField === scope.model.name);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
@@ -283,32 +340,69 @@ angular.module('nemo')
 
         var validationOptionsCache = {};
 
-        function setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages) {
-            ngModelController.$validators[validationRule.code] = function (viewValue, modelValue) {
-                var isValid = angular.isFunction(validateFn) ?
-                    validateFn(modelValue, validationRule.value, formHandlerController, ngModelController) :
-                    true;
-                return isValid;
+        function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            var isValid = angular.isFunction(validateFn) ?
+                validateFn(ngModelCtrl.$viewValue, validationRule.value, formHandlerCtrl, ngModelCtrl) :
+                true;
+            return isValid;
+        }
+
+        function setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
+            ngModelCtrl.$validators[validationRule.code] = function () {
+                return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             };
             messages.set(validationRule.code, validationRule.message);
         }
 
-        function getLinkFn(directiveName, validateFn, messages) {
-            return function (scope, element, attrs, controllers) {
-                var validationRules = scope.$eval(attrs[directiveName]),
-                    ngModelController = controllers[0],
-                    formHandlerController = controllers[1];
-                validationRules.forEach(function (validationRule) {
-                    setupValidationRule(validationRule, ngModelController, formHandlerController, validateFn, messages);
-                });
-            }
+        function registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, customValidationRuleInterfaceFns) {
+            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
+                customerValidationRuleInterface = customValidationRuleInterfaceFns ?
+                    customValidationRuleInterfaceFns(scope, ngModelCtrl) :
+                    {};
+            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+            formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
         }
 
-        function getDirectiveDefinitionObject(directiveName, validateFn, messages) {
+        function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            return {
+                forceInvalid: function () {
+                    validityChange(ngModelCtrl, validationRule.code, false);
+                },
+                refreshValidity: function () {
+                    refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                }
+            };
+        }
+
+        function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
+            ngModelCtrl.$setTouched();
+            ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+        }
+
+        function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+            var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+            ngModelCtrl.$setValidity(validationRule.code, isValid);
+            ngModelCtrl.$setDirty();
+            ngModelCtrl.$setTouched();
+        }
+
+        function getLinkFn(options, directiveName, validateFn, messages) {
+            return function (scope, element, attrs, controllers) {
+                var validationRules = scope.$eval(attrs[directiveName]),
+                    ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
+                validationRules.forEach(function (validationRule) {
+                    setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
+                    registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options.validationRuleInterfaceFns);
+                });
+            };
+        }
+
+        function getDirectiveDefinitionObject(options, directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^nemoFormHandler'],
                 restrict: 'A',
-                link: getLinkFn(directiveName, validateFn, messages)
+                link: getLinkFn(options, directiveName, validateFn, messages)
             };
         }
 
@@ -319,7 +413,7 @@ angular.module('nemo')
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['nemoMessages', function (messages) {
-                    return getDirectiveDefinitionObject(directiveName, options.validateFn, messages);
+                    return getDirectiveDefinitionObject(options, directiveName, options.validateFn, messages);
                 }]]);
 
             return this;
@@ -361,16 +455,18 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
 
     function getCaptchaInfo() {
         $scope.model.value = '';
-        Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
+        return Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
     }
 
     $scope.refreshCaptcha = function ($event) {
-        $event.stopPropagation();
-        $event.preventDefault();
-        debouncedGetCaptchaInfo();
+        if ($event) {
+            $event.stopPropagation();
+            $event.preventDefault();
+        }
+        return debouncedGetCaptchaInfo();
     };
 
     $scope.getRequestCaptchaCopy = function () {
@@ -417,41 +513,80 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
 
 angular.module('nemo')
 
+    .controller('nemoFormHandlerCtrl', [function () {
+
+        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
+
+        function getRegisteredField(fieldName) {
+            return getRegisteredComponent(fieldName, registeredFieldsFns);
+        }
+
+        function getRegisteredValidationRule(validationRuleCode) {
+            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns);
+        }
+
+        function getRegisteredComponent(id, group) {
+            var registeredComponent = group[id];
+            if (!registeredComponent) {
+                throw new Error(id + ' is not registered in the form.');
+            }
+            return registeredComponent;
+        }
+
+        this.setFieldValue = function (fieldName, value) {
+            getRegisteredField(fieldName).setValue(value);
+        };
+
+        this.getFieldValue = function (fieldName) {
+            return getRegisteredField(fieldName).getValue();
+        };
+
+        this.forceInvalid = function (validationRuleCode) {
+            getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
+        };
+
+        this.forceAllFieldsToBeDirty = function () {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.forceDirty();
+            });
+        };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            var fieldFns;
+            for(var index = 0; index < fieldNameOrder.length; index++) {
+                fieldFns = getRegisteredField(fieldNameOrder[index]);
+                if(!fieldFns.isValid()) {
+                    fieldFns.setFocus();
+                    break;
+                }
+            }
+        };
+
+        this.setActiveField = function (activeFieldName) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.activeFieldChange(activeFieldName);
+            });
+        };
+
+        this.validateForm = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+        };
+
+        this.registerField = function (fieldName, registerFieldFns) {
+            registeredFieldsFns[fieldName] = registerFieldFns;
+            fieldNameOrder.push(fieldName);
+        };
+
+        this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
+            registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
+        };
+    }])
+
     .directive('nemoFormHandler', [function () {
         return {
-            require: 'form',
-            controller: ['$scope', '$attrs', function ($scope, $attrs) {
-
-                var self = this, registerActiveFieldChangeFns = [];
-
-                this.setFieldValue = function(fieldName, value) {
-                    if ($scope[$attrs.name][fieldName]) {
-                        $scope[$attrs.name][fieldName].$setViewValue(value);
-                    }
-                };
-
-                this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
-                };
-
-                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
-                };
-
-                this.setActiveField = function (fieldName) {
-                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
-                        registerActiveFieldChangeFn(fieldName);
-                    });
-                };
-
-                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
-                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
-                };
-
-                $scope.$evalAsync(function () {
-                    $scope[$attrs.name].forceValidity = self.forceValidity;
-                });
-            }]
+            controller: 'nemoFormHandlerCtrl'
         }
     }]);
 'use strict';
@@ -470,28 +605,26 @@ angular.module('nemo')
             return angular.element('<div></div>');
         }
 
-        function addInputAttributeToElement(type, element) {
-            element[0].setAttribute('input-' + toSnakeCase(type), '');
+        function addInputAttributeToElement(type, tElement) {
+            tElement[0].setAttribute('input-' + toSnakeCase(type), '');
         }
 
-        function addAttributesToElement(validationList, tElement) {
+        function addValidationAttributeToElement(validationListItem, tElement, validationIndex) {
+            var attributeKey = 'validation-' + toSnakeCase(validationListItem.type),
+                attributeValue = 'model.properties.validation[' + validationIndex + '].rules';
+            tElement[0].setAttribute(attributeKey, attributeValue);
+        }
 
-            var attributeKey, attributeValue, validationOptions;
+        function preCompileValidationRuleFn(validationListItem, tElement) {
+            var validationOptions = validation.getValidationOptions(validationListItem.type);
+            if (validationOptions && angular.isFunction(validationOptions.preCompileFn)) {
+                validationOptions.preCompileFn(tElement);
+            }
+        }
 
-            if(validationList && validationList.length) {
-
-                validationList.forEach(function (validationListItem, $index) {
-
-                    attributeKey = 'validation-' + toSnakeCase(validationListItem.type);
-                    attributeValue = 'model.properties.validation[' + $index + '].rules';
-                    tElement.attr(attributeKey, attributeValue);
-
-                    validationOptions = validation.getValidationOptions(validationListItem.type);
-
-                    if (angular.isFunction(validationOptions.preCompileFn)) {
-                        validationOptions.preCompileFn(tElement);
-                    }
-                });
+        function setAutoFocus(tElement, hasFocus) {
+            if (hasFocus) {
+                tElement[0].setAttribute('autofocus', 'true');
             }
         }
 
@@ -503,21 +636,35 @@ angular.module('nemo')
             $compile(template)(scope);
         }
 
+        function manageValidationRules(fieldProperties, tElement) {
+            var validationList = fieldProperties && fieldProperties.validation;
+            if (validationList && validationList.length) {
+                validationList.forEach(function (validationListItem, validationIndex) {
+                    addValidationAttributeToElement(validationListItem, tElement, validationIndex);
+                    preCompileValidationRuleFn(validationListItem, tElement);
+                });
+            }
+        }
+
+        function getLinkFn() {
+            return function (scope, element) {
+                var fieldElement = creatElement();
+                addInputAttributeToElement(scope.model.type, fieldElement);
+                setAutoFocus(fieldElement, scope.hasFocus);
+                manageValidationRules(scope.model.properties, fieldElement);
+                replaceTemplate(element, fieldElement);
+                compileTemplate(fieldElement, scope);
+            }
+        }
+
         return {
             transclude: 'element',
             restrict: 'E',
             scope: {
-                model: '='
+                model: '=',
+                hasFocus: '='
             },
-            link: function (scope, element) {
-                var fieldElement = creatElement();
-                addInputAttributeToElement(scope.model.type, fieldElement);
-                if (scope.model.properties && scope.model.properties.validation) {
-                    addAttributesToElement(scope.model.properties.validation, fieldElement);
-                }
-                replaceTemplate(element, fieldElement);
-                compileTemplate(fieldElement, scope);
-            }
+            link: getLinkFn()
         }
     }]);
 'use strict';

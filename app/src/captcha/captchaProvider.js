@@ -37,6 +37,13 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
+        fieldInterfaceFns: function(scope, element) {
+            return {
+                setFocus: function () {
+                    element.find('input')[0].focus();
+                }
+            }
+        },
         controller: 'CaptchaCtrl',
         $get: {}
     }

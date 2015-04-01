@@ -1,5 +1,5 @@
 describe('nemo input', function () {
-    var fakeCaptcha, captchaField;
+    var fakeCaptcha, captchaField, captchaIdModel, captchaMarkup;
 
     function getFakeCaptchaData(captchaId) {
         return {
@@ -24,7 +24,7 @@ describe('nemo input', function () {
                 "captchaId": captchaId
             }
         };
-    };
+    }
 
     function getCaptchaField() {
         return {
@@ -42,6 +42,30 @@ describe('nemo input', function () {
                         }
                     }
                 }
+            },
+            properties: {
+                validation: [
+                    {
+                        "type": "required",
+                        "rules": [
+                            {
+                                "value": true,
+                                "code": "captcha.blank",
+                                "message": "Please type the characters again"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "captchaserver",
+                        "rules": [
+                            {
+                                "value": null,
+                                "code": "captcha.invalid",
+                                "message": "Sorry, the characters you typed were wrong"
+                            }
+                        ]
+                    }
+                ]
             }
         };
     }
@@ -50,6 +74,16 @@ describe('nemo input', function () {
         module('nemo');
         fakeCaptcha = getFakeCaptchaData('d1d2ca30-2cd6-49f7-ba0d-fd6fb4cde111');
         captchaField = getCaptchaField();
+
+        captchaIdModel =  {
+            type: 'hidden',
+            name: 'captchaId',
+            value: ''
+        };
+        captchaMarkup = '<form name="foo" nemo-form-handler>' +
+        '<nemo-input model="field"></nemo-input>' +
+        '<nemo-input model="field2"></nemo-input>' +
+        '</form>'
     });
 
     describe('captchaProvider', function () {
@@ -59,9 +93,7 @@ describe('nemo input', function () {
             given('backend is setup and directive is compiled', function () {
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
-                    { $rootScope: { field: captchaField } });
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
             });
 
             and('I have found the element and flushed the backend', function () {
@@ -97,7 +129,7 @@ describe('nemo input', function () {
 
             and('the refresh captcha is setup correctly', function () {
                 var refreshElement = angular.element(fieldElement[0].getElementsByClassName('nemo-captcha-refresh'));
-                expect(refreshElement.prop('tagName').toLowerCase()).toBe("div");
+                expect(refreshElement.prop('tagName').toLowerCase()).toBe("p");
                 expect(refreshElement.attr('ng-click')).toBe('refreshCaptcha($event)');
                 expect(refreshElement.text()).toBe('Refresh');
 
@@ -122,9 +154,7 @@ describe('nemo input', function () {
 
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler><nemo-input model="field"></nemo-input></form>',
-                    { $rootScope: { field: captchaField } });
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
             });
 
             and('I have found the element, flushed the first post to captcha and expect the next post', function () {
@@ -151,25 +181,59 @@ describe('nemo input', function () {
         }));
     });
 
+    describe('request another on force invalid', function () {
+        it('should call for another captcha and update the urls for images/audio', inject(function ($httpBackend) {
+            var formElement, fieldElement,
+                fakeCaptcha2;
+
+            given(function () {
+                fakeCaptcha2 = getFakeCaptchaData('sdasdadasd');
+                $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
+
+                formElement = compileDirective(captchaMarkup, { $rootScope: { field: captchaField, field2: captchaIdModel } });
+            });
+
+            and('I have found the element, flushed the first post to captcha and expect the next post', function () {
+                fieldElement = angular.element(formElement.children()[0]);
+
+                $httpBackend.flush();
+                $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha2);
+            });
+
+            and('I have typed in the captcha field', function () {
+                fieldElement.controller('ngModel').$setViewValue('22232');
+            });
+
+            when('I force validity to be false and the server responds', function () {
+                formElement.controller('nemoFormHandler').forceInvalid('captcha.invalid');
+                $httpBackend.flush();
+            });
+
+            then('audio tag is setup correctly', function () {
+                var audio = fieldElement.find('audio');
+                expect(audio[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/wav/sdasdadasd');
+            });
+
+            and('image tag is setup correctly', function () {
+                var image = fieldElement.find('img');
+                expect(image[0].getAttribute('src')).toBe('https://fakerango.com/rango/captcha/jpeg/sdasdadasd');
+            });
+
+            and('validation rule captcha.invalid is marked as invalid', function () {
+                expect(fieldElement.attr('class')).toContain('ng-invalid-captcha.invalid');
+            });
+        }));
+    });
+
     describe('update id', function () {
         it('should update the captchaId field via the form controller', inject(function ($httpBackend) {
-            var formElement, fieldElement, captchaIdModel;
+            var formElement, fieldElement;
 
             given('backend is setup and directive is compiled', function () {
 
-                captchaIdModel =  {
-                    type: 'hidden',
-                    name: 'captchaId',
-                    value: ''
-                };
-
                 $httpBackend.expectPOST('http://requestanother.com').respond(fakeCaptcha);
 
-                formElement = compileDirective(
-                    '<form name="foo" nemo-form-handler>' +
-                    '<nemo-input model="field"></nemo-input>' +
-                    '<nemo-input model="field2"></nemo-input>' +
-                    '</form>',
+                formElement = compileDirective(captchaMarkup,
                     { $rootScope: { field: captchaField, field2: captchaIdModel } });
 
             });

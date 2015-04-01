@@ -2,40 +2,79 @@
 
 angular.module('nemo')
 
+    .controller('nemoFormHandlerCtrl', [function () {
+
+        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
+
+        function getRegisteredField(fieldName) {
+            return getRegisteredComponent(fieldName, registeredFieldsFns);
+        }
+
+        function getRegisteredValidationRule(validationRuleCode) {
+            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns);
+        }
+
+        function getRegisteredComponent(id, group) {
+            var registeredComponent = group[id];
+            if (!registeredComponent) {
+                throw new Error(id + ' is not registered in the form.');
+            }
+            return registeredComponent;
+        }
+
+        this.setFieldValue = function (fieldName, value) {
+            getRegisteredField(fieldName).setValue(value);
+        };
+
+        this.getFieldValue = function (fieldName) {
+            return getRegisteredField(fieldName).getValue();
+        };
+
+        this.forceInvalid = function (validationRuleCode) {
+            getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
+        };
+
+        this.forceAllFieldsToBeDirty = function () {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.forceDirty();
+            });
+        };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            var fieldFns;
+            for(var index = 0; index < fieldNameOrder.length; index++) {
+                fieldFns = getRegisteredField(fieldNameOrder[index]);
+                if(!fieldFns.isValid()) {
+                    fieldFns.setFocus();
+                    break;
+                }
+            }
+        };
+
+        this.setActiveField = function (activeFieldName) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
+                fieldInterfaceFns.activeFieldChange(activeFieldName);
+            });
+        };
+
+        this.validateForm = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+        };
+
+        this.registerField = function (fieldName, registerFieldFns) {
+            registeredFieldsFns[fieldName] = registerFieldFns;
+            fieldNameOrder.push(fieldName);
+        };
+
+        this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
+            registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
+        };
+    }])
+
     .directive('nemoFormHandler', [function () {
         return {
-            require: 'form',
-            controller: ['$scope', '$attrs', function ($scope, $attrs) {
-
-                var self = this, registerActiveFieldChangeFns = [];
-
-                this.setFieldValue = function(fieldName, value) {
-                    if ($scope[$attrs.name][fieldName]) {
-                        $scope[$attrs.name][fieldName].$setViewValue(value);
-                    }
-                };
-
-                this.getFieldValue = function(fieldName) {
-                    return $scope[$attrs.name][fieldName] ? $scope[$attrs.name][fieldName].$viewValue : '';
-                };
-
-                this.forceValidity = function (fieldName, validationRuleCode, newValidity) {
-                    $scope[$attrs.name][fieldName].$setValidity(validationRuleCode, newValidity);
-                };
-
-                this.setActiveField = function (fieldName) {
-                    angular.forEach(registerActiveFieldChangeFns, function (registerActiveFieldChangeFn) {
-                        registerActiveFieldChangeFn(fieldName);
-                    });
-                };
-
-                this.registerActiveFieldChange = function (registerActiveFieldChangeFn) {
-                    registerActiveFieldChangeFns.push(registerActiveFieldChangeFn);
-                };
-
-                $scope.$evalAsync(function () {
-                    $scope[$attrs.name].forceValidity = self.forceValidity;
-                });
-            }]
+            controller: 'nemoFormHandlerCtrl'
         }
     }]);

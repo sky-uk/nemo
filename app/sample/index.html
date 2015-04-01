@@ -64,7 +64,9 @@
         window.onerror = function (message) {
             alert(message)
         };
-        angular.module('nemo').controller('MainController', ['$scope', function ($scope) {
+        angular.module('nemo')
+
+            .controller('MainController', ['$scope', function ($scope) {
 
             $scope.fields = [
                 {
@@ -298,7 +300,7 @@
                                 ]
                             },
                             {
-                                "type": "server",
+                                "type": "emailserver",
                                 "rules": [
                                     {
                                         "value": null,
@@ -417,7 +419,7 @@
                                 ]
                             },
                             {
-                                "type": "server",
+                                "type": "usernameserver",
                                 "rules": [
                                     {
                                         "value": null,
@@ -563,7 +565,7 @@
                 },
                 {
                     "name": "terms",
-                    "value": true,
+                    "value": false,
                     "type": "checkbox",
                     properties: {
                         "validation": [
@@ -600,7 +602,7 @@
                 },
                 {
                     "name": "serviceTerms",
-                    "value": true,
+                    "value": false,
                     "type": "checkbox",
                     properties: {
                         "validation": [
@@ -637,6 +639,16 @@
                                         "message": "Please type the characters again"
                                     }
                                 ]
+                            },
+                            {
+                                "type": "captchaserver",
+                                "rules": [
+                                    {
+                                        "value": null,
+                                        "code": "captcha.invalid",
+                                        "message": "Sorry, the characters you typed were wrong"
+                                    }
+                                ]
                             }
                         ],
                         "help": {},
@@ -665,24 +677,38 @@
                     mandatory: true
                 }
             ];
+        }])
 
-            $scope.fakeSubmit = function (formName) {
-                $scope[formName].forceValidity('firstName', 'firstName.blank', false);
-            };
-        }]);
+            .directive('fakeSubmitHandler', [function () {
+                return{
+                    require: 'nemoFormHandler',
+                    link: function (scope, element, attrs, formHandlerCtrl) {
+                        scope.fakeSubmit = function () {
+                            formHandlerCtrl.validateForm();
+                            if (this.sampleForm.$valid) {
+                                formHandlerCtrl.forceInvalid('captcha.invalid');
+                                formHandlerCtrl.giveFirstInvalidFieldFocus();
+                            } else {
+                                formHandlerCtrl.giveFirstInvalidFieldFocus();
+                            }
+                        };
+                    }
+                }
+            }]);
+
     </script>
 </head>
 
 <body ng-controller="MainController">
 
-    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit('sampleForm')" novalidate>
+    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit()" fake-submit-handler novalidate>
         <div class="clearfix" ng-repeat="field in fields">
             <div class="column label">
                 <span ng-if="field.name == 'captchaId'">Captcha Id</span>
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
-                <nemo-input model="field"></nemo-input>-{{sampleForm[field.name].isActive}}-
+                <nemo-input model="field" has-focus="$index === 0"></nemo-input>
                 <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
             </div>
         </div>

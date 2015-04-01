@@ -17,22 +17,56 @@ angular.module('nemo')
 
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
+                var ngModelCtrl = controllers[0],
+                    formHandlerCtrl = controllers[1];
                 if (options.linkFn) {
                     options.linkFn(scope, element, attrs, controllers, $compile, $http);
                 }
-                handleActivationState(scope, controllers);
+                registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+                handleActivationState(scope, formHandlerCtrl);
             }
         }
 
-        function handleActivationState(scope, controllers) {
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1];
+        function handleActivationState(scope, formHandlerCtrl) {
             scope.setActiveField = function () {
                 formHandlerCtrl.setActiveField(scope.model.name);
             };
-            formHandlerCtrl.registerActiveFieldChange(function (activeField) {
-                ngModelCtrl.isActive = (activeField === scope.model.name);
-            });
+        }
+
+        function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
+            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
+
+            angular.extend(fieldInterfaceFns, customerFieldInterface);
+            formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
+        }
+
+        function getFieldInterfaceFns(scope, element, ngModelCtrl) {
+            return {
+                activeFieldChange: function (activeField) {
+                    activeFieldChange(scope, ngModelCtrl, activeField)
+                },
+                isValid: function () {
+                    return ngModelCtrl.$valid;
+                },
+                setFocus: function() {
+                    element[0].focus();
+                },
+                getValue: function () {
+                    return ngModelCtrl.$viewValue;
+                },
+                setValue: function (value) {
+                    ngModelCtrl.$setViewValue(value);
+                },
+                forceDirty: function () {
+                    ngModelCtrl.$setDirty();
+                    ngModelCtrl.$setTouched();
+                }
+            }
+        }
+
+        function activeFieldChange(scope, ngModelCtrl, activeField) {
+            ngModelCtrl.isActive = (activeField === scope.model.name);
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
