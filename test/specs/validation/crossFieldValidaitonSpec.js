@@ -24,6 +24,16 @@ describe('validation', function () {
                 { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username'},
                 { viewValue: '', fieldValidity: true, validationMessagesText: ''}
             ]
+        },
+        {
+            validation: validation.mustmatchcaseinsensitive(),
+            flows: [
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
+                { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
+                { viewValue: 'foousername', fieldValidity: true, validationMessagesText: ''},
+                { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username'},
+                { viewValue: '', fieldValidity: true, validationMessagesText: ''}
+            ]
         }
     ].forEach(function (scenario) {
             var validationScenario = scenario.validation;
