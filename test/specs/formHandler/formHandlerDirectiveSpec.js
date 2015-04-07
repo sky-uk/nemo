@@ -202,34 +202,6 @@ describe('nemo form handler directive', function () {
 
     });
 
-    describe('force forceDirty method', function () {
-
-        it('must call all forceDirty function for a set of registered fields', function () {
-
-            var formHandlerCtrl, field1forceDirty, field2forceDirty;
-
-            given(function () {
-                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                field1forceDirty = sinon.stub();
-                field2forceDirty = sinon.stub();
-            });
-
-            when(function () {
-                formHandlerCtrl.registerField('field1', {forceDirty: field1forceDirty});
-                formHandlerCtrl.registerField('field2', {forceDirty: field2forceDirty});
-            });
-
-            and(function () {
-                formHandlerCtrl.forceAllFieldsToBeDirty();
-            });
-
-            then(function () {
-                expect(field1forceDirty).toHaveBeenCalled();
-                expect(field2forceDirty).toHaveBeenCalledWith();
-            });
-        });
-    });
-
     describe('set active field method', function () {
 
         it('must call all field\'s setActiveField functions for a set of registered fields', function () {

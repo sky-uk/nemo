@@ -303,10 +303,6 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
-                },
-                forceDirty: function () {
-                    ngModelCtrl.$setDirty();
-                    ngModelCtrl.$setTouched();
                 }
             }
         }
@@ -561,12 +557,6 @@ angular.module('nemo')
 
         this.forceInvalid = function (validationRuleCode) {
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
-        };
-
-        this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
-                fieldInterfaceFns.forceDirty();
-            });
         };
 
         this.giveFirstInvalidFieldFocus = function () {

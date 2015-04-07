@@ -42,12 +42,6 @@ angular.module('nemo')
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
         };
 
-        this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
-                fieldInterfaceFns.forceDirty();
-            });
-        };
-
         this.giveFirstInvalidFieldFocus = function () {
             var fieldFns;
             for(var index = 0; index < fieldNameOrder.length; index++) {
