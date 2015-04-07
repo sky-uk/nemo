@@ -26,18 +26,20 @@ angular.module('nemo')
             getRegisteredField(fieldName).setValue(value);
         };
 
+        this.getFieldsValues = function () {
+            var fieldsValues = {};
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
+                fieldsValues[fieldName] = fieldInterfaceFns.getValue();
+            });
+            return fieldsValues;
+        };
+
         this.getFieldValue = function (fieldName) {
             return getRegisteredField(fieldName).getValue();
         };
 
         this.forceInvalid = function (validationRuleCode) {
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
-        };
-
-        this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
-                fieldInterfaceFns.forceDirty();
-            });
         };
 
         this.giveFirstInvalidFieldFocus = function () {
