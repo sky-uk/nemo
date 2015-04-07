@@ -81,6 +81,16 @@ angular.module('nemo', [])
                     }
                 })
 
+                .validation('mustmatchcaseinsensitive', {
+                    preCompileFn: function (tElement) {
+                        tElement.attr('nemo-no-paste', 'true');
+                    },
+                    validateFn: function (value, validationRuleValue, formHandlerController) {
+                        var targetValue = formHandlerController.getFieldValue(validationRuleValue);
+                        return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
+                    }
+                })
+
                 .validation('minlength', {
                     validateFn: function (value, validationRuleValue) {
                         return (value && validationRuleValue) ? value.length >= validationRuleValue : true;
@@ -111,6 +121,8 @@ angular.module('nemo', [])
                 .validation('usernameserver', {})
 
                 .validation('emailserver', {})
+
+                .validation('signupCompleteserver', {})
 
                 .validation('captchaserver', {
                     validationRuleInterfaceFns: function(scope, ngModelCtrl) {
@@ -651,7 +663,7 @@ angular.module('nemo')
 
         function preCompileValidationRuleFn(validationListItem, tElement) {
             var validationOptions = validation.getValidationOptions(validationListItem.type);
-            if (angular.isFunction(validationOptions.preCompileFn)) {
+            if (validationOptions && angular.isFunction(validationOptions.preCompileFn)) {
                 validationOptions.preCompileFn(tElement);
             }
         }

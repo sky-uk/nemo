@@ -142,5 +142,18 @@ TESTDATA.validation = {
                     }
                 ]
         }
+    },
+    mustmatchcaseinsensitive: function () {
+        return {
+            "type" : "mustmatchcaseinsensitive",
+            "rules":
+                [
+                    {
+                        "value" : "username",
+                        "code" : "foo.must.match.username",
+                        "message" : "Foo must match username"
+                    }
+                ]
+        }
     }
 };
