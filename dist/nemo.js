@@ -258,6 +258,7 @@ angular.module('nemo')
             templateElement.setAttribute('ng-model', 'model.value');
             templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
+            templateElement.setAttribute('id', 'nemo-{{model.id}}');
             return parentTemplateElement.innerHTML;
         }
 
@@ -312,10 +313,6 @@ angular.module('nemo')
                 },
                 getNgModelCtrl: function () {
                     return ngModelCtrl;
-                },
-                forceDirty: function () {
-                    ngModelCtrl.$setDirty();
-                    ngModelCtrl.$setTouched();
                 }
             }
         }
@@ -556,6 +553,14 @@ angular.module('nemo')
             getRegisteredField(fieldName).setValue(value);
         };
 
+        this.getFieldsValues = function () {
+            var fieldsValues = {};
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
+                fieldsValues[fieldName] = fieldInterfaceFns.getValue();
+            });
+            return fieldsValues;
+        };
+
         this.getFieldValue = function (fieldName) {
             return getRegisteredField(fieldName).getValue();
         };
@@ -579,12 +584,6 @@ angular.module('nemo')
 
         this.forceInvalid = function (validationRuleCode) {
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
-        };
-
-        this.forceAllFieldsToBeDirty = function () {
-            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
-                fieldInterfaceFns.forceDirty();
-            });
         };
 
         this.giveFirstInvalidFieldFocus = function () {

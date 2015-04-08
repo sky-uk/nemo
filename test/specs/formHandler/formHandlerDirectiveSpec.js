@@ -4,6 +4,42 @@ describe('nemo form handler directive', function () {
         module('nemo');
     });
 
+    describe('get fields values method', function () {
+
+        it('must call the getValue method of all the registered fields', function () {
+
+            var formHandlerCtrl, field1InterfaceFns, field2InterfaceFns, fieldsValues;
+
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+            });
+
+            and(function () {
+                field1InterfaceFns = {
+                    getValue: sinon.stub().returns('foo')
+                };
+                field2InterfaceFns = {
+                    getValue: sinon.stub().returns('bar')
+                };
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', field1InterfaceFns);
+                formHandlerCtrl.registerField('field2', field2InterfaceFns);
+            });
+
+            and(function () {
+                fieldsValues = formHandlerCtrl.getFieldsValues();
+            });
+
+            then(function () {
+                expect(field1InterfaceFns.getValue).toHaveBeenCalled();
+                expect(field2InterfaceFns.getValue).toHaveBeenCalled();
+                expect(fieldsValues).toEqual({ field1: 'foo', field2: 'bar'});
+            });
+        });
+    });
+
     describe('get field value method', function () {
 
         it('must call the getValue method of the given field', function () {
@@ -164,34 +200,6 @@ describe('nemo form handler directive', function () {
             });
         });
 
-    });
-
-    describe('force forceDirty method', function () {
-
-        it('must call all forceDirty function for a set of registered fields', function () {
-
-            var formHandlerCtrl, field1ForceDirty, field2ForceDirty;
-
-            given(function () {
-                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                field1ForceDirty = sinon.stub();
-                field2ForceDirty = sinon.stub();
-            });
-
-            when(function () {
-                formHandlerCtrl.registerField('field1', {forceDirty: field1ForceDirty});
-                formHandlerCtrl.registerField('field2', {forceDirty: field2ForceDirty});
-            });
-
-            and(function () {
-                formHandlerCtrl.forceAllFieldsToBeDirty();
-            });
-
-            then(function () {
-                expect(field1ForceDirty).toHaveBeenCalled();
-                expect(field2ForceDirty).toHaveBeenCalled();
-            });
-        });
     });
 
     describe('set active field method', function () {

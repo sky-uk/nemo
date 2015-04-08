@@ -12,6 +12,7 @@ angular.module('nemo')
             templateElement.setAttribute('ng-model', 'model.value');
             templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
+            templateElement.setAttribute('id', 'nemo-{{model.id}}');
             return parentTemplateElement.innerHTML;
         }
 
@@ -66,10 +67,6 @@ angular.module('nemo')
                 },
                 getNgModelCtrl: function () {
                     return ngModelCtrl;
-                },
-                forceDirty: function () {
-                    ngModelCtrl.$setDirty();
-                    ngModelCtrl.$setTouched();
                 }
             }
         }
