@@ -1,40 +1,36 @@
 angular.module('nemo', [])
 
-    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider',
-        function (inputProvider, validationProvider, utilsProvider, captchaProvider) {
+    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider',
+        function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider) {
 
             inputProvider
 
                 .input('text', {
-                    template: '<input type="text" />'
+                    template: '<input type="text" />',
+                    defaultValue: ''
                 })
 
                 .input('select', {
-                    template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>'
+                    template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>',
+                    defaultValue: ''
                 })
 
                 .input('hidden', {
-                    template: '<input type="hidden" />'
+                    template: '<input type="hidden" />',
+                    defaultValue: ''
                 })
 
                 .input('password', {
-                    template: '<input type="password" />'
+                    template: '<input type="password" />',
+                    defaultValue: ''
                 })
 
                 .input('email', {
-                    template: '<input type="text" />'
+                    template: '<input type="text" />',
+                    defaultValue: ''
                 })
 
-                .input('checkbox', {
-                    template: '<input type="checkbox" ng-click="setActiveCheckboxField()" />',
-                    linkFn: function(scope, element, attrs, controllers) {
-                        scope.setActiveCheckboxField = function () {
-                            var ngModelCtrl = controllers[0];
-                            ngModelCtrl.$setTouched();
-                            scope.setActiveField();
-                        }
-                    }
-                })
+                .input('checkbox', checkboxProvider)
 
                 .input('captcha', captchaProvider);
 
