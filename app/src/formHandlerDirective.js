@@ -38,6 +38,23 @@ angular.module('nemo')
             return getRegisteredField(fieldName).getValue();
         };
 
+
+        this.isFieldValid = function (fieldName) {
+            return getRegisteredField(fieldName).isValid();
+        };
+
+        this.isFieldTouched = function (fieldName) {
+            return getRegisteredField(fieldName).isTouched();
+        };
+
+        this.isFieldActive = function (fieldName) {
+            return getRegisteredField(fieldName).isActive();
+        };
+
+        this.getFieldNgModelCtrl = function (fieldName) {
+            return getRegisteredField(fieldName).getNgModelCtrl();
+        };
+
         this.forceInvalid = function (validationRuleCode) {
             getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
         };
@@ -77,6 +94,16 @@ angular.module('nemo')
 
     .directive('nemoFormHandler', [function () {
         return {
-            controller: 'nemoFormHandlerCtrl'
+            require: ['nemoFormHandler', 'form'],
+            controller: 'nemoFormHandlerCtrl',
+            link: function (scope, element, attrs, controllers) {
+
+                var formHandlerCtrl = controllers[0],
+                    formCtrl = controllers[1];
+
+                formHandlerCtrl.isFormValid = function () {
+                    return formCtrl.$valid;
+                };
+            }
         }
     }]);

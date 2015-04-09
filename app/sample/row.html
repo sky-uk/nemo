@@ -1,0 +1,20 @@
+<div class="clearfix" data-ng-class="getFieldStyleClasses(field.name)">
+    <div class="column label">
+        <span ng-if="field.name == 'captchaId'">Captcha Id</span>
+        {{field.properties.label.message}}: {{field.value}}
+    </div>
+    <div class="column field">
+        <nemo-input model="field" has-focus="$index === 0"></nemo-input>
+        <div class="field-error-icon"
+             data-ng-mouseenter="onErrorIconHover(field.name)"
+             data-ng-mouseleave="onErrorIconBlur(field.name)"
+             data-ng-show="isErrorIconVisible(field.name)">@
+        </div>
+        <data-nemo-validation-messages model="getFieldNgModelCtrl(field.name)" class="field-error-wrapper"
+                                       data-t-error
+                                       data-ng-show="isErrorMessageVisible(field.name)"
+                                       data-ng-class="{'is-hovered-not-active' : isHoveredAndNotActive(field.name)}"></data-nemo-validation-messages>
+
+
+    </div>
+</div>

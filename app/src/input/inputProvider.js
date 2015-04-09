@@ -50,6 +50,12 @@ angular.module('nemo')
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },
+                isTouched: function () {
+                    return ngModelCtrl.$touched;
+                },
+                isActive: function () {
+                    return ngModelCtrl.isActive;
+                },
                 setFocus: function() {
                     element[0].focus();
                 },
@@ -58,6 +64,9 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
+                },
+                getNgModelCtrl: function () {
+                    return ngModelCtrl;
                 }
             }
         }

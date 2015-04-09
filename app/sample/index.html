@@ -679,40 +679,88 @@
             ];
         }])
 
-            .directive('fakeSubmitHandler', [function () {
-                return{
-                    require: 'nemoFormHandler',
-                    link: function (scope, element, attrs, formHandlerCtrl) {
-                        scope.fakeSubmit = function () {
-                            formHandlerCtrl.validateForm();
-                            if (this.sampleForm.$valid) {
-                                formHandlerCtrl.forceInvalid('captcha.invalid');
-                                formHandlerCtrl.giveFirstInvalidFieldFocus();
-                            } else {
-                                formHandlerCtrl.giveFirstInvalidFieldFocus();
-                            }
-                        };
-                    }
-                }
-            }]);
+        .directive('fakeFormHandler', [function () {
+            return{
+                require: 'nemoFormHandler',
+                link: function (scope, element, attrs, formHandlerCtrl) {
 
+                    var iconVisibilityStates = {};
+
+                    scope.fakeSubmit = function () {
+                        formHandlerCtrl.validateForm();
+                        if (scope.isFormValid()) {
+                            formHandlerCtrl.forceInvalid('captcha.invalid');
+                            formHandlerCtrl.giveFirstInvalidFieldFocus();
+                        } else {
+                            formHandlerCtrl.giveFirstInvalidFieldFocus();
+                        }
+                    };
+
+                    scope.isFormValid = formHandlerCtrl.isFormValid;
+
+
+                    scope.getFieldStyleClasses = function (fieldName) {
+                        return {
+                            'ng-touched': formHandlerCtrl.isFieldTouched(fieldName),
+                            'ng-invalid': !formHandlerCtrl.isFieldValid(fieldName)
+                        };
+                    };
+
+                    scope.onErrorIconHover = function (fieldName) {
+                        iconVisibilityStates[fieldName] = true;
+                    };
+
+                    scope.onErrorIconBlur = function (fieldName) {
+                        iconVisibilityStates[fieldName] = false;
+                    };
+
+                    scope.isErrorIconVisible = function (fieldName) {
+                        var isInvalid = !formHandlerCtrl.isFieldValid(fieldName),
+                            isTouched = formHandlerCtrl.isFieldTouched(fieldName);
+                        return isInvalid && isTouched;
+                    };
+
+                    scope.isErrorMessageVisible = function (fieldName) {
+                        var isInvalid = !formHandlerCtrl.isFieldValid(fieldName),
+                                isActive = formHandlerCtrl.isFieldActive(fieldName),
+                                isTouched = formHandlerCtrl.isFieldTouched(fieldName),
+                                isErrorIconHovered = iconVisibilityStates[fieldName];
+                        return isInvalid && (isErrorIconHovered || (isActive && isTouched));
+                    };
+
+                    scope.isHoveredAndNotActive = function (fieldName) {
+                        return iconVisibilityStates[fieldName] && !formHandlerCtrl.isFieldActive(fieldName);
+                    };
+
+                    scope.getFieldNgModelCtrl = formHandlerCtrl.getFieldNgModelCtrl;
+                }
+            }
+        }]);
     </script>
 </head>
 
 <body ng-controller="MainController">
 
-    <form nemo-form-handler name="sampleForm" class="container" ng-submit="fakeSubmit()" fake-submit-handler novalidate>
-        <div class="clearfix" ng-repeat="field in fields">
+    <form nemo-form-handler class="container" ng-submit="fakeSubmit()" fake-form-handler novalidate>
+        <div class="clearfix" ng-repeat="field in fields" data-ng-class="getFieldStyleClasses(field.name)">
             <div class="column label">
                 <span ng-if="field.name == 'captchaId'">Captcha Id</span>
                 {{field.properties.label.message}}: {{field.value}}
             </div>
             <div class="column field">
                 <nemo-input model="field" has-focus="$index === 0"></nemo-input>
-                <nemo-validation-messages model="sampleForm[field.name]"></nemo-validation-messages>
+                <div class="field-error-icon"
+                     data-ng-mouseenter="onErrorIconHover(field.name)"
+                     data-ng-mouseleave="onErrorIconBlur(field.name)"
+                     data-ng-show="isErrorIconVisible(field.name)">@</div>
+                <data-nemo-validation-messages model="getFieldNgModelCtrl(field.name)" class="field-error-wrapper" data-t-error
+                                               data-ng-show="isErrorMessageVisible(field.name)"
+                                               data-ng-class="{'is-hovered-not-active' : isHoveredAndNotActive(field.name)}"></data-nemo-validation-messages>
+
+
             </div>
         </div>
-        Is form valid? {{sampleForm.$valid}}
+        Is form valid? {{isFormValid()}}
         <input type="submit" value="Submit!" />
     </form>
 

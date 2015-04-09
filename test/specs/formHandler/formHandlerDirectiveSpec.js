@@ -310,4 +310,45 @@ describe('nemo form handler directive', function () {
             expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
         });
     });
+
+    [
+        { formInterface: 'getFieldNgModelCtrl', elInterface: 'getNgModelCtrl' },
+        { formInterface: 'isFieldActive', elInterface: 'isActive' },
+        { formInterface: 'isFieldValid', elInterface: 'isValid' },
+        { formInterface: 'isFieldTouched', elInterface: 'isTouched' }
+    ].forEach(
+        function (scenario) {
+            it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
+            'the ' + scenario.formInterface + ' function of the formHanderController is invoked', function () {
+
+                var formHandlerCtrl, fieldOneStub, fieldTwoStub;
+
+                given(function () {
+                    formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+                    fieldOneStub = sinon.stub();
+                    fieldTwoStub = sinon.stub();
+                });
+
+                when(function () {
+                    var field2 = {},
+                        field1 = {};
+
+                    field1[scenario.elInterface] = fieldOneStub;
+                    field2[scenario.elInterface] = fieldTwoStub;
+
+                    formHandlerCtrl.registerField('field1', field1);
+                    formHandlerCtrl.registerField('field2', field2);
+                });
+
+                and(function () {
+                    formHandlerCtrl[scenario.formInterface]('field2');
+                });
+
+                then(function () {
+                    expect(fieldOneStub).not.toHaveBeenCalled();
+                    expect(fieldTwoStub).toHaveBeenCalled();
+                });
+            });
+        }
+    );
 });
