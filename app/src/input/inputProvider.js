@@ -16,14 +16,29 @@ angular.module('nemo')
             return parentTemplateElement.innerHTML;
         }
 
+        function manageDefaultValue(scope, formHandlerCtrl, defaultValue) {
+            var fieldName = scope.model.name,
+                unregisterFn = scope.$watch(function () {
+                return formHandlerCtrl.getFieldValue(fieldName);
+            }, function (fieldValue) {
+                if(defaultValue !== undefined && (fieldValue === null || fieldValue === undefined)) {
+                    formHandlerCtrl.setFieldValue(fieldName, defaultValue);
+                }
+                unregisterFn();
+            });
+        }
+
+        function manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, linkFn) {
+            (linkFn || angular.noop)(scope, element, attrs, controllers, $compile, $http);
+        }
+
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
                 var ngModelCtrl = controllers[0],
                     formHandlerCtrl = controllers[1];
-                if (options.linkFn) {
-                    options.linkFn(scope, element, attrs, controllers, $compile, $http);
-                }
                 registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+                manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
+                manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                 handleActivationState(scope, formHandlerCtrl);
             }
         }
@@ -64,6 +79,7 @@ angular.module('nemo')
                 },
                 setValue: function (value) {
                     ngModelCtrl.$setViewValue(value);
+                    ngModelCtrl.$render();
                 },
                 getNgModelCtrl: function () {
                     return ngModelCtrl;
