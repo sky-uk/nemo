@@ -118,7 +118,7 @@ angular.module('nemo', [])
 
                 .validation('emailserver', {})
 
-                .validation('signupCompleteserver', {})
+                .validation('transactionCompleteserver', {})
 
                 .validation('captchaserver', {
                     validationRuleInterfaceFns: function(scope, ngModelCtrl) {
