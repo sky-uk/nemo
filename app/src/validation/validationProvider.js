@@ -8,7 +8,7 @@ angular.module('nemo')
 
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = angular.isFunction(validateFn) ?
-                validateFn(ngModelCtrl.$viewValue, validationRule.value, formHandlerCtrl, ngModelCtrl) :
+                validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
                 true;
             return isValid;
         }
