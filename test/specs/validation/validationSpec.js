@@ -95,7 +95,7 @@ describe('nemo validation messages', function () {
 
         scenario.validationScenarios.forEach(function (validationScenario) {
 
-            it('must check the validity of the field of type ' + scenario.type + ' for the validation ' + validationScenario.validation.type, function () {
+            it('must check the validity of the field of type ' + scenario.inputType + ' for the validation ' + validationScenario.validation.type, function () {
 
                 var model, formElement, fieldElement, validationMessagesElement;
 
