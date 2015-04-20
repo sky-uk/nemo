@@ -278,36 +278,114 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    it('must invoke the refreshValidity function of all the registered validation rules whenever the ' +
-    'validateForm function of the formHanderController is invoked', function () {
+    describe('validating the form', function () {
+        it('must invoke the refreshValidity function of all the registered validation rules' +
+        'and the setFilthy function of all the fields whenever the ' +
+        'validateFormAndSetDirtyTouched function of the formHanderController is invoked', function () {
 
-        var formHandlerCtrl, validationRule1InterfaceFns, validationRule2InterfaceFns;
+            var formHandlerCtrl, validationRule1InterfaceFns, validationRule2InterfaceFns, field1InterfaceFns,
+                field2InterfaceFns;
 
-        given(function () {
-            formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+            });
+
+            and(function () {
+                validationRule1InterfaceFns = {
+                    refreshValidity: sinon.stub()
+                };
+                validationRule2InterfaceFns = {
+                    refreshValidity: sinon.stub()
+                };
+            });
+
+            and(function () {
+                field1InterfaceFns = {
+                    setFilthy: sinon.stub()
+                };
+                field2InterfaceFns = {
+                    setFilthy: sinon.stub()
+                };
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', field1InterfaceFns);
+                formHandlerCtrl.registerField('field2', field2InterfaceFns);
+            });
+
+            and(function () {
+                formHandlerCtrl.registerValidationRule('field.validationRule1', validationRule1InterfaceFns);
+                formHandlerCtrl.registerValidationRule('field.validationRule2', validationRule2InterfaceFns);
+            });
+
+            and(function () {
+                formHandlerCtrl.validateFormAndSetDirtyTouched();
+            });
+
+            then(function () {
+                expect(validationRule1InterfaceFns.refreshValidity).toHaveBeenCalled();
+                expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
+            });
+
+            and(function () {
+                expect(field1InterfaceFns.setFilthy).toHaveBeenCalled();
+                expect(field2InterfaceFns.setFilthy).toHaveBeenCalled();
+            })
         });
 
-        and(function () {
-            validationRule1InterfaceFns = {
-                refreshValidity: sinon.stub()
-            };
-            validationRule2InterfaceFns = {
-                refreshValidity: sinon.stub()
-            };
-        });
 
-        when(function () {
-            formHandlerCtrl.registerValidationRule('field.validationRule1', validationRule1InterfaceFns);
-            formHandlerCtrl.registerValidationRule('field.validationRule2', validationRule2InterfaceFns);
-        });
+        it('must invoke the refreshValidity function of all the registered validation rules, but not the setFilthy ' +
+        'function of the fields whenever the ' +
+        'validateForm function of the formHanderController is invoked', function () {
 
-        and(function () {
-            formHandlerCtrl.validateForm();
-        });
+            var formHandlerCtrl, validationRule1InterfaceFns, validationRule2InterfaceFns, field1InterfaceFns,
+                field2InterfaceFns;
 
-        then(function () {
-            expect(validationRule1InterfaceFns.refreshValidity).toHaveBeenCalled();
-            expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+            });
+
+            and(function () {
+                validationRule1InterfaceFns = {
+                    refreshValidity: sinon.stub()
+                };
+                validationRule2InterfaceFns = {
+                    refreshValidity: sinon.stub()
+                };
+            });
+
+            and(function () {
+                field1InterfaceFns = {
+                    setFilthy: sinon.stub()
+                };
+                field2InterfaceFns = {
+                    setFilthy: sinon.stub()
+                };
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', field1InterfaceFns);
+                formHandlerCtrl.registerField('field2', field2InterfaceFns);
+            });
+
+            and(function () {
+                formHandlerCtrl.registerValidationRule('field.validationRule1', validationRule1InterfaceFns);
+                formHandlerCtrl.registerValidationRule('field.validationRule2', validationRule2InterfaceFns);
+            });
+
+            and(function () {
+                formHandlerCtrl.validateForm();
+            });
+
+            then(function () {
+                expect(validationRule1InterfaceFns.refreshValidity).toHaveBeenCalled();
+                expect(validationRule2InterfaceFns.refreshValidity).toHaveBeenCalled();
+            });
+
+            and(function () {
+                expect(field1InterfaceFns.setFilthy).not.toHaveBeenCalled();
+                expect(field2InterfaceFns.setFilthy).not.toHaveBeenCalled();
+            })
         });
     });
 

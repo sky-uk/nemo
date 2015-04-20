@@ -48,8 +48,6 @@ angular.module('nemo')
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             ngModelCtrl.$setValidity(validationRule.code, isValid);
-            ngModelCtrl.$setDirty();
-            ngModelCtrl.$setTouched();
         }
 
         function getLinkFn(options, directiveName, validateFn, messages) {

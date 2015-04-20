@@ -312,6 +312,16 @@ angular.module('nemo')
             return function (scope, element, attrs, controllers) {
                 var ngModelCtrl = controllers[0],
                     formHandlerCtrl = controllers[1];
+
+                scope.$watch(function () {
+                    return ngModelCtrl.$viewValue;
+                }, function (newVal, oldVal) {
+                    if (newVal === oldVal || oldVal === undefined) {
+                        return;
+                    }
+
+                    formHandlerCtrl.validateForm();
+                });
                 registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
@@ -359,6 +369,10 @@ angular.module('nemo')
                 },
                 getNgModelCtrl: function () {
                     return ngModelCtrl;
+                },
+                setFilthy: function () {
+                    ngModelCtrl.$setDirty();
+                    ngModelCtrl.$setTouched();
                 }
             }
         }
@@ -444,8 +458,6 @@ angular.module('nemo')
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             ngModelCtrl.$setValidity(validationRule.code, isValid);
-            ngModelCtrl.$setDirty();
-            ngModelCtrl.$setTouched();
         }
 
         function getLinkFn(options, directiveName, validateFn, messages) {
@@ -646,6 +658,15 @@ angular.module('nemo')
         this.setActiveField = function (activeFieldName) {
             angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
                 fieldInterfaceFns.activeFieldChange(activeFieldName);
+            });
+        };
+
+        this.validateFormAndSetDirtyTouched = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+            angular.forEach(registeredFieldsFns, function (registeredFieldFns) {
+                registeredFieldFns.setFilthy();
             });
         };
 
