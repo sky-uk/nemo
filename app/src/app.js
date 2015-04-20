@@ -114,6 +114,23 @@ angular.module('nemo', [])
                     }
                 })
 
+                .validation('dependentpattern', {
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                            regex = validationRule.patterns[otherFieldValue];
+                        return (value) ? new RegExp(regex, 'i').test(value) : true;
+                    }
+                })
+
+                .validation('dependentrequired', {
+                    validateFn: function (value, validationRule, formHandlerController, ngModelController) {
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                            required = utilsProvider.contains(validationRule.when, otherFieldValue);
+
+                        return required ? !ngModelController.$isEmpty(value) : true;
+                    }
+                })
+
                 .validation('usernameserver', {})
 
                 .validation('emailserver', {})

@@ -155,5 +155,38 @@ TESTDATA.validation = {
                     }
                 ]
         }
+    },
+    dependentpattern: function () {
+        return {
+            "type" : "dependentpattern",
+            "rules":
+                [
+                    {
+                        "value" : "username",
+                        "patterns" : {
+                            "fooUsername": "^[0-9]{1}$",
+                            "bob": "^[a-z]+$"
+                        },
+                        "code" : "foo.dependent.pattern.username",
+                        "message" : "Foo is not valid"
+                    }
+                ]
+        }
+    },
+    dependentrequired: function () {
+        return {
+            "type" : "dependentrequired",
+            "rules":
+                [
+                    {
+                        "value" : "username",
+                        "when" : [
+                            "fooUsername"
+                        ],
+                        "code" : "foo.dependent.required.username",
+                        "message" : "Foo is required"
+                    }
+                ]
+        }
     }
 };
