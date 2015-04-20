@@ -232,6 +232,20 @@
                                 ]
                             },
                             {
+                                "type": "dependentpattern",
+                                "rules": [
+                                    {
+                                        "value": "firstName",
+                                        "patterns": {
+                                            "frances": "(frances)",
+                                            "bob": "^[a-d]+$"
+                                        },
+                                        "code": "lastName.size.toobig",
+                                        "message": "Must match Frances"
+                                    }
+                                ]
+                            },
+                            {
                                 "type": "pattern",
                                 "rules": [
                                     {
@@ -259,6 +273,32 @@
                         "label": {
                             "code": "lastName.label",
                             "message": "Last name"
+                        }
+                    }
+                },
+                {
+                    "name": "requiredfield",
+                    "value": null,
+                    "type": "text",
+                    properties: {
+                        "validation": [
+                            {
+                                "type": "dependentrequired",
+                                "rules": [
+                                    {
+                                        "value" : "username",
+                                        "when" : [
+                                            "fooUsername"
+                                        ],
+                                        "code" : "foo.dependent.required.username",
+                                        "message" : "Foo is required"
+                                    }
+                                ]
+                            }
+                        ],
+                        "label": {
+                            "code": "requiredfield.label",
+                            "message": "Dependent required"
                         }
                     }
                 },

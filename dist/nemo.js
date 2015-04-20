@@ -37,32 +37,32 @@ angular.module('nemo', [])
             validationProvider
 
                 .validation('required', {
-                    validateFn: function (value, validationRuleValue, formHandlerController, ngModelController) {
-                        return (validationRuleValue) ? !ngModelController.$isEmpty(value) : true;
+                    validateFn: function (value, validationRule, formHandlerController, ngModelController) {
+                        return (validationRule.value) ? !ngModelController.$isEmpty(value) : true;
                     }
                 })
 
                 .validation('inlist', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value) ? utilsProvider.contains(validationRuleValue, value) : true;
+                    validateFn: function (value, validationRule) {
+                        return (value) ? utilsProvider.contains(validationRule.value, value) : true;
                     }
                 })
 
                 .validation('pattern', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value) ? new RegExp(validationRuleValue).test(value) : true;
+                    validateFn: function (value, validationRule) {
+                        return (value) ? new RegExp(validationRule.value).test(value) : true;
                     }
                 })
 
                 .validation('notpattern', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value) ? !(new RegExp(validationRuleValue).test(value)) : true;
+                    validateFn: function (value, validationRule) {
+                        return (value) ? !(new RegExp(validationRule.value).test(value)) : true;
                     }
                 })
 
                 .validation('mustnotcontain', {
-                    validateFn: function (value, validationRuleValue, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRuleValue);
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
                         return (value && targetValue) ? value.indexOf(targetValue) < 0 : true;
                     }
                 })
@@ -71,8 +71,8 @@ angular.module('nemo', [])
                     preCompileFn: function (tElement) {
                         tElement.attr('nemo-no-paste', 'true');
                     },
-                    validateFn: function (value, validationRuleValue, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRuleValue);
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
                         return (value) ? value === targetValue : true;
                     }
                 })
@@ -81,27 +81,27 @@ angular.module('nemo', [])
                     preCompileFn: function (tElement) {
                         tElement.attr('nemo-no-paste', 'true');
                     },
-                    validateFn: function (value, validationRuleValue, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRuleValue);
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
                     }
                 })
 
                 .validation('minlength', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value && validationRuleValue) ? value.length >= validationRuleValue : true;
+                    validateFn: function (value, validationRule) {
+                        return (value && validationRule) ? value.length >= validationRule.value : true;
                     }
                 })
 
                 .validation('maxlength', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value && validationRuleValue) ? value.length <= validationRuleValue : true;
+                    validateFn: function (value, validationRule) {
+                        return (value && validationRule) ? value.length <= validationRule.value : true;
                     }
                 })
 
                 .validation('email', {
-                    validateFn: function (value, validationRuleValue) {
-                        if (value && validationRuleValue) {
+                    validateFn: function (value, validationRule) {
+                        if (value && validationRule.value) {
                             return new RegExp(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i).test(value);
                         }
                         return true;
@@ -109,8 +109,25 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustbeequal', {
-                    validateFn: function (value, validationRuleValue) {
-                        return (value || value === false) ? value === validationRuleValue : true;
+                    validateFn: function (value, validationRule) {
+                        return (value || value === false) ? value === validationRule.value : true;
+                    }
+                })
+
+                .validation('dependentpattern', {
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                            regex = validationRule.patterns[otherFieldValue];
+                        return (value) ? new RegExp(regex, 'i').test(value) : true;
+                    }
+                })
+
+                .validation('dependentrequired', {
+                    validateFn: function (value, validationRule, formHandlerController, ngModelController) {
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                            required = utilsProvider.contains(validationRule.when, otherFieldValue);
+
+                        return required ? !ngModelController.$isEmpty(value) : true;
                     }
                 })
 
@@ -387,7 +404,7 @@ angular.module('nemo')
 
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = angular.isFunction(validateFn) ?
-                validateFn(ngModelCtrl.$viewValue, validationRule.value, formHandlerCtrl, ngModelCtrl) :
+                validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
                 true;
             return isValid;
         }
