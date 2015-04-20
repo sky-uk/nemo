@@ -220,7 +220,7 @@ describe('nemo input', function () {
             });
 
             and('validation rule captcha.invalid is marked as invalid', function () {
-                expect(fieldElement.attr('class')).toContain('ng-invalid-captcha.invalid');
+                expect(fieldElement.attr('class')).toContain('ng-invalid-captcha.blank');
             });
         }));
     });

@@ -36,6 +36,16 @@ angular.module('nemo')
             return function (scope, element, attrs, controllers) {
                 var ngModelCtrl = controllers[0],
                     formHandlerCtrl = controllers[1];
+
+                scope.$watch(function () {
+                    return ngModelCtrl.$viewValue;
+                }, function (newVal, oldVal) {
+                    if (newVal === oldVal || oldVal === undefined) {
+                        return;
+                    }
+
+                    formHandlerCtrl.validateForm();
+                });
                 registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
@@ -83,6 +93,10 @@ angular.module('nemo')
                 },
                 getNgModelCtrl: function () {
                     return ngModelCtrl;
+                },
+                setFilthy: function () {
+                    ngModelCtrl.$setDirty();
+                    ngModelCtrl.$setTouched();
                 }
             }
         }
