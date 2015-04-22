@@ -188,5 +188,18 @@ TESTDATA.validation = {
                     }
                 ]
         }
+    },
+    usernameserver: function () {
+        return {
+            "type" : "usernameserver",
+            "rules":
+                [
+                    {
+                        "message": "Sorry, someone already has that username",
+                        "value": null,
+                        "code": "username.taken"
+                    }
+                ]
+        }
     }
 };
