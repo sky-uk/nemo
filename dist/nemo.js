@@ -1,7 +1,7 @@
 angular.module('nemo', [])
 
-    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider',
-        function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider) {
+    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider', 'serverValidationProvider',
+        function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider, serverValidation) {
 
             inputProvider
 
@@ -131,24 +131,23 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('usernameserver', {})
+                .validation('usernameserver', serverValidation)
 
-                .validation('emailserver', {})
+                .validation('emailserver', serverValidation)
 
                 .validation('transactionCompleteserver', {})
 
-                .validation('captchaserver', {
+                .validation('captchaserver', angular.extend({}, {
                     validationRuleInterfaceFns: function(scope, ngModelCtrl) {
                         return {
                             forceInvalid: function (validationRuleCode) {
-                                ngModelCtrl.$setTouched();
                                 scope.refreshCaptcha().then(function () {
                                     ngModelCtrl.$setValidity(validationRuleCode, false);
                                 });
                             }
                         }
                     }
-                });
+                }, serverValidation));
     }]);
 'use strict';
 angular.module('nemo')
@@ -437,6 +436,22 @@ angular.module('nemo')
     }
     ]);
 
+angular.module('nemo').provider('serverValidation', function () {
+    return {
+        linkFn: function (scope, element, attrs, controllers, validFns) {
+            var ngModelCtrl = controllers[0];
+
+            scope.$watch(function () {
+                return ngModelCtrl.$viewValue;
+            }, function (newVal, oldVal) {
+                if (newVal === oldVal) { return; }
+
+                validFns.forceValid();
+            });
+        },
+        $get: {}
+    }
+});
 'use strict';
 
 angular.module('nemo')
@@ -448,7 +463,7 @@ angular.module('nemo')
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = angular.isFunction(validateFn) ?
                 validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
-                true;
+                ngModelCtrl.$valid;
             return isValid;
         }
 
@@ -459,19 +474,26 @@ angular.module('nemo')
             messages.set(validationRule.code, validationRule.message);
         }
 
-        function registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, customValidationRuleInterfaceFns) {
-            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
-                customerValidationRuleInterface = customValidationRuleInterfaceFns ?
-                    customValidationRuleInterfaceFns(scope, ngModelCtrl) :
-                    {};
-            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+        function registerValidationRule(validationRule, formHandlerCtrl, validationRuleInterfaceFns) {
             formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
+        }
+
+        function getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options) {
+            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
+                customerValidationRuleInterface = options.validationRuleInterfaceFns ?
+                    options.validationRuleInterfaceFns(scope, ngModelCtrl) :
+                {};
+            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+            return validationRuleInterfaceFns
         }
 
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             return {
                 forceInvalid: function () {
                     validityChange(ngModelCtrl, validationRule.code, false);
+                },
+                forceValid: function () {
+                    validityChange(ngModelCtrl, validationRule.code, true);
                 },
                 refreshValidity: function () {
                     refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
@@ -480,7 +502,6 @@ angular.module('nemo')
         }
 
         function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
-            ngModelCtrl.$setTouched();
             ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
@@ -494,9 +515,16 @@ angular.module('nemo')
                 var validationRules = scope.$eval(attrs[directiveName]),
                     ngModelCtrl = controllers[0],
                     formHandlerCtrl = controllers[1];
+
                 validationRules.forEach(function (validationRule) {
+                    var validFns = getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options);
+
                     setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
-                    registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options.validationRuleInterfaceFns);
+                    registerValidationRule(validationRule, formHandlerCtrl, validFns);
+
+                    if (options.linkFn) {
+                        options.linkFn(scope, element, attrs, controllers, validFns);
+                    }
                 });
             };
         }
