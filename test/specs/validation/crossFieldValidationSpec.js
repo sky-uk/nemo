@@ -12,6 +12,7 @@ describe('validation', function () {
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'fooUsername', fieldValidity: false, validationMessagesText: 'Foo cant contain username' },
+                { viewValue: 'foousername', fieldValidity: false, validationMessagesText: 'Foo cant contain username' },
                 { viewValue: 'foo', fieldValidity: true, validationMessagesText: '' },
                 { viewValue: '', fieldValidity: true, validationMessagesText: '' }
             ]
