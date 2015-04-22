@@ -76,6 +76,15 @@ angular.module('nemo')
             });
         };
 
+        this.validateFormAndSetDirtyTouched = function () {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
+                registeredValidationRuleFns.refreshValidity();
+            });
+            angular.forEach(registeredFieldsFns, function (registeredFieldFns) {
+                registeredFieldFns.setFilthy();
+            });
+        };
+
         this.validateForm = function () {
             angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
                 registeredValidationRuleFns.refreshValidity();

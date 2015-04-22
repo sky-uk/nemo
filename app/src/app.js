@@ -1,7 +1,7 @@
 angular.module('nemo', [])
 
-    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider',
-        function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider) {
+    .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider', 'serverValidationProvider',
+        function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider, serverValidation) {
 
             inputProvider
 
@@ -131,22 +131,21 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('usernameserver', {})
+                .validation('usernameserver', serverValidation)
 
-                .validation('emailserver', {})
+                .validation('emailserver', serverValidation)
 
                 .validation('transactionCompleteserver', {})
 
-                .validation('captchaserver', {
+                .validation('captchaserver', angular.extend({}, {
                     validationRuleInterfaceFns: function(scope, ngModelCtrl) {
                         return {
                             forceInvalid: function (validationRuleCode) {
-                                ngModelCtrl.$setTouched();
                                 scope.refreshCaptcha().then(function () {
                                     ngModelCtrl.$setValidity(validationRuleCode, false);
                                 });
                             }
                         }
                     }
-                });
+                }, serverValidation));
     }]);

@@ -10,9 +10,10 @@ describe('validation', function () {
         {
             validation: validation.mustnotcontain(),
             flows: [
-                { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'fooUsername', fieldValidity: false, validationMessagesText: 'Foo cant contain username' },
                 { viewValue: 'foousername', fieldValidity: false, validationMessagesText: 'Foo cant contain username' },
+                { viewValue: 'blahfoo', fieldValidity: false, validationMessagesText: 'Foo cant contain username', otherFieldValue: 'blah' },
                 { viewValue: 'foo', fieldValidity: true, validationMessagesText: '' },
                 { viewValue: '', fieldValidity: true, validationMessagesText: '' }
             ]
@@ -20,7 +21,7 @@ describe('validation', function () {
         {
             validation: validation.mustmatch(),
             flows: [
-                { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username'},
                 { viewValue: '', fieldValidity: true, validationMessagesText: ''}
@@ -32,14 +33,14 @@ describe('validation', function () {
                 { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'foousername', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo must match username'},
-                { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: '', fieldValidity: true, validationMessagesText: ''}
             ]
         },
         {
             validation: validation.dependentpattern(),
             flows: [
-                { viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: '1', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Foo is not valid'},
                 { viewValue: '', fieldValidity: true, validationMessagesText: ''},
@@ -51,10 +52,10 @@ describe('validation', function () {
         {
             validation: validation.dependentrequired(),
             flows: [
-                { viewValue: undefined, fieldValidity: false, validationMessagesText: ''},
+                { viewValue: undefined, fieldValidity: false, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'foo', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: '', fieldValidity: false, validationMessagesText: 'Foo is required'},
-                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', otherFieldValue: 'dave'}
+                { viewValue: undefined, fieldValidity: true, validationMessagesText: '', otherFieldValue: 'dave', forceValidationOfForm: true}
             ]
         }
     ].forEach(function (scenario) {
@@ -103,14 +104,18 @@ describe('validation', function () {
                 });
 
                 when(function () {
-                    if (flow.otherFieldValue !== undefined) {
-                        secondFieldElement.controller('ngModel').$setViewValue(flow.otherFieldValue);
-                    }
+
                     if (flow.viewValue !== undefined) {
                         firstFieldElement.controller('ngModel').$setViewValue(flow.viewValue);
                     }
 
-                    formElement.controller('nemoFormHandler').validateForm();
+                    if (flow.otherFieldValue !== undefined) {
+                        secondFieldElement.controller('ngModel').$setViewValue(flow.otherFieldValue);
+                    }
+                    //force form to validate when entering undefined as there is no change so it won't get triggered otherwise
+                    if (flow.forceValidationOfForm) {
+                        formElement.controller('nemoFormHandler').validateFormAndSetDirtyTouched();
+                    }
                     firstFieldElement.scope().$digest();
                 });
 

@@ -719,7 +719,7 @@
                     var iconVisibilityStates = {};
 
                     scope.fakeSubmit = function () {
-                        formHandlerCtrl.validateForm();
+                        formHandlerCtrl.validateFormAndSetDirtyTouched();
                         if (scope.isFormValid()) {
                             formHandlerCtrl.forceInvalid('captcha.invalid');
                             formHandlerCtrl.giveFirstInvalidFieldFocus();

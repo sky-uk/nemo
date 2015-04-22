@@ -9,7 +9,7 @@ angular.module('nemo')
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = angular.isFunction(validateFn) ?
                 validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
-                true;
+                ngModelCtrl.$valid;
             return isValid;
         }
 
@@ -20,19 +20,26 @@ angular.module('nemo')
             messages.set(validationRule.code, validationRule.message);
         }
 
-        function registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, customValidationRuleInterfaceFns) {
-            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
-                customerValidationRuleInterface = customValidationRuleInterfaceFns ?
-                    customValidationRuleInterfaceFns(scope, ngModelCtrl) :
-                    {};
-            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+        function registerValidationRule(validationRule, formHandlerCtrl, validationRuleInterfaceFns) {
             formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
+        }
+
+        function getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options) {
+            var validationRuleInterfaceFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl),
+                customerValidationRuleInterface = options.validationRuleInterfaceFns ?
+                    options.validationRuleInterfaceFns(scope, ngModelCtrl) :
+                {};
+            angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
+            return validationRuleInterfaceFns
         }
 
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             return {
                 forceInvalid: function () {
                     validityChange(ngModelCtrl, validationRule.code, false);
+                },
+                forceValid: function () {
+                    validityChange(ngModelCtrl, validationRule.code, true);
                 },
                 refreshValidity: function () {
                     refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
@@ -41,15 +48,12 @@ angular.module('nemo')
         }
 
         function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
-            ngModelCtrl.$setTouched();
             ngModelCtrl.$setValidity(validationRuleCode, newValidity);
         }
 
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             ngModelCtrl.$setValidity(validationRule.code, isValid);
-            ngModelCtrl.$setDirty();
-            ngModelCtrl.$setTouched();
         }
 
         function getLinkFn(options, directiveName, validateFn, messages) {
@@ -57,9 +61,16 @@ angular.module('nemo')
                 var validationRules = scope.$eval(attrs[directiveName]),
                     ngModelCtrl = controllers[0],
                     formHandlerCtrl = controllers[1];
+
                 validationRules.forEach(function (validationRule) {
+                    var validFns = getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options);
+
                     setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
-                    registerValidationRule(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options.validationRuleInterfaceFns);
+                    registerValidationRule(validationRule, formHandlerCtrl, validFns);
+
+                    if (options.linkFn) {
+                        options.linkFn(scope, element, attrs, controllers, validFns);
+                    }
                 });
             };
         }
