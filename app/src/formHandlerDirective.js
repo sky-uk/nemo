@@ -76,6 +76,10 @@ angular.module('nemo')
             });
         };
 
+        this.setFieldDirtyTouched = function (fieldName) {
+            return getRegisteredField(fieldName).setFilthy();
+        };
+
         this.validateFormAndSetDirtyTouched = function () {
             angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
                 registeredValidationRuleFns.refreshValidity();

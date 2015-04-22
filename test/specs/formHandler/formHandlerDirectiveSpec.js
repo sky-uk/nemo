@@ -393,7 +393,8 @@ describe('nemo form handler directive', function () {
         { formInterface: 'getFieldNgModelCtrl', elInterface: 'getNgModelCtrl' },
         { formInterface: 'isFieldActive', elInterface: 'isActive' },
         { formInterface: 'isFieldValid', elInterface: 'isValid' },
-        { formInterface: 'isFieldTouched', elInterface: 'isTouched' }
+        { formInterface: 'isFieldTouched', elInterface: 'isTouched' },
+        { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' }
     ].forEach(
         function (scenario) {
             it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
