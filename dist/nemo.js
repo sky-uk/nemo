@@ -63,7 +63,7 @@ angular.module('nemo', [])
                 .validation('mustnotcontain', {
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value);
-                        return (value && targetValue) ? value.indexOf(targetValue) < 0 : true;
+                        return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
                     }
                 })
 
@@ -463,7 +463,7 @@ angular.module('nemo')
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = angular.isFunction(validateFn) ?
                 validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
-                ngModelCtrl.$valid;
+                !ngModelCtrl.$error[validationRule.code];
             return isValid;
         }
 
