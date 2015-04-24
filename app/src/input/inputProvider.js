@@ -1,8 +1,10 @@
-'use strict';
+/* jshint -W040 */
 
 angular.module('nemo')
 
     .provider('nemoInputDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
+
+        'use strict';
 
         function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
@@ -49,18 +51,20 @@ angular.module('nemo')
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
                 var ngModelCtrl = controllers[0],
-                    formHandlerCtrl = controllers[1];
+                    formHandlerCtrl = controllers[1],
+                    parentNgModelCtrl = controllers[2];
                 validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl);
                 registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
-                handleActivationState(scope, formHandlerCtrl);
+                handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
             };
         }
 
-        function handleActivationState(scope, formHandlerCtrl) {
+        function handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl) {
+            var newActiveField = (parentNgModelCtrl) ? [parentNgModelCtrl.$name, scope.model.name] : scope.model.name;
             scope.setActiveField = function () {
-                formHandlerCtrl.setActiveField(scope.model.name);
+                formHandlerCtrl.setActiveField(newActiveField);
             };
         }
 
@@ -135,7 +139,7 @@ angular.module('nemo')
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^nemoFormHandler'],
+                require: ['ngModel', '^nemoFormHandler', '?^^ngModel'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',

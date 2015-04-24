@@ -1,7 +1,8 @@
-'use strict';
 angular.module('nemo')
 
     .provider('nemoUtils', [function () {
+
+        'use strict';
 
         function capitalise(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
@@ -30,14 +31,18 @@ angular.module('nemo')
                         timeout = setTimeout(later, wait - last);
                     } else {
                         timeout = null;
-                        if (!immediate) result = func.apply(context, args);
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
                     }
                 };
                 var callNow = immediate && !timeout;
                 if (!timeout) {
                     timeout = setTimeout(later, wait);
                 }
-                if (callNow) result = func.apply(context, args);
+                if (callNow) {
+                    result = func.apply(context, args);
+                }
                 return result;
             };
         }
@@ -51,7 +56,7 @@ angular.module('nemo')
                     capitalise: capitalise,
                     contains: contains,
                     debounce: debounce
-                }
+                };
             }
-        }
+        };
     }]);
