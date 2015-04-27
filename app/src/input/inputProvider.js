@@ -43,6 +43,7 @@ angular.module('nemo')
                     if (newVal === oldVal) {
                         return;
                     }
+                    ngModelCtrl.forcedValidityValue = undefined;
                     formHandlerCtrl.validateForm();
                 });
             });
