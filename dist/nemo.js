@@ -323,6 +323,7 @@ angular.module('nemo')
                     if (newVal === oldVal) {
                         return;
                     }
+                    ngModelCtrl.forcedValidityValue = undefined;
                     formHandlerCtrl.validateForm();
                 });
             });
@@ -470,9 +471,14 @@ angular.module('nemo')
         var validationOptionsCache = {};
 
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
-            var isValid = angular.isFunction(validateFn) ?
-                validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
-                !ngModelCtrl.$error[validationRule.code];
+            var isValid;
+            if(ngModelCtrl.forcedValidityValue !== undefined) {
+                isValid = ngModelCtrl.forcedValidityValue;
+            } else if(angular.isFunction(validateFn)) {
+                isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl);
+            } else {
+                isValid = !ngModelCtrl.$error[validationRule.code];
+            }
             return isValid;
         }
 
@@ -493,7 +499,7 @@ angular.module('nemo')
                     options.validationRuleInterfaceFns(scope, ngModelCtrl) :
                 {};
             angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
-            return validationRuleInterfaceFns
+            return validationRuleInterfaceFns;
         }
 
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
@@ -512,6 +518,7 @@ angular.module('nemo')
 
         function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
             ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+            ngModelCtrl.forcedValidityValue = newValidity;
         }
 
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
@@ -572,9 +579,9 @@ angular.module('nemo')
             $get: function () {
                 return {
                     getValidationOptions: getValidationOptionsFromCache
-                }
+                };
             }
-        }
+        };
     }]);
 
 angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($http, CaptchaModel) {
