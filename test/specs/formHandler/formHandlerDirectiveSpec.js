@@ -93,6 +93,31 @@ describe('nemo form handler directive', function () {
                 }).toThrow('rarrr is not registered in the form.');
             });
         });
+
+        it('must return undefined without throwing an error if the skipRegisteredCheck flag is provided' +
+        ' to any of the public interfaces', function() {
+            var formHandlerCtrl;
+
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+            });
+
+            then(function () {
+                expect(function () {
+                    expect(formHandlerCtrl.setFieldValue('field2', 'foo', true)).toBeUndefined();
+                    expect(formHandlerCtrl.getFieldValue('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.isFieldValid('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.isFieldTouched('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.isFieldActive('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.getFieldNgModelCtrl('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.forceInvalid('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.setActiveField('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.setFieldDirtyTouched('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.registerField('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.registerValidationRule('field2', true)).toBeUndefined();
+                }).not.toThrow();
+            });
+        });
     });
 
     describe('set field value method', function () {
@@ -195,11 +220,10 @@ describe('nemo form handler directive', function () {
 
             then(function () {
                 expect(function () {
-                    formHandlerCtrl.forceInvalid('rarrr', 'rarrr.invalid', false);
+                    formHandlerCtrl.forceInvalid('rarrr');
                 }).toThrow('rarrr is not registered in the form.');
             });
         });
-
     });
 
     describe('set active field method', function () {
