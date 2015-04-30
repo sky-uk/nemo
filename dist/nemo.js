@@ -62,7 +62,7 @@ angular.module('nemo', [])
 
                 .validation('mustnotcontain', {
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
                     }
                 })
@@ -72,7 +72,7 @@ angular.module('nemo', [])
                         tElement.attr('nemo-no-paste', 'true');
                     },
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
                     }
                 })
@@ -82,7 +82,7 @@ angular.module('nemo', [])
                         tElement.attr('nemo-no-paste', 'true');
                     },
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
                     }
                 })
@@ -116,7 +116,7 @@ angular.module('nemo', [])
 
                 .validation('dependentpattern', {
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             regex = validationRule.patterns[otherFieldValue];
                         return (value) ? new RegExp(regex, 'i').test(value) : true;
                     }
@@ -124,7 +124,7 @@ angular.module('nemo', [])
 
                 .validation('dependentrequired', {
                     validateFn: function (value, validationRule, formHandlerController, ngModelController) {
-                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             required = utilsProvider.contains(validationRule.when, otherFieldValue);
 
                         return required ? !ngModelController.$isEmpty(value) : true;
@@ -145,14 +145,15 @@ angular.module('nemo', [])
                                     ngModelCtrl.$setValidity(validationRuleCode, false);
                                 });
                             }
-                        }
+                        };
                     }
                 }, serverValidation));
     }]);
-'use strict';
 angular.module('nemo')
 
     .provider('nemoUtils', [function () {
+
+        'use strict';
 
         function capitalise(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
@@ -181,14 +182,18 @@ angular.module('nemo')
                         timeout = setTimeout(later, wait - last);
                     } else {
                         timeout = null;
-                        if (!immediate) result = func.apply(context, args);
+                        if (!immediate) {
+                            result = func.apply(context, args);
+                        }
                     }
                 };
                 var callNow = immediate && !timeout;
                 if (!timeout) {
                     timeout = setTimeout(later, wait);
                 }
-                if (callNow) result = func.apply(context, args);
+                if (callNow) {
+                    result = func.apply(context, args);
+                }
                 return result;
             };
         }
@@ -202,9 +207,9 @@ angular.module('nemo')
                     capitalise: capitalise,
                     contains: contains,
                     debounce: debounce
-                }
+                };
             }
-        }
+        };
     }]);
 angular.module('nemo').provider('captcha', [function () {
     return {
@@ -273,11 +278,13 @@ angular.module('nemo').provider('checkbox', [function () {
         $get: angular.noop
     }
 }]);
-'use strict';
+/* jshint -W040 */
 
 angular.module('nemo')
 
     .provider('nemoInputDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
+
+        'use strict';
 
         function getTemplateWithAttributes(template) {
             var parentTemplateElement, templateElement;
@@ -294,43 +301,51 @@ angular.module('nemo')
         function manageDefaultValue(scope, formHandlerCtrl, defaultValue) {
             var fieldName = scope.model.name,
                 unregisterFn = scope.$watch(function () {
-                return formHandlerCtrl.getFieldValue(fieldName);
-            }, function (fieldValue) {
-                if(defaultValue !== undefined && (fieldValue === null || fieldValue === undefined)) {
-                    formHandlerCtrl.setFieldValue(fieldName, defaultValue);
-                }
-                unregisterFn();
-            });
+                    return formHandlerCtrl.getFieldValue(fieldName);
+                }, function (fieldValue) {
+                    if (defaultValue !== undefined && (fieldValue === null || fieldValue === undefined)) {
+                        formHandlerCtrl.setFieldValue(fieldName, defaultValue);
+                    }
+                    unregisterFn();
+                });
         }
 
         function manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, linkFn) {
             (linkFn || angular.noop)(scope, element, attrs, controllers, $compile, $http);
         }
 
+        function validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl) {
+            scope.$watch(function () {
+                return ngModelCtrl.$viewValue;
+            }, function (newVal, oldVal) {
+                scope.$evalAsync(function () {
+                    //noinspection JSValidateTypes
+                    if (newVal === oldVal) {
+                        return;
+                    }
+                    ngModelCtrl.forcedValidityValue = undefined;
+                    formHandlerCtrl.validateForm();
+                });
+            });
+        }
+
         function getLinkFn(options, $compile, $http) {
             return function (scope, element, attrs, controllers) {
                 var ngModelCtrl = controllers[0],
-                    formHandlerCtrl = controllers[1];
-
-                scope.$watch(function () {
-                    return ngModelCtrl.$viewValue;
-                }, function (newVal, oldVal) {
-                    if (newVal === oldVal || oldVal === undefined) {
-                        return;
-                    }
-
-                    formHandlerCtrl.validateForm();
-                });
+                    formHandlerCtrl = controllers[1],
+                    parentNgModelCtrl = controllers[2];
+                validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl);
                 registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
-                handleActivationState(scope, formHandlerCtrl);
-            }
+                handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
+            };
         }
 
-        function handleActivationState(scope, formHandlerCtrl) {
+        function handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl) {
+            var newActiveField = (parentNgModelCtrl) ? [parentNgModelCtrl.$name, scope.model.name] : scope.model.name;
             scope.setActiveField = function () {
-                formHandlerCtrl.setActiveField(scope.model.name);
+                formHandlerCtrl.setActiveField(newActiveField);
             };
         }
 
@@ -345,7 +360,7 @@ angular.module('nemo')
         function getFieldInterfaceFns(scope, element, ngModelCtrl) {
             return {
                 activeFieldChange: function (activeField) {
-                    activeFieldChange(scope, ngModelCtrl, activeField)
+                    activeFieldChange(scope, ngModelCtrl, activeField);
                 },
                 isValid: function () {
                     return ngModelCtrl.$valid;
@@ -356,7 +371,7 @@ angular.module('nemo')
                 isActive: function () {
                     return ngModelCtrl.isActive;
                 },
-                setFocus: function() {
+                setFocus: function () {
                     element[0].focus();
                 },
                 getValue: function () {
@@ -373,22 +388,45 @@ angular.module('nemo')
                     ngModelCtrl.$setDirty();
                     ngModelCtrl.$setTouched();
                 }
-            }
+            };
         }
 
         function activeFieldChange(scope, ngModelCtrl, activeField) {
-            ngModelCtrl.isActive = (activeField === scope.model.name);
+            ngModelCtrl.isActive = isFieldNowActive(scope.model.name, activeField);
+        }
+
+        function isFieldNowActive(fieldName, activeField) {
+            if (typeof activeField === 'string') {
+                return isFieldTheOnlyActiveOne(fieldName, activeField);
+            } else if (typeof activeField === 'object') {
+                return isFieldPartOfActiveList(fieldName, activeField);
+            }
+        }
+
+        function isFieldTheOnlyActiveOne(fieldName, activeField) {
+            return activeField === fieldName;
+        }
+
+        function isFieldPartOfActiveList(fieldName, activeFieldList) {
+            var isFieldNowActive = false;
+            for (var i = 0; i < activeFieldList.length; i++) {
+                if (activeFieldList[i] === fieldName) {
+                    isFieldNowActive = true;
+                    break;
+                }
+            }
+            return isFieldNowActive;
         }
 
         function getDirectiveDefinitionObject(options, $compile, $http) {
             return {
-                require: ['ngModel', '^nemoFormHandler'],
+                require: ['ngModel', '^nemoFormHandler', '?^^ngModel'],
                 template: getTemplateWithAttributes(options.template),
                 replace: true,
                 restrict: 'A',
                 link: getLinkFn(options, $compile, $http),
                 controller: options.controller
-            }
+            };
         }
 
         function input(type, options) {
@@ -397,15 +435,16 @@ angular.module('nemo')
                     'input' + utilsProvider.capitalise(type),
                     ['$compile', '$http', function ($compile, $http) {
                         return getDirectiveDefinitionObject(options, $compile, $http);
-                }]]);
+                    }]]);
             return this;
         }
 
         return {
             input: input,
             $get: angular.noop
-        }
-    }]);
+        };
+    }
+    ]);
 
 angular.module('nemo').provider('serverValidation', function () {
     return {
@@ -432,9 +471,14 @@ angular.module('nemo')
         var validationOptionsCache = {};
 
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
-            var isValid = angular.isFunction(validateFn) ?
-                validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl) :
-                !ngModelCtrl.$error[validationRule.code];
+            var isValid;
+            if(ngModelCtrl.forcedValidityValue !== undefined) {
+                isValid = ngModelCtrl.forcedValidityValue;
+            } else if(angular.isFunction(validateFn)) {
+                isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl);
+            } else {
+                isValid = !ngModelCtrl.$error[validationRule.code];
+            }
             return isValid;
         }
 
@@ -455,7 +499,7 @@ angular.module('nemo')
                     options.validationRuleInterfaceFns(scope, ngModelCtrl) :
                 {};
             angular.extend(validationRuleInterfaceFns, customerValidationRuleInterface);
-            return validationRuleInterfaceFns
+            return validationRuleInterfaceFns;
         }
 
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
@@ -474,6 +518,7 @@ angular.module('nemo')
 
         function validityChange(ngModelCtrl, validationRuleCode, newValidity) {
             ngModelCtrl.$setValidity(validationRuleCode, newValidity);
+            ngModelCtrl.forcedValidityValue = newValidity;
         }
 
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
@@ -534,9 +579,9 @@ angular.module('nemo')
             $get: function () {
                 return {
                     getValidationOptions: getValidationOptionsFromCache
-                }
+                };
             }
-        }
+        };
     }]);
 
 angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($http, CaptchaModel) {
@@ -619,25 +664,34 @@ angular.module('nemo')
 
         var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
-        function getRegisteredField(fieldName) {
-            return getRegisteredComponent(fieldName, registeredFieldsFns);
+        function getRegisteredField(fieldName, skipRegisteredCheck) {
+            return getRegisteredComponent(fieldName, registeredFieldsFns, skipRegisteredCheck);
         }
 
-        function getRegisteredValidationRule(validationRuleCode) {
-            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns);
+        function getRegisteredValidationRule(validationRuleCode, skipRegisteredCheck) {
+            return getRegisteredComponent(validationRuleCode, registeredValidationRulesFns, skipRegisteredCheck);
         }
 
-        function getRegisteredComponent(id, group) {
+        function getRegisteredComponent(id, group, skipRegisteredCheck) {
             var registeredComponent = group[id];
             if (!registeredComponent) {
-                throw new Error(id + ' is not registered in the form.');
+                if(skipRegisteredCheck) {
+                    return {};
+                } else {
+                    throw new Error(id + ' is not registered in the form.');
+                }
+            } else {
+                return registeredComponent;
             }
-            return registeredComponent;
         }
 
-        this.setFieldValue = function (fieldName, value) {
-            getRegisteredField(fieldName).setValue(value);
-        };
+        function getFieldInterfaceFn(fieldName, interfaceFn, skipRegisteredCheck) {
+            return (getRegisteredField(fieldName, skipRegisteredCheck)[interfaceFn] || angular.noop);
+        }
+
+        function getValidationRuleInterfaceFn(fieldName, interfaceFn, skipRegisteredCheck) {
+            return (getRegisteredValidationRule(fieldName, skipRegisteredCheck)[interfaceFn] || angular.noop);
+        }
 
         this.getFieldsValues = function () {
             var fieldsValues = {};
@@ -647,29 +701,33 @@ angular.module('nemo')
             return fieldsValues;
         };
 
-        this.getFieldValue = function (fieldName) {
-            return getRegisteredField(fieldName).getValue();
+        this.setFieldValue = function (fieldName, value, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'setValue', skipRegisteredCheck)(value);
+        };
+
+        this.getFieldValue = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'getValue', skipRegisteredCheck)();
         };
 
 
-        this.isFieldValid = function (fieldName) {
-            return getRegisteredField(fieldName).isValid();
+        this.isFieldValid = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'isValid', skipRegisteredCheck)();
         };
 
-        this.isFieldTouched = function (fieldName) {
-            return getRegisteredField(fieldName).isTouched();
+        this.isFieldTouched = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'isTouched', skipRegisteredCheck)();
         };
 
-        this.isFieldActive = function (fieldName) {
-            return getRegisteredField(fieldName).isActive();
+        this.isFieldActive = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'isActive', skipRegisteredCheck)();
         };
 
-        this.getFieldNgModelCtrl = function (fieldName) {
-            return getRegisteredField(fieldName).getNgModelCtrl();
+        this.getFieldNgModelCtrl = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'getNgModelCtrl', skipRegisteredCheck)();
         };
 
-        this.forceInvalid = function (validationRuleCode) {
-            getRegisteredValidationRule(validationRuleCode).forceInvalid(validationRuleCode);
+        this.forceInvalid = function (validationRuleCode, skipRegisteredCheck) {
+            getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
         this.giveFirstInvalidFieldFocus = function () {
@@ -683,10 +741,14 @@ angular.module('nemo')
             }
         };
 
-        this.setActiveField = function (activeFieldName) {
-            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns) {
-                fieldInterfaceFns.activeFieldChange(activeFieldName);
+        this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
+            angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
+                getFieldInterfaceFn(fieldName, 'activeFieldChange', skipRegisteredCheck)(activeFieldName);
             });
+        };
+
+        this.setFieldDirtyTouched = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'setFilthy', skipRegisteredCheck)();
         };
 
         this.validateFormAndSetDirtyTouched = function () {
@@ -698,9 +760,9 @@ angular.module('nemo')
             });
         };
 
-        this.validateForm = function () {
-            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
-                registeredValidationRuleFns.refreshValidity();
+        this.validateForm = function (skipRegisteredCheck) {
+            angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns, validationRuleCode) {
+                getValidationRuleInterfaceFn(validationRuleCode, 'refreshValidity', skipRegisteredCheck)();
             });
         };
 
@@ -727,7 +789,7 @@ angular.module('nemo')
                     return formCtrl.$valid;
                 };
             }
-        }
+        };
     }]);
 'use strict';
 

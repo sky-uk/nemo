@@ -62,7 +62,7 @@ angular.module('nemo', [])
 
                 .validation('mustnotcontain', {
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
                     }
                 })
@@ -72,7 +72,7 @@ angular.module('nemo', [])
                         tElement.attr('nemo-no-paste', 'true');
                     },
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
                     }
                 })
@@ -82,7 +82,7 @@ angular.module('nemo', [])
                         tElement.attr('nemo-no-paste', 'true');
                     },
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var targetValue = formHandlerController.getFieldValue(validationRule.value);
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
                     }
                 })
@@ -116,7 +116,7 @@ angular.module('nemo', [])
 
                 .validation('dependentpattern', {
                     validateFn: function (value, validationRule, formHandlerController) {
-                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             regex = validationRule.patterns[otherFieldValue];
                         return (value) ? new RegExp(regex, 'i').test(value) : true;
                     }
@@ -124,7 +124,7 @@ angular.module('nemo', [])
 
                 .validation('dependentrequired', {
                     validateFn: function (value, validationRule, formHandlerController, ngModelController) {
-                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value),
+                        var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             required = utilsProvider.contains(validationRule.when, otherFieldValue);
 
                         return required ? !ngModelController.$isEmpty(value) : true;
@@ -145,7 +145,7 @@ angular.module('nemo', [])
                                     ngModelCtrl.$setValidity(validationRuleCode, false);
                                 });
                             }
-                        }
+                        };
                     }
                 }, serverValidation));
     }]);
