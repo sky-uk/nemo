@@ -254,7 +254,7 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    ddescribe('release active field method', function () {
+    describe('release active field method', function () {
 
         it('must call the releaseActiveField function for a specific registered field', function () {
 
