@@ -254,54 +254,6 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    describe('give first invalid field focus method', function () {
-
-        var scenarios = [
-            {field1: {isValid: true, setFocusCallCount: 0}, field2: {isValid: false, setFocusCallCount: 1}},
-            {field1: {isValid: false, setFocusCallCount: 1}, field2: {isValid: true, setFocusCallCount: 0}},
-            {field1: {isValid: false, setFocusCallCount: 1}, field2: {isValid: false, setFocusCallCount: 0}},
-            {field1: {isValid: true, setFocusCallCount: 0}, field2: {isValid: true, setFocusCallCount: 0}}
-        ];
-
-        scenarios.forEach(function (scenario) {
-
-
-            it('must call the setFocus method of the first invalid field', function () {
-
-                var formHandlerCtrl, field1InterfaceFns, field2InterfaceFns;
-
-                given(function () {
-                    formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                });
-
-                and(function () {
-                    field1InterfaceFns = {
-                        isValid: sinon.stub().returns(scenario.field1.isValid),
-                        setFocus: sinon.stub()
-                    };
-                    field2InterfaceFns = {
-                        isValid: sinon.stub().returns(scenario.field2.isValid),
-                        setFocus: sinon.stub()
-                    };
-                });
-
-                when(function () {
-                    formHandlerCtrl.registerField('field1', field1InterfaceFns);
-                    formHandlerCtrl.registerField('field2', field2InterfaceFns);
-                });
-
-                and(function () {
-                    formHandlerCtrl.giveFirstInvalidFieldFocus('field2');
-                });
-
-                then(function () {
-                    expect(field1InterfaceFns.setFocus.callCount).toBe(scenario.field1.setFocusCallCount);
-                    expect(field2InterfaceFns.setFocus.callCount).toBe(scenario.field2.setFocusCallCount);
-                });
-            });
-        });
-    });
-
     describe('validating the form', function () {
         it('must invoke the refreshValidity function of all the registered validation rules' +
         'and the setFilthy function of all the fields whenever the ' +

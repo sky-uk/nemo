@@ -660,7 +660,7 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
 
 angular.module('nemo')
 
-    .controller('nemoFormHandlerCtrl', [function () {
+    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
 
         var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
@@ -730,17 +730,6 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
-        this.giveFirstInvalidFieldFocus = function () {
-            var fieldFns;
-            for(var index = 0; index < fieldNameOrder.length; index++) {
-                fieldFns = getRegisteredField(fieldNameOrder[index]);
-                if(!fieldFns.isValid()) {
-                    fieldFns.setFocus();
-                    break;
-                }
-            }
-        };
-
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
             angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
                 getFieldInterfaceFn(fieldName, 'activeFieldChange', skipRegisteredCheck)(activeFieldName);
@@ -774,6 +763,10 @@ angular.module('nemo')
         this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
             registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
         };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            $timeout($scope.giveFirstInvalidFieldFocus);
+        };
     }])
 
     .directive('nemoFormHandler', [function () {
@@ -787,6 +780,10 @@ angular.module('nemo')
 
                 formHandlerCtrl.isFormValid = function () {
                     return formCtrl.$valid;
+                };
+
+                scope.giveFirstInvalidFieldFocus = function () {
+                    angular.element(element).find('input.ng-invalid.ng-dirty,select.ng-invalid.ng-dirty').first().focus();
                 };
             }
         };
