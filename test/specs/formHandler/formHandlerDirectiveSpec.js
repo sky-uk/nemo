@@ -254,6 +254,31 @@ describe('nemo form handler directive', function () {
         });
     });
 
+    ddescribe('release active field method', function () {
+
+        it('must call the releaseActiveField function for a specific registered field', function () {
+
+            var formHandlerCtrl, releaseActive;
+
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+                releaseActive = sinon.stub();
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', {releaseActive: releaseActive});
+            });
+
+            and(function () {
+                formHandlerCtrl.releaseActiveField('field1');
+            });
+
+            then(function () {
+                expect(releaseActive).toHaveBeenCalledWith('field1');
+            });
+        });
+    });
+
     describe('give first invalid field focus method', function () {
 
         var scenarios = [

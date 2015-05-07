@@ -82,6 +82,9 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField);
                 },
+                releaseActive: function () {
+                    ngModelCtrl.isActive = false;
+                },
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },

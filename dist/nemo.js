@@ -402,6 +402,9 @@ angular.module('nemo')
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField);
                 },
+                releaseActive: function () {
+                    ngModelCtrl.isActive = false;
+                },
                 isValid: function () {
                     return ngModelCtrl.$valid;
                 },
@@ -785,6 +788,10 @@ angular.module('nemo')
             angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
                 getFieldInterfaceFn(fieldName, 'activeFieldChange', skipRegisteredCheck)(activeFieldName);
             });
+        };
+
+        this.releaseActiveField = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'releaseActive', skipRegisteredCheck)(fieldName);
         };
 
         this.setFieldDirtyTouched = function (fieldName, skipRegisteredCheck) {

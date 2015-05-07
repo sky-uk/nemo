@@ -89,6 +89,10 @@ angular.module('nemo')
             });
         };
 
+        this.releaseActiveField = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'releaseActive', skipRegisteredCheck)(fieldName);
+        };
+
         this.setFieldDirtyTouched = function (fieldName, skipRegisteredCheck) {
             getFieldInterfaceFn(fieldName, 'setFilthy', skipRegisteredCheck)();
         };
