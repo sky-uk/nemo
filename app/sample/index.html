@@ -58,6 +58,28 @@
         .nemo-captcha-img {
             display: inline-block;
         }
+
+        [input-checkbox] {
+            width: 24px;
+            height: 24px;
+            border: 1px solid grey;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        [input-checkbox].focused {
+            border-color: black;
+        }
+
+        [input-checkbox] label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 1.7;
+            cursor: pointer;
+        }
+
     </style>
 
     <script>
@@ -602,6 +624,7 @@
                 {
                     "name": "terms",
                     "type": "checkbox",
+                    "value": true,
                     properties: {
                         "validation": [
                             {

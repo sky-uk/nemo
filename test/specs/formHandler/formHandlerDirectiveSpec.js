@@ -258,6 +258,31 @@ describe('nemo form handler directive', function () {
         });
     });
 
+    describe('release active field method', function () {
+
+        it('must call the releaseActiveField function for a specific registered field', function () {
+
+            var formHandlerCtrl, releaseActive;
+
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl');
+                releaseActive = sinon.stub();
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', {releaseActive: releaseActive});
+            });
+
+            and(function () {
+                formHandlerCtrl.releaseActiveField('field1');
+            });
+
+            then(function () {
+                expect(releaseActive).toHaveBeenCalledWith('field1');
+            });
+        });
+    });
+
     describe('validating the form', function () {
         it('must invoke the refreshValidity function of all the registered validation rules' +
         'and the setFilthy function of all the fields whenever the ' +
