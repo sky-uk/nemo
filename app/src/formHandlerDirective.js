@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', '$element', function ($scope, $timeout, $element) {
 
         var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
@@ -107,7 +107,9 @@ angular.module('nemo')
         };
 
         this.giveFirstInvalidFieldFocus = function () {
-            $timeout($scope.giveFirstInvalidFieldFocus);
+            $scope.$evalAsync(function () {
+                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus();
+            });
         };
     }])
 
@@ -122,10 +124,6 @@ angular.module('nemo')
 
                 formHandlerCtrl.isFormValid = function () {
                     return formCtrl.$valid;
-                };
-
-                scope.giveFirstInvalidFieldFocus = function () {
-                    angular.element(element).find('input.ng-invalid.ng-dirty,select.ng-invalid.ng-dirty').first().focus();
                 };
             }
         };

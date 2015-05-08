@@ -2,6 +2,10 @@ describe('nemo form handler directive', function () {
 
     beforeEach(function () {
         module('nemo');
+
+        module(function ($provide) {
+            $provide.value('$element', {});
+        });
     });
 
     describe('get fields values method', function () {
