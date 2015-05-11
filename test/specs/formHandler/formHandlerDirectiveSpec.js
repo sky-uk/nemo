@@ -117,6 +117,7 @@ describe('nemo form handler directive', function () {
                     expect(formHandlerCtrl.forceInvalid('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.setActiveField('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.setFieldDirtyTouched('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.giveFieldFocus('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.registerField('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.registerValidationRule('field2', true)).toBeUndefined();
                 }).not.toThrow();
@@ -399,7 +400,8 @@ describe('nemo form handler directive', function () {
         { formInterface: 'isFieldActive', elInterface: 'isActive' },
         { formInterface: 'isFieldValid', elInterface: 'isValid' },
         { formInterface: 'isFieldTouched', elInterface: 'isTouched' },
-        { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' }
+        { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' },
+        { formInterface: 'giveFieldFocus', elInterface: 'setFocus' }
     ].forEach(
         function (scenario) {
             it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +

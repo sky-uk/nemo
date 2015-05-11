@@ -101,6 +101,16 @@ angular.module('nemo')
             });
         };
 
+        this.giveFieldFocus = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'setFocus', skipRegisteredCheck)();
+        };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            $scope.$evalAsync(function () {
+                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus();
+            });
+        };
+
         this.registerField = function (fieldName, registerFieldFns) {
             registeredFieldsFns[fieldName] = registerFieldFns;
             fieldNameOrder.push(fieldName);
@@ -108,12 +118,6 @@ angular.module('nemo')
 
         this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
             registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
-        };
-
-        this.giveFirstInvalidFieldFocus = function () {
-            $scope.$evalAsync(function () {
-                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus();
-            });
         };
     }])
 

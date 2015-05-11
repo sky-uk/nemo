@@ -390,14 +390,14 @@ angular.module('nemo')
         }
 
         function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
-            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
-                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
+            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl),
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
         }
 
-        function getFieldInterfaceFns(scope, element, ngModelCtrl) {
+        function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) {
             return {
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField);
@@ -416,6 +416,7 @@ angular.module('nemo')
                 },
                 setFocus: function () {
                     element[0].focus();
+                    formHandlerCtrl.setActiveField(scope.model.name);
                 },
                 getValue: function () {
                     return ngModelCtrl.$viewValue;
@@ -703,7 +704,7 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
 
 angular.module('nemo')
 
-    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', '$element', function ($scope, $timeout, $element) {
 
         var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
@@ -802,6 +803,16 @@ angular.module('nemo')
             });
         };
 
+        this.giveFieldFocus = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'setFocus', skipRegisteredCheck)();
+        };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            $scope.$evalAsync(function () {
+                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus();
+            });
+        };
+
         this.registerField = function (fieldName, registerFieldFns) {
             registeredFieldsFns[fieldName] = registerFieldFns;
             fieldNameOrder.push(fieldName);
@@ -809,10 +820,6 @@ angular.module('nemo')
 
         this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
             registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
-        };
-
-        this.giveFirstInvalidFieldFocus = function () {
-            $timeout($scope.giveFirstInvalidFieldFocus);
         };
     }])
 
@@ -827,10 +834,6 @@ angular.module('nemo')
 
                 formHandlerCtrl.isFormValid = function () {
                     return formCtrl.$valid;
-                };
-
-                scope.giveFirstInvalidFieldFocus = function () {
-                    angular.element(element).find('input.ng-invalid.ng-dirty,select.ng-invalid.ng-dirty').first().focus();
                 };
             }
         };
