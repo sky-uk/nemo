@@ -16,7 +16,7 @@ angular.module('nemo', [])
                 })
 
                 .input('hidden', {
-                    template: '<input type="hidden" />',
+                    template: '<input type="hidden" ng-value="model.value" />',
                     defaultValue: ''
                 })
 
