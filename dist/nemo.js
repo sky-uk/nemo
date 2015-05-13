@@ -808,8 +808,8 @@ angular.module('nemo')
         };
 
         this.giveFirstInvalidFieldFocus = function () {
-            $scope.$evalAsync(function () {
-                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus();
+            $timeout(function() {
+                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus()
             });
         };
 
