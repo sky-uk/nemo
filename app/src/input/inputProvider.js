@@ -70,14 +70,14 @@ angular.module('nemo')
         }
 
         function registerField(scope, element, ngModelCtrl, formHandlerCtrl, customFieldInterfaceFns) {
-            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl),
-                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl) : {};
+            var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl),
+                customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
         }
 
-        function getFieldInterfaceFns(scope, element, ngModelCtrl) {
+        function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) {
             return {
                 activeFieldChange: function (activeField) {
                     activeFieldChange(scope, ngModelCtrl, activeField);
@@ -96,6 +96,7 @@ angular.module('nemo')
                 },
                 setFocus: function () {
                     element[0].focus();
+                    formHandlerCtrl.setActiveField(scope.model.name);
                 },
                 getValue: function () {
                     return ngModelCtrl.$viewValue;

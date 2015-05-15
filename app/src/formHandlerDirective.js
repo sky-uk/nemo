@@ -2,7 +2,7 @@
 
 angular.module('nemo')
 
-    .controller('nemoFormHandlerCtrl', [function () {
+    .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', '$element', function ($scope, $timeout, $element) {
 
         var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
 
@@ -72,17 +72,6 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
-        this.giveFirstInvalidFieldFocus = function () {
-            var fieldFns;
-            for(var index = 0; index < fieldNameOrder.length; index++) {
-                fieldFns = getRegisteredField(fieldNameOrder[index]);
-                if(!fieldFns.isValid()) {
-                    fieldFns.setFocus();
-                    break;
-                }
-            }
-        };
-
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
             angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
                 getFieldInterfaceFn(fieldName, 'activeFieldChange', skipRegisteredCheck)(activeFieldName);
@@ -109,6 +98,16 @@ angular.module('nemo')
         this.validateForm = function (skipRegisteredCheck) {
             angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns, validationRuleCode) {
                 getValidationRuleInterfaceFn(validationRuleCode, 'refreshValidity', skipRegisteredCheck)();
+            });
+        };
+
+        this.giveFieldFocus = function (fieldName, skipRegisteredCheck) {
+            getFieldInterfaceFn(fieldName, 'setFocus', skipRegisteredCheck)();
+        };
+
+        this.giveFirstInvalidFieldFocus = function () {
+            $timeout(function() {
+                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus()
             });
         };
 

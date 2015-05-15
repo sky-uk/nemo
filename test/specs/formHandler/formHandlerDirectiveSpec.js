@@ -2,6 +2,10 @@ describe('nemo form handler directive', function () {
 
     beforeEach(function () {
         module('nemo');
+
+        module(function ($provide) {
+            $provide.value('$element', {});
+        });
     });
 
     describe('get fields values method', function () {
@@ -113,6 +117,7 @@ describe('nemo form handler directive', function () {
                     expect(formHandlerCtrl.forceInvalid('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.setActiveField('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.setFieldDirtyTouched('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.giveFieldFocus('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.registerField('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.registerValidationRule('field2', true)).toBeUndefined();
                 }).not.toThrow();
@@ -279,54 +284,6 @@ describe('nemo form handler directive', function () {
         });
     });
 
-    describe('give first invalid field focus method', function () {
-
-        var scenarios = [
-            {field1: {isValid: true, setFocusCallCount: 0}, field2: {isValid: false, setFocusCallCount: 1}},
-            {field1: {isValid: false, setFocusCallCount: 1}, field2: {isValid: true, setFocusCallCount: 0}},
-            {field1: {isValid: false, setFocusCallCount: 1}, field2: {isValid: false, setFocusCallCount: 0}},
-            {field1: {isValid: true, setFocusCallCount: 0}, field2: {isValid: true, setFocusCallCount: 0}}
-        ];
-
-        scenarios.forEach(function (scenario) {
-
-
-            it('must call the setFocus method of the first invalid field', function () {
-
-                var formHandlerCtrl, field1InterfaceFns, field2InterfaceFns;
-
-                given(function () {
-                    formHandlerCtrl = compileController('nemoFormHandlerCtrl');
-                });
-
-                and(function () {
-                    field1InterfaceFns = {
-                        isValid: sinon.stub().returns(scenario.field1.isValid),
-                        setFocus: sinon.stub()
-                    };
-                    field2InterfaceFns = {
-                        isValid: sinon.stub().returns(scenario.field2.isValid),
-                        setFocus: sinon.stub()
-                    };
-                });
-
-                when(function () {
-                    formHandlerCtrl.registerField('field1', field1InterfaceFns);
-                    formHandlerCtrl.registerField('field2', field2InterfaceFns);
-                });
-
-                and(function () {
-                    formHandlerCtrl.giveFirstInvalidFieldFocus('field2');
-                });
-
-                then(function () {
-                    expect(field1InterfaceFns.setFocus.callCount).toBe(scenario.field1.setFocusCallCount);
-                    expect(field2InterfaceFns.setFocus.callCount).toBe(scenario.field2.setFocusCallCount);
-                });
-            });
-        });
-    });
-
     describe('validating the form', function () {
         it('must invoke the refreshValidity function of all the registered validation rules' +
         'and the setFilthy function of all the fields whenever the ' +
@@ -443,7 +400,8 @@ describe('nemo form handler directive', function () {
         { formInterface: 'isFieldActive', elInterface: 'isActive' },
         { formInterface: 'isFieldValid', elInterface: 'isValid' },
         { formInterface: 'isFieldTouched', elInterface: 'isTouched' },
-        { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' }
+        { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' },
+        { formInterface: 'giveFieldFocus', elInterface: 'setFocus' }
     ].forEach(
         function (scenario) {
             it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
