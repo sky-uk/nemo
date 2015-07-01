@@ -4,7 +4,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
 
     function getCaptchaInfo() {
         $scope.model.value = '';
-        return Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
+        return Captcha.getCaptcha($scope.model.action).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
@@ -19,7 +19,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
     };
 
     $scope.getRequestCaptchaCopy = function () {
-        return $scope.model.actions["request-captcha"].properties.actionsubmit.message;
+        return $scope.model.action.properties.actionsubmit.message;
     };
 
     getCaptchaInfo();

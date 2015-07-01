@@ -126,11 +126,11 @@ describe('validation', function () {
 
 
                 when(function () {
-                    flow.fieldValidityErrorCodes = [validationScenario.rules[0].code];
+                    flow.fieldValidityErrorIds = [validationScenario.rules[0].id];
                 });
 
                 and(function () {
-                    expect(Object.keys(formElement.controller('form').$error)).toEqual(flow.fieldValidity ? [] : flow.fieldValidityErrorCodes);
+                    expect(Object.keys(formElement.controller('form').$error)).toEqual(flow.fieldValidity ? [] : flow.fieldValidityErrorIds);
                 });
 
                 and(function () {

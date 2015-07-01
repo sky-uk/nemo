@@ -31,8 +31,7 @@ describe('nemo input', function () {
             value: 'asdd',
             name: 'captcha',
             type: 'captcha',
-            actions: {
-                'request-captcha': {
+            action: {
                     href: 'http://requestanother.com',
                     method: 'POST',
                     properties: {
@@ -41,7 +40,6 @@ describe('nemo input', function () {
                             message: 'Refresh'
                         }
                     }
-                }
             },
             properties: {
                 validation: [
@@ -50,7 +48,7 @@ describe('nemo input', function () {
                         "rules": [
                             {
                                 "value": true,
-                                "code": "captcha.blank",
+                                "id": "captcha.blank",
                                 "message": "Please type the characters again"
                             }
                         ]
@@ -60,7 +58,7 @@ describe('nemo input', function () {
                         "rules": [
                             {
                                 "value": null,
-                                "code": "captcha.invalid",
+                                "id": "captcha.invalid",
                                 "message": "Sorry, the characters you typed were wrong"
                             }
                         ]

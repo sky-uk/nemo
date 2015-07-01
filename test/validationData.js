@@ -7,7 +7,7 @@ TESTDATA.validation = {
             "rules": [
                 {
                     "value": true,
-                    "code": "foo.blank",
+                    "id": "foo.blank",
                     "message": "Please enter something"
                 }
             ]
@@ -19,7 +19,7 @@ TESTDATA.validation = {
             "rules": [
                 {
                     "value": minLength,
-                    "code": "foo.size.toosmall",
+                    "id": "foo.size.toosmall",
                     "message": "Please type a longer text"
                 }
             ]
@@ -31,7 +31,7 @@ TESTDATA.validation = {
             "rules": [
                 {
                     "value": maxLength,
-                    "code": "foo.size.toobig",
+                    "id": "foo.size.toobig",
                     "message": "Please type a shorter text"
                 }
             ]
@@ -44,7 +44,7 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : true,
-                        "code" : "foo.email.invalid",
+                        "id" : "foo.email.invalid",
                         "message" : "Please enter a valid email"
                     }
                 ]
@@ -57,7 +57,7 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : true,
-                        "code" : "foo.notequal",
+                        "id" : "foo.notequal",
                         "message" : "The value must be true"
                     }
                 ]
@@ -75,7 +75,7 @@ TESTDATA.validation = {
                                 "bar",
                                 "bla"
                             ],
-                        "code" : "foo.invalid",
+                        "id" : "foo.invalid",
                         "message" : "Please select a valid value"
                     }
                 ]
@@ -88,12 +88,12 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : "^[a-zA-Z \\'-]+$",
-                        "code" : "foo.invalid.characters",
+                        "id" : "foo.invalid.characters",
                         "message" : "Please type just letters and spaces"
                     },
                     {
                         "value" : "[^-\\']$",
-                        "code" : "foo.invalid.characters.startorend",
+                        "id" : "foo.invalid.characters.startorend",
                         "message" : "Please type a letter only at start and end"
                     }
                 ]
@@ -106,12 +106,12 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : "^[0-5]*$",
-                        "code" : "foo.invalid.smallNumbers",
+                        "id" : "foo.invalid.smallNumbers",
                         "message" : "Please type bigger numbers"
                     },
                     {
                         "value" : "^[5-8]*$",
-                        "code" : "foo.invalid.bigNumbers",
+                        "id" : "foo.invalid.bigNumbers",
                         "message" : "Please type smaller numbers"
                     }
                 ]
@@ -124,7 +124,7 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : "username",
-                        "code" : "foo.contains.username",
+                        "id" : "foo.contains.username",
                         "message" : "Foo cant contain username"
                     }
                 ]
@@ -137,7 +137,7 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : "username",
-                        "code" : "foo.must.match.username",
+                        "id" : "foo.must.match.username",
                         "message" : "Foo must match username"
                     }
                 ]
@@ -150,7 +150,7 @@ TESTDATA.validation = {
                 [
                     {
                         "value" : "username",
-                        "code" : "foo.must.match.username",
+                        "id" : "foo.must.match.username",
                         "message" : "Foo must match username"
                     }
                 ]
@@ -167,7 +167,7 @@ TESTDATA.validation = {
                             "fooUsername": "^[0-9]{1}$",
                             "bob": "^[a-z]+$"
                         },
-                        "code" : "foo.dependent.pattern.username",
+                        "id" : "foo.dependent.pattern.username",
                         "message" : "Foo is not valid"
                     }
                 ]
@@ -183,7 +183,7 @@ TESTDATA.validation = {
                         "when" : [
                             "fooUsername"
                         ],
-                        "code" : "foo.dependent.required.username",
+                        "id" : "foo.dependent.required.username",
                         "message" : "Foo is required"
                     }
                 ]
@@ -197,7 +197,7 @@ TESTDATA.validation = {
                     {
                         "message": "Sorry, someone already has that username",
                         "value": null,
-                        "code": "username.taken"
+                        "id": "username.taken"
                     }
                 ]
         }
