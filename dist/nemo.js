@@ -131,23 +131,7 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('usernameserver', serverValidation)
-
-                .validation('emailserver', serverValidation)
-
-                .validation('transactionCompleteserver', {})
-
-                .validation('captchaserver', angular.extend({}, {
-                    validationRuleInterfaceFns: function(scope, ngModelCtrl) {
-                        return {
-                            forceInvalid: function (validationRuleCode) {
-                                scope.refreshCaptcha().then(function () {
-                                    ngModelCtrl.$setValidity(validationRuleCode, false);
-                                });
-                            }
-                        };
-                    }
-                }, serverValidation));
+                .validation('server', serverValidation);
     }]);
 angular.module('nemo')
 

@@ -191,7 +191,7 @@ TESTDATA.validation = {
     },
     usernameserver: function () {
         return {
-            "type" : "usernameserver",
+            "type" : "server",
             "rules":
                 [
                     {
