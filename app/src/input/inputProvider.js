@@ -55,7 +55,10 @@ angular.module('nemo')
                     formHandlerCtrl = controllers[1],
                     parentNgModelCtrl = controllers[2];
                 validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl);
-                registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+
+                var interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+                interfaceFuns.setupBusinessRules();
+
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                 handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
@@ -75,6 +78,7 @@ angular.module('nemo')
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
+            return fieldInterfaceFns
         }
 
         function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) {
@@ -111,6 +115,16 @@ angular.module('nemo')
                 setFilthy: function () {
                     ngModelCtrl.$setDirty();
                     ngModelCtrl.$setTouched();
+                },
+                setupBusinessRules: function () {
+                    if (scope.model.properties && scope.model.properties.businessrules) {
+                        if(utilsProvider.contains(scope.model.properties.businessrules, 'noAutocomplete')) {
+                            element.attr('autocomplete', 'off');
+                        }
+                        if (utilsProvider.contains(scope.model.properties.businessrules, 'noPaste')) {
+                            element.attr('onPaste', 'return false;');
+                        }
+                    }
                 }
             };
         }

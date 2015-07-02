@@ -68,9 +68,6 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustmatch', {
-                    preCompileFn: function (tElement) {
-                        tElement.attr('nemo-no-paste', 'true');
-                    },
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
@@ -78,9 +75,6 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustmatchcaseinsensitive', {
-                    preCompileFn: function (tElement) {
-                        tElement.attr('nemo-no-paste', 'true');
-                    },
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
@@ -359,7 +353,10 @@ angular.module('nemo')
                     formHandlerCtrl = controllers[1],
                     parentNgModelCtrl = controllers[2];
                 validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl);
-                registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+
+                var interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, options.fieldInterfaceFns);
+                interfaceFuns.setupBusinessRules();
+
                 manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
                 manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                 handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
@@ -379,6 +376,7 @@ angular.module('nemo')
 
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
+            return fieldInterfaceFns
         }
 
         function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) {
@@ -415,6 +413,16 @@ angular.module('nemo')
                 setFilthy: function () {
                     ngModelCtrl.$setDirty();
                     ngModelCtrl.$setTouched();
+                },
+                setupBusinessRules: function () {
+                    if (scope.model.properties && scope.model.properties.businessrules) {
+                        if(utilsProvider.contains(scope.model.properties.businessrules, 'noAutocomplete')) {
+                            element.attr('autocomplete', 'off');
+                        }
+                        if (utilsProvider.contains(scope.model.properties.businessrules, 'noPaste')) {
+                            element.attr('onPaste', 'return false;');
+                        }
+                    }
                 }
             };
         }
@@ -834,7 +842,7 @@ angular.module('nemo')
             });
         }
 
-        function creatElement() {
+        function createElement() {
             return angular.element('<div></div>');
         }
 
@@ -881,7 +889,7 @@ angular.module('nemo')
 
         function getLinkFn() {
             return function (scope, element) {
-                var fieldElement = creatElement();
+                var fieldElement = createElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 setAutoFocus(fieldElement, scope.hasFocus);
                 manageValidationRules(scope.model.properties, fieldElement);
@@ -898,21 +906,6 @@ angular.module('nemo')
                 hasFocus: '='
             },
             link: getLinkFn()
-        }
-    }]);
-'use strict';
-
-angular.module('nemo')
-    .directive('nemoNoPaste', [function () {
-        return {
-            link: function(scope, element, attributes) {
-                if (scope.$eval(attributes.nemoNoPaste)) {
-                    element.on('paste', function (ev) {
-                        ev.preventDefault();
-                        ev.stopPropagation();
-                    });
-                }
-            }
         }
     }]);
 'use strict';

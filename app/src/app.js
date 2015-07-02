@@ -68,9 +68,6 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustmatch', {
-                    preCompileFn: function (tElement) {
-                        tElement.attr('nemo-no-paste', 'true');
-                    },
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
@@ -78,9 +75,6 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustmatchcaseinsensitive', {
-                    preCompileFn: function (tElement) {
-                        tElement.attr('nemo-no-paste', 'true');
-                    },
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;

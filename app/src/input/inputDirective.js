@@ -10,7 +10,7 @@ angular.module('nemo')
             });
         }
 
-        function creatElement() {
+        function createElement() {
             return angular.element('<div></div>');
         }
 
@@ -57,7 +57,7 @@ angular.module('nemo')
 
         function getLinkFn() {
             return function (scope, element) {
-                var fieldElement = creatElement();
+                var fieldElement = createElement();
                 addInputAttributeToElement(scope.model.type, fieldElement);
                 setAutoFocus(fieldElement, scope.hasFocus);
                 manageValidationRules(scope.model.properties, fieldElement);
