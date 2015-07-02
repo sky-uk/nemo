@@ -125,23 +125,7 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('usernameserver', serverValidation)
-
-                .validation('emailserver', serverValidation)
-
-                .validation('transactionCompleteserver', {})
-
-                .validation('captchaserver', angular.extend({}, {
-                    validationRuleInterfaceFns: function(scope, ngModelCtrl) {
-                        return {
-                            forceInvalid: function (validationRuleCode) {
-                                scope.refreshCaptcha().then(function () {
-                                    ngModelCtrl.$setValidity(validationRuleCode, false);
-                                });
-                            }
-                        };
-                    }
-                }, serverValidation));
+                .validation('server', serverValidation);
     }]);
 angular.module('nemo')
 
@@ -328,7 +312,7 @@ angular.module('nemo')
             templateElement.setAttribute('ng-model', 'model.value');
             templateElement.setAttribute('ng-focus', 'setActiveField()');
             templateElement.setAttribute('name', '{{model.name}}');
-            templateElement.setAttribute('id', 'nemo-{{model.id}}');
+            templateElement.setAttribute('id', 'nemo-{{model.name}}');
             return parentTemplateElement.innerHTML;
         }
 
@@ -529,20 +513,20 @@ angular.module('nemo')
             } else if(angular.isFunction(validateFn)) {
                 isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl);
             } else {
-                isValid = !ngModelCtrl.$error[validationRule.code];
+                isValid = !ngModelCtrl.$error[validationRule.id];
             }
             return isValid;
         }
 
         function setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
-            ngModelCtrl.$validators[validationRule.code] = function () {
+            ngModelCtrl.$validators[validationRule.id] = function () {
                 return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             };
-            messages.set(validationRule.code, validationRule.message);
+            messages.set(validationRule.id, validationRule.message);
         }
 
         function registerValidationRule(validationRule, formHandlerCtrl, validationRuleInterfaceFns) {
-            formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
+            formHandlerCtrl.registerValidationRule(validationRule.id, validationRuleInterfaceFns);
         }
 
         function getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options) {
@@ -557,10 +541,10 @@ angular.module('nemo')
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             return {
                 forceInvalid: function () {
-                    validityChange(ngModelCtrl, validationRule.code, false);
+                    validityChange(ngModelCtrl, validationRule.id, false);
                 },
                 forceValid: function () {
-                    validityChange(ngModelCtrl, validationRule.code, true);
+                    validityChange(ngModelCtrl, validationRule.id, true);
                 },
                 refreshValidity: function () {
                     refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
@@ -575,7 +559,7 @@ angular.module('nemo')
 
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
-            ngModelCtrl.$setValidity(validationRule.code, isValid);
+            ngModelCtrl.$setValidity(validationRule.id, isValid);
         }
 
         function getLinkFn(options, directiveName, validateFn, messages) {
@@ -654,7 +638,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
 
     function getCaptchaInfo() {
         $scope.model.value = '';
-        return Captcha.getCaptcha($scope.model.actions['request-captcha']).then(function (captchaModel) {
+        return Captcha.getCaptcha($scope.model.action).then(function (captchaModel) {
             $scope.captchaModel = captchaModel;
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
@@ -669,7 +653,7 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
     };
 
     $scope.getRequestCaptchaCopy = function () {
-        return $scope.model.actions["request-captcha"].properties.actionsubmit.message;
+        return $scope.model.action.properties.actionsubmit.message;
     };
 
     getCaptchaInfo();
@@ -959,10 +943,10 @@ angular.module('nemo')
             link: function(scope) {
 
                 scope.getValidationMessage = function() {
-                    for(var validationCode in scope.model.$error) {
-                        if(scope.model.$error.hasOwnProperty(validationCode)) {
-                            scope.validationCode = validationCode;
-                            return messages.get(validationCode);
+                    for(var validationId in scope.model.$error) {
+                        if(scope.model.$error.hasOwnProperty(validationId)) {
+                            scope.validationCode = validationId;
+                            return messages.get(validationId);
                         }
                     }
                 };

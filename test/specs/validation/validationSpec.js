@@ -86,14 +86,14 @@ describe('nemo validation messages', function () {
                             viewValue: 'test-',
                             fieldValidity: false,
                             validationMessagesText: 'Please type a letter only at start and end',
-                            fieldValidityErrorCodes: ['foo.invalid.characters.startorend']
+                            fieldValidityErrorIds: ['foo.invalid.characters.startorend']
                         },
                         {viewValue: 'test foo', fieldValidity: true, validationMessagesText: ''},
                         {
                             viewValue: 'test&foo-',
                             fieldValidity: false,
                             validationMessagesText: 'Please type just letters and spaces',
-                            fieldValidityErrorCodes: ['foo.invalid.characters', 'foo.invalid.characters.startorend']
+                            fieldValidityErrorIds: ['foo.invalid.characters', 'foo.invalid.characters.startorend']
                         },
                         {viewValue: '', fieldValidity: true, validationMessagesText: ''}
                     ]
@@ -107,14 +107,14 @@ describe('nemo validation messages', function () {
                             viewValue: '7',
                             fieldValidity: false,
                             validationMessagesText: 'Please type smaller numbers',
-                            fieldValidityErrorCodes: ['foo.invalid.bigNumbers']
+                            fieldValidityErrorIds: ['foo.invalid.bigNumbers']
                         },
                         {viewValue: '9', fieldValidity: true, validationMessagesText: ''},
                         {
                             viewValue: '5',
                             fieldValidity: false,
                             validationMessagesText: 'Please type bigger numbers',
-                            fieldValidityErrorCodes: ['foo.invalid.smallNumbers', 'foo.invalid.bigNumbers']
+                            fieldValidityErrorIds: ['foo.invalid.smallNumbers', 'foo.invalid.bigNumbers']
                         },
                         {viewValue: '', fieldValidity: true, validationMessagesText: ''}
                     ]
@@ -172,13 +172,13 @@ describe('nemo validation messages', function () {
                     });
 
                     when(function () {
-                        if (!flow.fieldValidityErrorCodes) {
-                            flow.fieldValidityErrorCodes = [validationScenario.validation.rules[0].code];
+                        if (!flow.fieldValidityErrorIds) {
+                            flow.fieldValidityErrorIds = [validationScenario.validation.rules[0].id];
                         }
                     });
 
                     then(function () {
-                        expect(Object.keys(formElement.controller('form').$error)).toEqual(flow.fieldValidity ? [] : flow.fieldValidityErrorCodes);
+                        expect(Object.keys(formElement.controller('form').$error)).toEqual(flow.fieldValidity ? [] : flow.fieldValidityErrorIds);
                     });
 
                     and(function () {
