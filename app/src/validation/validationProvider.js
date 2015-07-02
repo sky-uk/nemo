@@ -13,20 +13,20 @@ angular.module('nemo')
             } else if(angular.isFunction(validateFn)) {
                 isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl);
             } else {
-                isValid = !ngModelCtrl.$error[validationRule.code];
+                isValid = !ngModelCtrl.$error[validationRule.id];
             }
             return isValid;
         }
 
         function setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
-            ngModelCtrl.$validators[validationRule.code] = function () {
+            ngModelCtrl.$validators[validationRule.id] = function () {
                 return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             };
-            messages.set(validationRule.code, validationRule.message);
+            messages.set(validationRule.id, validationRule.message);
         }
 
         function registerValidationRule(validationRule, formHandlerCtrl, validationRuleInterfaceFns) {
-            formHandlerCtrl.registerValidationRule(validationRule.code, validationRuleInterfaceFns);
+            formHandlerCtrl.registerValidationRule(validationRule.id, validationRuleInterfaceFns);
         }
 
         function getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options) {
@@ -41,10 +41,10 @@ angular.module('nemo')
         function getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             return {
                 forceInvalid: function () {
-                    validityChange(ngModelCtrl, validationRule.code, false);
+                    validityChange(ngModelCtrl, validationRule.id, false);
                 },
                 forceValid: function () {
-                    validityChange(ngModelCtrl, validationRule.code, true);
+                    validityChange(ngModelCtrl, validationRule.id, true);
                 },
                 refreshValidity: function () {
                     refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
@@ -59,7 +59,7 @@ angular.module('nemo')
 
         function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
-            ngModelCtrl.$setValidity(validationRule.code, isValid);
+            ngModelCtrl.$setValidity(validationRule.id, isValid);
         }
 
         function getLinkFn(options, directiveName, validateFn, messages) {

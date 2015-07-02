@@ -13,10 +13,10 @@ angular.module('nemo')
             link: function(scope) {
 
                 scope.getValidationMessage = function() {
-                    for(var validationCode in scope.model.$error) {
-                        if(scope.model.$error.hasOwnProperty(validationCode)) {
-                            scope.validationCode = validationCode;
-                            return messages.get(validationCode);
+                    for(var validationId in scope.model.$error) {
+                        if(scope.model.$error.hasOwnProperty(validationId)) {
+                            scope.validationCode = validationId;
+                            return messages.get(validationId);
                         }
                     }
                 };
