@@ -425,8 +425,8 @@ angular.module('nemo')
                         }
                     }
                 },
-                forceServerInvalid: function (errorMessage) {
-                    var validationId = scope.model.name + new Date().getTime();
+                forceServerInvalid: function (errorMessage, index) {
+                    var validationId = scope.model.name + index;
                     nemoMessages.set(validationId, errorMessage);
                     ngModelCtrl.$setValidity(validationId, false);
                     setValidOnChange(scope, ngModelCtrl, validationId);
@@ -785,8 +785,8 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
-        this.forceServerFieldInvalid = function (fieldName, errorMessage, skipRegisteredCheck) {
-            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage);
+        this.forceServerFieldInvalid = function (fieldName, errorMessage, index, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
         };
 
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
