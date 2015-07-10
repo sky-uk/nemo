@@ -374,10 +374,9 @@ angular.module('nemo')
         function registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, customFieldInterfaceFns) {
             var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages),
                 customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
-
             angular.extend(fieldInterfaceFns, customerFieldInterface);
             formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
-            return fieldInterfaceFns
+            return fieldInterfaceFns;
         }
 
         function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages) {
@@ -824,7 +823,7 @@ angular.module('nemo')
 
         this.giveFirstInvalidFieldFocus = function () {
             $timeout(function() {
-                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus()
+                angular.element($element).find('input.ng-invalid,select.ng-invalid,.field.ng-invalid input, .field.ng-invalid select').first().focus()
             });
         };
 
