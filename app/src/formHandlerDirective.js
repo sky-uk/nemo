@@ -72,8 +72,8 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
-        this.forceServerFieldInvalid = function (fieldName, errorMessage, skipRegisteredCheck) {
-            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage);
+        this.forceServerFieldInvalid = function (fieldName, errorMessage, index, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
         };
 
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
