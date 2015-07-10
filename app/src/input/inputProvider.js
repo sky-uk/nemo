@@ -128,18 +128,24 @@ angular.module('nemo')
                     }
                 },
                 forceServerInvalid: function (errorMessage) {
-                    nemoMessages.set('foo.bar', errorMessage);
-                    ngModelCtrl.$setValidity('foo.bar', false);
-                    var unregisterFn = scope.$watch(function () {
-                        return ngModelCtrl.$viewValue;
-                    }, function (newValue, oldValue) {
-                        if(newValue !== oldValue) {
-                            ngModelCtrl.$setValidity('foo.bar', true);
-                            unregisterFn();
-                        }
-                    });
+                    var validationId = scope.model.name + new Date().getTime();
+                    nemoMessages.set(validationId, errorMessage);
+                    ngModelCtrl.$setValidity(validationId, false);
+                    setValidOnChange(scope, ngModelCtrl, validationId);
                 }
             };
+        }
+
+        function setValidOnChange(scope, ngModelCtrl, validationId) {
+            var unregisterFn = scope.$watch(function () {
+                return ngModelCtrl.$viewValue;
+            }, function (newValue, oldValue) {
+                //noinspection JSValidateTypes
+                if(newValue !== oldValue) {
+                    ngModelCtrl.$setValidity(validationId, true);
+                    unregisterFn();
+                }
+            });
         }
 
         function activeFieldChange(scope, ngModelCtrl, activeField) {
