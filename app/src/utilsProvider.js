@@ -10,7 +10,7 @@ angular.module('nemo')
 
         function contains(list, item) {
             var isFound = false;
-            if(list && list.length) {
+            if (list && list.length) {
                 angular.forEach(list, function (listItem) {
                     isFound = isFound || (item === listItem);
                 });
@@ -21,11 +21,11 @@ angular.module('nemo')
         // Extracted from Underscore.js 1.5.2
         function debounce(func, wait, immediate) {
             var timeout, args, context, timestamp, result;
-            return function() {
+            return function () {
                 context = this;
                 args = arguments;
                 timestamp = new Date();
-                var later = function() {
+                var later = function () {
                     var last = (new Date()) - timestamp;
                     if (last < wait) {
                         timeout = setTimeout(later, wait - last);

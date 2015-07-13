@@ -1,15 +1,15 @@
-ddescribe('nemo utils provider', function () {
+describe('nemo utils provider', function () {
 
-    var scope, utilsProvider, fakeNgModelCtrl, fakeNemoMessagesProvider;
+    var scope, utilsProvider, fakeNgModelCtrl, fakeMessagesProvider;
 
     beforeEach(function () {
 
         module('nemo');
 
-        module(function (utils, nemoMessages) {
-            utilsProvider = utils;
-            fakeNemoMessagesProvider = nemoMessages;
-            sinon.stub(fakeNemoMessagesProvider, 'set');
+        module(function (nemoUtilsProvider, nemoMessagesProvider) {
+            utilsProvider = nemoUtilsProvider;
+            fakeMessagesProvider = nemoMessagesProvider;
+            sinon.stub(fakeMessagesProvider, 'set');
         });
 
         inject(function ($rootScope) {
@@ -33,7 +33,30 @@ ddescribe('nemo utils provider', function () {
             });
 
             then(function () {
-                expect(fakeNemoMessagesProvider.set).toHaveBeenCalledWith('foo0', 'error message');
+                expect(fakeMessagesProvider.set).toHaveBeenCalledWith('foo1', 'error message');
+                expect(fakeNgModelCtrl.$setValidity).toHaveBeenCalledWith('foo1', false);
+            });
+        });
+
+        it('must manage the validity change, setting the field as valid once its value changes', function () {
+
+            when(function () {
+                utilsProvider.forceServerInvalid('error message', 1, scope, fakeNgModelCtrl);
+                scope.$apply();
+            });
+
+            then(function () {
+               expect(fakeNgModelCtrl.$setValidity.callCount).toBe(1);
+            });
+
+            when(function () {
+                fakeNgModelCtrl.$viewValue = 'newValue';
+                scope.$apply();
+            });
+
+            then(function () {
+                expect(fakeNgModelCtrl.$setValidity.callCount).toBe(2);
+                expect(fakeNgModelCtrl.$setValidity).toHaveBeenCalledWith('foo1', true);
             });
         });
     });
