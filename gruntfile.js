@@ -3,7 +3,12 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		concat: {
 			dist: {
-				src: ['app/src/app.js', 'app/src/utilsProvider.js', 'app/src/**/*Provider.js', 'app/src/**/*.js'],
+				src: [
+					'app/src/app.js',
+					'app/src/validation/messagesProvider.js',
+					'app/src/utilsProvider.js',
+					'app/src/**/*Provider.js',
+					'app/src/**/*.js'],
 				dest: 'dist/nemo.js'
 			}
 		},

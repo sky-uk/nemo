@@ -1,6 +1,6 @@
 angular.module('nemo')
 
-    .provider('nemoUtils', [function () {
+    .provider('nemoUtils', ['nemoMessagesProvider', function (messagesProvider) {
 
         'use strict';
 
@@ -47,10 +47,30 @@ angular.module('nemo')
             };
         }
 
+        function forceServerInvalid(errorMessage, errorIndex, scope, ngModelCtrl) {
+            var validationId = scope.model.name + errorIndex;
+            messagesProvider.set(validationId, errorMessage);
+            ngModelCtrl.$setValidity(validationId, false);
+            setValidOnChange(scope, ngModelCtrl, validationId);
+        }
+
+        function setValidOnChange(scope, ngModelCtrl, validationId) {
+            var unregisterFn = scope.$watch(function () {
+                return ngModelCtrl.$viewValue;
+            }, function (newValue, oldValue) {
+                //noinspection JSValidateTypes
+                if (newValue !== oldValue) {
+                    ngModelCtrl.$setValidity(validationId, true);
+                    unregisterFn();
+                }
+            });
+        }
+
         return {
             capitalise: capitalise,
             contains: contains,
             debounce: debounce,
+            forceServerInvalid: forceServerInvalid,
             $get: function () {
                 return {
                     capitalise: capitalise,
