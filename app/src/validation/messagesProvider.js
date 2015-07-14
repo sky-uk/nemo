@@ -1,7 +1,7 @@
 'use strict';
 angular.module('nemo')
 
-    .factory('nemoMessages', [function () {
+    .provider('nemoMessages', [function () {
 
         var messages = {};
 
@@ -15,6 +15,12 @@ angular.module('nemo')
 
         return {
             set: set,
-            get: get
+            get: get,
+            $get: function () {
+                return {
+                    set: set,
+                    get: get
+                }
+            }
         }
     }]);

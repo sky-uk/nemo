@@ -1,4 +1,4 @@
-angular.module('nemo').provider('captcha', [function () {
+angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utilsProvider) {
     return {
         template: '<div class="nemo-captcha">' +
             '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
@@ -37,10 +37,14 @@ angular.module('nemo').provider('captcha', [function () {
                 ngModelCtrl.$setTouched();
             };
         },
-        fieldInterfaceFns: function(scope, element) {
+        fieldInterfaceFns: function(scope, element, ngModelCtrl) {
             return {
                 setFocus: function () {
                     element.find('input')[0].focus();
+                },
+                forceServerInvalid: function (errorMessage, errorIndex) {
+                    scope.refreshCaptcha();
+                    utilsProvider.forceServerInvalid(errorMessage, errorIndex, scope, ngModelCtrl);
                 }
             }
         },

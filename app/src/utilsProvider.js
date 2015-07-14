@@ -1,6 +1,6 @@
 angular.module('nemo')
 
-    .provider('nemoUtils', [function () {
+    .provider('nemoUtils', ['nemoMessagesProvider', function (messagesProvider) {
 
         'use strict';
 
@@ -10,7 +10,7 @@ angular.module('nemo')
 
         function contains(list, item) {
             var isFound = false;
-            if(list && list.length) {
+            if (list && list.length) {
                 angular.forEach(list, function (listItem) {
                     isFound = isFound || (item === listItem);
                 });
@@ -21,11 +21,11 @@ angular.module('nemo')
         // Extracted from Underscore.js 1.5.2
         function debounce(func, wait, immediate) {
             var timeout, args, context, timestamp, result;
-            return function() {
+            return function () {
                 context = this;
                 args = arguments;
                 timestamp = new Date();
-                var later = function() {
+                var later = function () {
                     var last = (new Date()) - timestamp;
                     if (last < wait) {
                         timeout = setTimeout(later, wait - last);
@@ -47,10 +47,30 @@ angular.module('nemo')
             };
         }
 
+        function forceServerInvalid(errorMessage, errorIndex, scope, ngModelCtrl) {
+            var validationId = scope.model.name + errorIndex;
+            messagesProvider.set(validationId, errorMessage);
+            ngModelCtrl.$setValidity(validationId, false);
+            setValidOnChange(scope, ngModelCtrl, validationId);
+        }
+
+        function setValidOnChange(scope, ngModelCtrl, validationId) {
+            var unregisterFn = scope.$watch(function () {
+                return ngModelCtrl.$viewValue;
+            }, function (newValue, oldValue) {
+                //noinspection JSValidateTypes
+                if (newValue !== oldValue) {
+                    ngModelCtrl.$setValidity(validationId, true);
+                    unregisterFn();
+                }
+            });
+        }
+
         return {
             capitalise: capitalise,
             contains: contains,
             debounce: debounce,
+            forceServerInvalid: forceServerInvalid,
             $get: function () {
                 return {
                     capitalise: capitalise,

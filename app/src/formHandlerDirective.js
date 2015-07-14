@@ -72,6 +72,10 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
+        this.forceServerFieldInvalid = function (fieldName, errorMessage, index, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
+        };
+
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
             angular.forEach(registeredFieldsFns, function (fieldInterfaceFns, fieldName) {
                 getFieldInterfaceFn(fieldName, 'activeFieldChange', skipRegisteredCheck)(activeFieldName);
@@ -107,7 +111,7 @@ angular.module('nemo')
 
         this.giveFirstInvalidFieldFocus = function () {
             $timeout(function() {
-                angular.element($element).find('input.ng-invalid,select.ng-invalid').first().focus()
+                angular.element($element).find('input.ng-invalid,select.ng-invalid,.field.ng-invalid input, .field.ng-invalid select').first().focus()
             });
         };
 
