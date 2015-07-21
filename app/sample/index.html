@@ -136,7 +136,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "title.blank",
+                                        "id": "title.blank",
                                         "message": "Please enter your title"
                                     }
                                 ]
@@ -155,7 +155,7 @@
                                             "ProfValue",
                                             "OtherValue"
                                         ],
-                                        "code": "title.invalid",
+                                        "id": "title.invalid",
                                         "message": "Title was not a valid choice"
                                     }
                                 ]
@@ -181,7 +181,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "firstName.blank",
+                                        "id": "firstName.blank",
                                         "message": "Please enter your first name"
                                     }
                                 ]
@@ -191,7 +191,7 @@
                                 "rules": [
                                     {
                                         "value": 50,
-                                        "code": "firstName.size.toobig",
+                                        "id": "firstName.size.toobig",
                                         "message": "Your first name needs to be less than 50 characters long"
                                     }
                                 ]
@@ -201,17 +201,17 @@
                                 "rules": [
                                     {
                                         "value": "^[a-zA-Z \\'-]+$",
-                                        "code": "firstName.invalid.characters",
+                                        "id": "firstName.invalid.characters",
                                         "message": "Sorry, your first name can only include letters and spaces"
                                     },
                                     {
                                         "value": "^[^-\\']",
-                                        "code": "firstName.invalid.characters.startorend",
+                                        "id": "firstName.invalid.characters.startorend",
                                         "message": " Sorry, your first name canonly start and end with a letter"
                                     },
                                     {
                                         "value": "[^-\\']$",
-                                        "code": "firstName.invalid.characters.startorend",
+                                        "id": "firstName.invalid.characters.startorend",
                                         "message": "Sorry, your first name can only start and end with a letter"
                                     }
                                 ]
@@ -242,7 +242,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "lastName.blank",
+                                        "id": "lastName.blank",
                                         "message": "Please enter your last name"
                                     }
                                 ]
@@ -252,7 +252,7 @@
                                 "rules": [
                                     {
                                         "value": 50,
-                                        "code": "lastName.size.toobig",
+                                        "id": "lastName.size.toobig",
                                         "message": "Your last name needs to be less than 50 characters long"
                                     }
                                 ]
@@ -266,7 +266,7 @@
                                             "frances": "(frances)",
                                             "bob": "^[a-d]+$"
                                         },
-                                        "code": "lastName.size.toobig",
+                                        "id": "lastName.size.toobig",
                                         "message": "Must match Frances"
                                     }
                                 ]
@@ -276,17 +276,17 @@
                                 "rules": [
                                     {
                                         "value": "^[a-zA-Z \\'-]+$",
-                                        "code": "lastName.invalid.characters",
+                                        "id": "lastName.invalid.characters",
                                         "message": "Sorry, your last name can only include letters and spaces"
                                     },
                                     {
                                         "value": "^[^-\\']",
-                                        "code": "lastName.invalid.characters.startorend",
+                                        "id": "lastName.invalid.characters.startorend",
                                         "message": "Sorry, your last name can only start and end with a letter"
                                     },
                                     {
                                         "value": "[^-\\']$",
-                                        "code": "lastName.invalid.characters.startorend",
+                                        "id": "lastName.invalid.characters.startorend",
                                         "message": "Sorry, your last name can only start and end with a letter"
                                     }
                                 ]
@@ -316,7 +316,7 @@
                                         "when" : [
                                             "fooUsername"
                                         ],
-                                        "code" : "foo.dependent.required.username",
+                                        "id" : "foo.dependent.required.username",
                                         "message" : "Foo is required"
                                     }
                                 ]
@@ -339,7 +339,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "email.blank",
+                                        "id": "email.blank",
                                         "message": "Please enter your email address"
                                     }
                                 ]
@@ -349,7 +349,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "email.email.invalid",
+                                        "id": "email.email.invalid",
                                         "message": "Sorry, we do not recognise that email address, please check and try again"
                                     }
                                 ]
@@ -359,7 +359,7 @@
                                 "rules": [
                                     {
                                         "value": "(\\@sky\\.co\\.uk)|(\\@sky\\.com)",
-                                        "code": "email.is.skycom",
+                                        "id": "email.is.skycom",
                                         "message": "You cannot choose a Sky email address"
                                     }
                                 ]
@@ -369,7 +369,7 @@
                                 "rules": [
                                     {
                                         "value": null,
-                                        "code": "email.taken",
+                                        "id": "email.taken",
                                         "message": "You've already created a Sky iD with this email address"
                                     }
                                 ]
@@ -396,7 +396,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "confirmEmail.blank",
+                                        "id": "confirmEmail.blank",
                                         "message": "Please type your email address again"
                                     }
                                 ]
@@ -406,7 +406,7 @@
                                 "rules": [
                                     {
                                         "value": "email",
-                                        "code": "confirmEmail.must.match.email",
+                                        "id": "confirmEmail.must.match.email",
                                         "message": "Sorry, your email addresses do not match. Please try again"
                                     }
                                 ]
@@ -432,7 +432,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "username.blank",
+                                        "id": "username.blank",
                                         "message": "Please choose a username"
                                     }
                                 ]
@@ -442,7 +442,7 @@
                                 "rules": [
                                     {
                                         "value": 3,
-                                        "code": "username.size.toosmall",
+                                        "id": "username.size.toosmall",
                                         "message": "Your username can only have 3 - 32 characters"
                                     }
                                 ]
@@ -452,7 +452,7 @@
                                 "rules": [
                                     {
                                         "value": 32,
-                                        "code": "username.size.toobig",
+                                        "id": "username.size.toobig",
                                         "message": "Your username can only have 3 - 32 characters"
                                     }
                                 ]
@@ -462,12 +462,12 @@
                                 "rules": [
                                     {
                                         "value": "^[a-zA-Z]+",
-                                        "code": "username.must.start.with.letter",
+                                        "id": "username.must.start.with.letter",
                                         "message": "Your username can only start with a letter"
                                     },
                                     {
                                         "value": "^[a-zA-Z0-9\\-\\._]+[a-zA-Z0-9]$",
-                                        "code": "username.invalid.characters",
+                                        "id": "username.invalid.characters",
                                         "message": "Your username can only contain letters and numbers"
                                     }
                                 ]
@@ -477,7 +477,7 @@
                                 "rules": [
                                     {
                                         "value": "[\\-\\.\\_][\\-\\.\\_]",
-                                        "code": "username.invalid.characters",
+                                        "id": "username.invalid.characters",
                                         "message": "Your username can only contain letters and numbers"
                                     }
                                 ]
@@ -487,12 +487,12 @@
                                 "rules": [
                                     {
                                         "value": null,
-                                        "code": "username.taken",
+                                        "id": "username.taken",
                                         "message": "Sorry, someone already has that username"
                                     },
                                     {
                                         "value": null,
-                                        "code": "username.contains.profanity",
+                                        "id": "username.contains.profanity",
                                         "message": "This is not a valid username"
                                     }
                                 ]
@@ -518,7 +518,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "password.blank",
+                                        "id": "password.blank",
                                         "message": "Please enter a valid password, it can't contain your username or the word 'password'"
                                     }
                                 ]
@@ -528,7 +528,7 @@
                                 "rules": [
                                     {
                                         "value": 8,
-                                        "code": "password.size.toosmall",
+                                        "id": "password.size.toosmall",
                                         "message": "Your password can only have 8 - 32 characters"
                                     }
                                 ]
@@ -538,7 +538,7 @@
                                 "rules": [
                                     {
                                         "value": 32,
-                                        "code": "password.size.toobig",
+                                        "id": "password.size.toobig",
                                         "message": "Your password can only have 8 - 32 characters"
                                     }
                                 ]
@@ -548,7 +548,7 @@
                                 "rules": [
                                     {
                                         "value": "username",
-                                        "code": "password.contains.username",
+                                        "id": "password.contains.username",
                                         "message": "Please enter a valid password, it can't contain your username or the word 'password'"
                                     }
                                 ]
@@ -558,12 +558,12 @@
                                 "rules": [
                                     {
                                         "value": "[A-Za-z]",
-                                        "code": "password.must.contain.letter",
+                                        "id": "password.must.contain.letter",
                                         "message": "Your password needs to contain at least one letter"
                                     },
                                     {
                                         "value": "^[\\!-\\%\\'-;=\\?-~]+$",
-                                        "code": "password.invalid.characters",
+                                        "id": "password.invalid.characters",
                                         "message": "Your password contains invalid characters"
                                     }
                                 ]
@@ -573,7 +573,7 @@
                                 "rules": [
                                     {
                                         "value": "(password)",
-                                        "code": "password.invalid",
+                                        "id": "password.invalid",
                                         "message": "Please enter a valid password, it can't contain your username or the word 'password'"
                                     }
                                 ]
@@ -599,7 +599,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "confirmPassword.blank",
+                                        "id": "confirmPassword.blank",
                                         "message": "Please type your password again"
                                     }
                                 ]
@@ -609,7 +609,7 @@
                                 "rules": [
                                     {
                                         "value": "password",
-                                        "code": "confirmPassword.must.match.password",
+                                        "id": "confirmPassword.must.match.password",
                                         "message": "The passwords you entered didn't match. Please try again"
                                     }
                                 ]
@@ -636,7 +636,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "terms.notequal",
+                                        "id": "terms.notequal",
                                         "message": "You need to agree to the terms and conditions"
                                     }
                                 ]
@@ -671,7 +671,7 @@
                                 "rules": [
                                     {
                                         "value": true,
-                                        "code": "serviceTerms.notequal",
+                                        "id": "serviceTerms.notequal",
                                         "message": "You need to agree to the terms and conditions"
                                     }
                                 ]
@@ -683,57 +683,6 @@
                             "message": "I have read and agree to the NOW TV terms & conditions"
                         }
                     }
-                },
-                {
-                    "name": "captcha",
-                    "type": "captcha",
-                    properties: {
-                        "validation": [
-                            {
-                                "type": "required",
-                                "rules": [
-                                    {
-                                        "value": true,
-                                        "code": "captcha.blank",
-                                        "message": "Please type the characters again"
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "captchaserver",
-                                "rules": [
-                                    {
-                                        "value": null,
-                                        "code": "captcha.invalid",
-                                        "message": "Sorry, the characters you typed were wrong"
-                                    }
-                                ]
-                            }
-                        ],
-                        "help": {},
-                        "label": {
-                            "code": "captcha.label",
-                            "message": "Enter the characters"
-                        }
-                    },
-                    actions: {
-                        'request-captcha': {
-                            href: '/captcha',
-                            method: 'POST',
-                            properties: {
-                                actionsubmit: {
-                                    code: 'requestcaptcha.submit',
-                                    message: 'Can\'t read it?'
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    name: "captchaId",
-                    type: "hidden",
-                    value: null,
-                    mandatory: true
                 }
             ];
         }])
@@ -766,6 +715,7 @@
                     };
 
                     scope.onErrorIconHover = function (fieldName) {
+                        console.log('on icon hover');
                         iconVisibilityStates[fieldName] = true;
                     };
 
@@ -774,9 +724,10 @@
                     };
 
                     scope.isErrorIconVisible = function (fieldName) {
-                        var isInvalid = !formHandlerCtrl.isFieldValid(fieldName),
-                            isTouched = formHandlerCtrl.isFieldTouched(fieldName);
-                        return isInvalid && isTouched;
+                        var isInvalid   = !formHandlerCtrl.isFieldValid(fieldName),
+                            isTouched   = formHandlerCtrl.isFieldTouched(fieldName),
+                            hasHelp     = formHandlerCtrl.hasHelp(fieldName);
+                        return (isInvalid && isTouched) || hasHelp;
                     };
 
                     scope.isErrorMessageVisible = function (fieldName) {
@@ -785,6 +736,13 @@
                                 isTouched = formHandlerCtrl.isFieldTouched(fieldName),
                                 isErrorIconHovered = iconVisibilityStates[fieldName];
                         return isInvalid && (isErrorIconHovered || (isActive && isTouched));
+                    };
+
+                    scope.isHelpMessageVisible = function (fieldName) {
+                        var isErrorMessageVisible   = scope.isErrorMessageVisible(fieldName),
+                            isErrorIconHovered      = iconVisibilityStates[fieldName],
+                            hasHelp                 = formHandlerCtrl.hasHelp(fieldName);
+                        return !isErrorMessageVisible && isErrorIconHovered && hasHelp;
                     };
 
                     scope.isHoveredAndNotActive = function (fieldName) {
@@ -809,12 +767,15 @@
             <div class="column field">
                 <nemo-input model="field" has-focus="$index === 0"></nemo-input>
                 <div class="field-error-icon"
-                     data-ng-mouseenter="onErrorIconHover(field.name)"
+                     data-ng-mouseover="onErrorIconHover(field.name)"
                      data-ng-mouseleave="onErrorIconBlur(field.name)"
                      data-ng-show="isErrorIconVisible(field.name)">@</div>
                 <data-nemo-validation-messages model="getFieldNgModelCtrl(field.name)" class="field-error-wrapper" data-t-error
                                                data-ng-show="isErrorMessageVisible(field.name)"
                                                data-ng-class="{'is-hovered-not-active' : isHoveredAndNotActive(field.name)}"></data-nemo-validation-messages>
+                <data-nemo-help-messages field-name="{{field.name}}" model="field.properties.help" class="field-help-wrapper" data-t-help
+                                               data-ng-if="isHelpMessageVisible(field.name)"
+                                               data-ng-class="{'is-hovered-not-active' : isHoveredAndNotActive(field.name)}"></data-nemo-help-messages>
 
 
             </div>

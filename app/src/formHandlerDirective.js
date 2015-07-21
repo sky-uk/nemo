@@ -60,6 +60,10 @@ angular.module('nemo')
             return getFieldInterfaceFn(fieldName, 'isTouched', skipRegisteredCheck)();
         };
 
+        this.hasHelp = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'hasHelp', skipRegisteredCheck)();
+        };
+
         this.isFieldActive = function (fieldName, skipRegisteredCheck) {
             return getFieldInterfaceFn(fieldName, 'isActive', skipRegisteredCheck)();
         };

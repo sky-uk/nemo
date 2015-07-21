@@ -165,7 +165,7 @@ angular.module('nemo')
 
         function contains(list, item) {
             var isFound = false;
-            if(list && list.length) {
+            if (list && list.length) {
                 angular.forEach(list, function (listItem) {
                     isFound = isFound || (item === listItem);
                 });
@@ -176,11 +176,11 @@ angular.module('nemo')
         // Extracted from Underscore.js 1.5.2
         function debounce(func, wait, immediate) {
             var timeout, args, context, timestamp, result;
-            return function() {
+            return function () {
                 context = this;
                 args = arguments;
                 timestamp = new Date();
-                var later = function() {
+                var later = function () {
                     var last = (new Date()) - timestamp;
                     if (last < wait) {
                         timeout = setTimeout(later, wait - last);
@@ -443,8 +443,8 @@ angular.module('nemo')
                     isTouched: function () {
                         return ngModelCtrl.$touched;
                     },
-                    isActive: function () {
-                        return ngModelCtrl.isActive;
+                    hasHelp: function () {
+                        return scope.model.properties.help && scope.model.properties.help.message;
                     },
                     setFocus: function () {
                         element[0].focus();
@@ -807,6 +807,10 @@ angular.module('nemo')
             return getFieldInterfaceFn(fieldName, 'isTouched', skipRegisteredCheck)();
         };
 
+        this.hasHelp = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'hasHelp', skipRegisteredCheck)();
+        };
+
         this.isFieldActive = function (fieldName, skipRegisteredCheck) {
             return getFieldInterfaceFn(fieldName, 'isActive', skipRegisteredCheck)();
         };
@@ -969,13 +973,12 @@ angular.module('nemo')
 angular.module('nemo')
 
     .directive('nemoValidationMessages', ['nemoMessages', function (messages) {
-
         return {
             scope: {
                 model: '='
             },
             template:   '<div data-ng-if="(model.$dirty || model.$touched) && model.$invalid" data-t-validation-code="{{validationCode}}" class="field-error">' +
-                            '{{getValidationMessage()}}' +
+                            '[ERROR] {{getValidationMessage()}}' +
                         '</div>',
             link: function(scope) {
 
@@ -989,4 +992,45 @@ angular.module('nemo')
                 };
             }
         }
+    }])
+
+    .directive('nemoHelpMessages', ['$compile', function ($compile) {
+        return {
+            scope: {
+                fieldName: '@',
+                help: '=model'
+            },
+            template:   '<div class="field-help">[HELP] {{help.message}}</div>',
+            link: function(scope, element) {
+                var dynamicContentId = scope.help.code.replace(/\./g, '-'),
+                    dynamicContentElement = angular.element('<div></div>');
+                    dynamicContentElement.attr(dynamicContentId, true);
+                    dynamicContentElement.attr('field-name', '{{fieldName}}');
+                    dynamicContentElement.attr('help', 'help');
+                    element.append(dynamicContentElement);
+                    $compile(dynamicContentElement)(scope);
+            }
+        }
+    }])
+
+    .directive('passwordHelp', ['$sce', function ($sce) {
+        return {
+            scope: {
+                fieldName: '@',
+                help: '='
+            },
+            require: '^nemoFormHandler',
+            template: '<div ng-bind-html="getMessage()"></div>',
+            link: function (scope, element, attributes, formHandlerCtrl) {
+                scope.getMessage = function () {
+                    var markup =
+                        '<ul>'
+                            + '<li>Field name:' + scope.fieldName + '</li>'
+                            + '<li>Field value:' + formHandlerCtrl.getFieldValue(scope.fieldName) + '</li>'
+                            + '<li>Default error message:' + scope.help.message + '</li>'
+                        + '</ul>';
+                    return $sce.trustAsHtml(markup);
+                }
+            }
+        };
     }]);

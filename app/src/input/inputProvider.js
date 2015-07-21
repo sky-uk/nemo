@@ -95,8 +95,8 @@ angular.module('nemo')
                     isTouched: function () {
                         return ngModelCtrl.$touched;
                     },
-                    isActive: function () {
-                        return ngModelCtrl.isActive;
+                    hasHelp: function () {
+                        return scope.model.properties.help && scope.model.properties.help.message;
                     },
                     setFocus: function () {
                         element[0].focus();
