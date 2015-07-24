@@ -1,4 +1,4 @@
-describe('nemo form handler directive', function () {
+ddescribe('nemo form handler directive', function () {
 
     beforeEach(function () {
         module('nemo');
@@ -112,6 +112,7 @@ describe('nemo form handler directive', function () {
                     expect(formHandlerCtrl.getFieldValue('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.isFieldValid('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.isFieldTouched('field2', true)).toBeUndefined();
+                    expect(formHandlerCtrl.hasHelp('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.isFieldActive('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.getFieldNgModelCtrl('field2', true)).toBeUndefined();
                     expect(formHandlerCtrl.forceInvalid('field2', true)).toBeUndefined();
@@ -400,6 +401,7 @@ describe('nemo form handler directive', function () {
         { formInterface: 'isFieldActive', elInterface: 'isActive' },
         { formInterface: 'isFieldValid', elInterface: 'isValid' },
         { formInterface: 'isFieldTouched', elInterface: 'isTouched' },
+        { formInterface: 'hasHelp', elInterface: 'hasHelp' },
         { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' },
         { formInterface: 'giveFieldFocus', elInterface: 'setFocus' }
     ].forEach(
