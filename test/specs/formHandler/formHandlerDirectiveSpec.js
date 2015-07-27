@@ -1,4 +1,4 @@
-ddescribe('nemo form handler directive', function () {
+describe('nemo form handler directive', function () {
 
     beforeEach(function () {
         module('nemo');
