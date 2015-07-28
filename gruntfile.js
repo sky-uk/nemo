@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 			dist: {
 				src: [
 					'app/src/app.js',
-					'app/src/validation/messagesProvider.js',
+					'app/src/messages/messagesProvider.js',
 					'app/src/utilsProvider.js',
 					'app/src/**/*Provider.js',
 					'app/src/**/*.js'],

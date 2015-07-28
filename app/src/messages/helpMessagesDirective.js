@@ -1,14 +1,14 @@
+'use strict';
 angular.module('nemo')
-    .directive('nemoHelpMessage', ['$compile', function ($compile) {
+
+    .directive('nemoHelpMessages', ['$compile', function ($compile) {
         return {
             scope: {
                 fieldName: '@',
                 help: '=model'
             },
-            replace: true,
-            template:   '<div class="field-help">{{help.message}}</div>',
+            template:   '<div class="help-messages">{{help.message}}</div>',
             link: function(scope, element) {
-
                 var dynamicContentId = scope.help.code.replace(/\./g, '-'),
                     dynamicContentElement = angular.element('<div></div>');
 

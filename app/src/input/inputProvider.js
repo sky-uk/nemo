@@ -89,6 +89,9 @@ angular.module('nemo')
                     releaseActive: function () {
                         ngModelCtrl.isActive = false;
                     },
+                    isActive: function () {
+                        return ngModelCtrl.isActive;
+                    },
                     isValid: function () {
                         return ngModelCtrl.$valid;
                     },

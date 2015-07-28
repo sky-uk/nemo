@@ -437,6 +437,9 @@ angular.module('nemo')
                     releaseActive: function () {
                         ngModelCtrl.isActive = false;
                     },
+                    isActive: function () {
+                        return ngModelCtrl.isActive;
+                    },
                     isValid: function () {
                         return ngModelCtrl.$valid;
                     },
@@ -891,29 +894,6 @@ angular.module('nemo')
             }
         };
     }]);
-angular.module('nemo')
-    .directive('nemoHelpMessage', ['$compile', function ($compile) {
-        return {
-            scope: {
-                fieldName: '@',
-                help: '=model'
-            },
-            replace: true,
-            template:   '<div class="field-help">{{help.message}}</div>',
-            link: function(scope, element) {
-
-                var dynamicContentId = scope.help.code.replace(/\./g, '-'),
-                    dynamicContentElement = angular.element('<div></div>');
-
-                dynamicContentElement.attr(dynamicContentId, true);
-                dynamicContentElement.attr('field-name', '{{fieldName}}');
-                dynamicContentElement.attr('help', 'help');
-                element.append(dynamicContentElement);
-                $compile(dynamicContentElement)(scope);
-            }
-        }
-    }]);
-
 'use strict';
 
 angular.module('nemo')
@@ -995,19 +975,78 @@ angular.module('nemo')
 'use strict';
 angular.module('nemo')
 
+    .directive('nemoHelpMessages', ['$compile', function ($compile) {
+        return {
+            scope: {
+                fieldName: '@',
+                help: '=model'
+            },
+            template:   '<div class="help-messages">{{help.message}}</div>',
+            link: function(scope, element) {
+                var dynamicContentId = scope.help.code.replace(/\./g, '-'),
+                    dynamicContentElement = angular.element('<div></div>');
+
+                dynamicContentElement.attr(dynamicContentId, true);
+                dynamicContentElement.attr('field-name', '{{fieldName}}');
+                dynamicContentElement.attr('help', 'help');
+                element.append(dynamicContentElement);
+                $compile(dynamicContentElement)(scope);
+            }
+        }
+    }]);
+
+'use strict';
+
+angular.module('nemo')
+
+    .directive('nemoIcon', [function () {
+        return {
+            template:'<div class="field-icon field-icon_{{type}}" ' +
+                        'data-ng-mouseover="onHover(fieldName)" ' +
+                        'data-ng-mouseleave="onBlur(fieldName)" ' +
+                        'data-ng-show="type">' +
+                        '{{getText(type)}}' +
+                    '</div>',
+            replace: true,
+            require: '^nemoFormHandler',
+            scope: {
+                fieldName: '@',
+                type: '@',
+                onHover: '&',
+                onBlur: '&'
+            },
+            link: function (scope) {
+                scope.getText = function (type) {
+                    var iconText;
+                    switch (type) {
+                        case 'error':
+                            iconText = '!';
+                            break;
+                        case 'help':
+                            iconText = '?';
+                            break;
+                    }
+                    return iconText;
+                };
+            }
+        }
+    }]);
+'use strict';
+angular.module('nemo')
+
     .directive('nemoValidationMessages', ['nemoMessages', function (messages) {
         return {
             scope: {
-                model: '='
+                validation: '=model'
             },
-            template:   '<div data-ng-if="(model.$dirty || model.$touched) && model.$invalid" data-t-validation-code="{{validationCode}}" class="field-error">' +
+            template:   '<div data-t-validation-code="{{validationCode}}" class="validation-messages">' +
                             '{{getValidationMessage()}}' +
                         '</div>',
             link: function(scope) {
 
                 scope.getValidationMessage = function() {
-                    for(var validationId in scope.model.$error) {
-                        if(scope.model.$error.hasOwnProperty(validationId)) {
+                    for(var validationId in scope.validation.$error) {
+                        if(scope.validation.$error.hasOwnProperty(validationId)) {
                             scope.validationCode = validationId;
                             return messages.get(validationId);
                         }
