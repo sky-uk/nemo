@@ -715,8 +715,8 @@
                             };
 
                             scope.getMessageType = function (fieldName) {
-                                var iconType;
-                                var isInvalid = !formHandlerCtrl.isFieldValid(fieldName),
+                                var iconType,
+                                    isInvalid = !formHandlerCtrl.isFieldValid(fieldName),
                                     isTouched = formHandlerCtrl.isFieldTouched(fieldName),
                                     hasHelp = formHandlerCtrl.hasHelp(fieldName);
                                 if(isInvalid && isTouched) {
@@ -751,8 +751,8 @@
 
                             function isMessageVisible(fieldName, messageType) {
                                 var currentMessageType = scope.getMessageType(fieldName),
-                                        isActive = formHandlerCtrl.isFieldActive(fieldName),
-                                        isIconHovered = iconVisibilityStates[fieldName];
+                                    isActive = formHandlerCtrl.isFieldActive(fieldName),
+                                    isIconHovered = iconVisibilityStates[fieldName];
                                 return currentMessageType === messageType && (isActive || isIconHovered);
                             }
                         }

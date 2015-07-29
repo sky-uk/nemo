@@ -7,11 +7,10 @@ angular.module('nemo')
             template:'<div class="field-icon field-icon_{{type}}" ' +
                         'data-ng-mouseover="onHover(fieldName)" ' +
                         'data-ng-mouseleave="onBlur(fieldName)" ' +
-                        'data-ng-show="type">' +
+                        'data-ng-if="type">' +
                         '{{getText(type)}}' +
                     '</div>',
             replace: true,
-            require: '^nemoFormHandler',
             scope: {
                 fieldName: '@',
                 type: '@',
