@@ -7,7 +7,7 @@ angular.module('nemo')
             template:'<div class="field-icon field-icon_{{type}}" ' +
                         'data-ng-mouseover="onHover(fieldName)" ' +
                         'data-ng-mouseleave="onBlur(fieldName)" ' +
-                        'data-ng-if="type">' +
+                        'data-ng-show="type">' +
                         '{{getText(type)}}' +
                     '</div>',
             replace: true,
