@@ -99,7 +99,7 @@ angular.module('nemo')
                         return ngModelCtrl.$touched;
                     },
                     hasHelp: function () {
-                        return scope.model.properties.help && scope.model.properties.help.message;
+                        return scope.model.properties && scope.model.properties.help && scope.model.properties.help.message;
                     },
                     setFocus: function () {
                         element[0].focus();
