@@ -4,7 +4,7 @@ angular.module('nemo')
 
     .provider('nemoValidationDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
 
-        var validationOptionsCache = {};
+        var validationOptionsCache = {}, validationRuleType = {};
 
         function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
             var isValid;
@@ -18,7 +18,8 @@ angular.module('nemo')
             return isValid;
         }
 
-        function setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
+        function setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
+            validationRuleType[validationRule.id] = type;
             ngModelCtrl.$validators[validationRule.id] = function () {
                 return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
             };
@@ -48,6 +49,9 @@ angular.module('nemo')
                 },
                 refreshValidity: function () {
                     refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                },
+                getType: function (validationRuleId) {
+                    return validationRuleType[validationRuleId];
                 }
             };
         }
@@ -62,7 +66,7 @@ angular.module('nemo')
             ngModelCtrl.$setValidity(validationRule.id, isValid);
         }
 
-        function getLinkFn(options, directiveName, validateFn, messages) {
+        function getLinkFn(type, options, directiveName, validateFn, messages) {
             return function (scope, element, attrs, controllers) {
                 var validationRules = scope.$eval(attrs[directiveName]),
                     ngModelCtrl = controllers[0],
@@ -71,7 +75,7 @@ angular.module('nemo')
                 validationRules.forEach(function (validationRule) {
                     var validFns = getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options);
 
-                    setupValidationRule(validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
+                    setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
                     registerValidationRule(validationRule, formHandlerCtrl, validFns);
 
                     if (options.linkFn) {
@@ -81,11 +85,11 @@ angular.module('nemo')
             };
         }
 
-        function getDirectiveDefinitionObject(options, directiveName, validateFn, messages) {
+        function getDirectiveDefinitionObject(type, options, directiveName, validateFn, messages) {
             return {
                 require: ['ngModel', '^nemoFormHandler'],
                 restrict: 'A',
-                link: getLinkFn(options, directiveName, validateFn, messages)
+                link: getLinkFn(type, options, directiveName, validateFn, messages)
             };
         }
 
@@ -96,7 +100,7 @@ angular.module('nemo')
             var directiveName = 'validation' + utilsProvider.capitalise(type);
             $compileProvider.directive
                 .apply(null, [directiveName, ['nemoMessages', function (messages) {
-                    return getDirectiveDefinitionObject(options, directiveName, options.validateFn, messages);
+                    return getDirectiveDefinitionObject(type, options, directiveName, options.validateFn, messages);
                 }]]);
 
             return this;

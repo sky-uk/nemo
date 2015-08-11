@@ -4,7 +4,8 @@ angular.module('nemo')
 
     .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', '$element', function ($scope, $timeout, $element) {
 
-        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [];
+        var registeredFieldsFns = {}, registeredValidationRulesFns = {}, fieldNameOrder = [],
+            validationTracking = {};
 
         function getRegisteredField(fieldName, skipRegisteredCheck) {
             return getRegisteredComponent(fieldName, registeredFieldsFns, skipRegisteredCheck);
@@ -76,6 +77,10 @@ angular.module('nemo')
             getValidationRuleInterfaceFn(validationRuleCode, 'forceInvalid', skipRegisteredCheck)(validationRuleCode);
         };
 
+        this.getValidationRuleType = function (validationRuleCode, skipRegisteredCheck) {
+            return getValidationRuleInterfaceFn(validationRuleCode, 'getType', skipRegisteredCheck)(validationRuleCode);
+        };
+
         this.forceServerFieldInvalid = function (fieldName, errorMessage, index, skipRegisteredCheck) {
             return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
         };
@@ -95,11 +100,13 @@ angular.module('nemo')
         };
 
         this.validateFormAndSetDirtyTouched = function () {
+            var self = this;
             angular.forEach(registeredValidationRulesFns, function (registeredValidationRuleFns) {
                 registeredValidationRuleFns.refreshValidity();
             });
-            angular.forEach(registeredFieldsFns, function (registeredFieldFns) {
+            angular.forEach(registeredFieldsFns, function (registeredFieldFns, fieldName) {
                 registeredFieldFns.setFilthy();
+                self.trackActiveField(fieldName);
             });
         };
 
@@ -119,9 +126,26 @@ angular.module('nemo')
             });
         };
 
+        this.trackActiveField = function(fieldName) {
+            var ngModelCtrl = this.getFieldNgModelCtrl(fieldName),
+                self = this;
+            if(this.isFieldTouched(fieldName)) {
+                angular.forEach(ngModelCtrl.$error, function (validationRuleValue, validationRuleId) {
+                    var validationRuleType = self.getValidationRuleType(validationRuleId),
+                        currentValidationTracking = validationTracking[fieldName][validationRuleType];
+                    validationTracking[fieldName][validationRuleType] = currentValidationTracking + 1 || 1;
+                });
+            }
+        };
+
+        this.getValidationTracking = function () {
+            return validationTracking;
+        };
+
         this.registerField = function (fieldName, registerFieldFns) {
             registeredFieldsFns[fieldName] = registerFieldFns;
             fieldNameOrder.push(fieldName);
+            validationTracking[fieldName] = {};
         };
 
         this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {

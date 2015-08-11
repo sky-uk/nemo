@@ -46,6 +46,7 @@ angular.module('nemo')
                         }
                         ngModelCtrl.forcedValidityValue = undefined;
                         formHandlerCtrl.validateForm();
+                        formHandlerCtrl.trackActiveField(scope.model.name);
                     });
                 });
             }
@@ -74,17 +75,17 @@ angular.module('nemo')
             }
 
             function registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, customFieldInterfaceFns) {
-                var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages),
+                var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl),
                     customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
                 angular.extend(fieldInterfaceFns, customerFieldInterface);
                 formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
                 return fieldInterfaceFns;
             }
 
-            function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages) {
+            function getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) {
                 return {
                     activeFieldChange: function (activeField) {
-                        activeFieldChange(scope, ngModelCtrl, activeField);
+                        ngModelCtrl.isActive = isFieldNowActive(scope.model.name, activeField);
                     },
                     releaseActive: function () {
                         ngModelCtrl.isActive = false;
@@ -133,10 +134,6 @@ angular.module('nemo')
                         utilsProvider.forceServerInvalid(errorMessage,errorIndex, scope, ngModelCtrl);
                     }
                 };
-            }
-
-            function activeFieldChange(scope, ngModelCtrl, activeField) {
-                ngModelCtrl.isActive = isFieldNowActive(scope.model.name, activeField);
             }
 
             function isFieldNowActive(fieldName, activeField) {
