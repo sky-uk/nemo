@@ -1,13 +1,13 @@
 angular.module('nemo').provider('serverValidation', function () {
     return {
-        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns) {
+        linkFn: function (scope, element, attrs, formHandlerCtrl, validationInterfaceFns) {
 
             scope.$watch(function () {
-                return ngModelCtrl.$viewValue;
+                return validationInterfaceFns.getValue();
             }, function (newVal, oldVal) {
                 if (newVal === oldVal) { return; }
 
-                validFns.forceValid();
+                validationInterfaceFns.forceValid();
             });
         },
         $get: {}

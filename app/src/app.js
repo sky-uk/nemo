@@ -37,8 +37,8 @@ angular.module('nemo', [])
             validationProvider
 
                 .validation('required', {
-                    validateFn: function (value, validationRule, formHandlerController, ngModelController) {
-                        return (validationRule.value) ? !ngModelController.$isEmpty(value) : true;
+                    validateFn: function (value, validationRule, formHandlerController, validationInterfaceFns) {
+                        return (validationRule.value) ? !validationInterfaceFns.isEmpty(value) : true;
                     }
                 })
 
@@ -117,11 +117,11 @@ angular.module('nemo', [])
                 })
 
                 .validation('dependentrequired', {
-                    validateFn: function (value, validationRule, formHandlerController, ngModelController) {
+                    validateFn: function (value, validationRule, formHandlerController, validationInterfaceFns) {
                         var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             required = utilsProvider.contains(validationRule.when, otherFieldValue);
 
-                        return required ? !ngModelController.$isEmpty(value) : true;
+                        return required ? !validationInterfaceFns.isEmpty(value) : true;
                     }
                 })
 

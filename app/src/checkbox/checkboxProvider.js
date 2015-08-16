@@ -6,7 +6,7 @@ angular.module('nemo').provider('checkbox', [function () {
             'style="position: absolute; top: 0; left: 0; width: 0; height: 0; opacity: 0; cursor: pointer; font-size: 0; color: transparent; text-indent: 100%; padding: 0; border: none;" />' +
         '</div>',
         defaultValue: false,
-        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl) {
+        linkFn: function (scope, element, attrs, formHandlerCtrl, validationInterfaceFns) {
 
             var fieldValue = scope.model.value,
                 fieldName = scope.model.name,
@@ -15,7 +15,7 @@ angular.module('nemo').provider('checkbox', [function () {
             setValue(fieldValue === true || fieldValue === 'true');
 
             scope.isFocused = function () {
-                return hasGenuineFocus && ngModelCtrl.isActive;
+                return hasGenuineFocus && validationInterfaceFns.isActive;
             };
 
             scope.toggle = function () {

@@ -6,22 +6,22 @@ angular.module('nemo')
 
         var validationOptionsCache = {}, validationRuleType = {};
 
-        function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
+        function getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl, validFns) {
             var isValid;
             if(ngModelCtrl.forcedValidityValue !== undefined) {
                 isValid = ngModelCtrl.forcedValidityValue;
             } else if(angular.isFunction(validateFn)) {
-                isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, ngModelCtrl);
+                isValid = validateFn(ngModelCtrl.$viewValue, validationRule, formHandlerCtrl, validFns);
             } else {
                 isValid = !ngModelCtrl.$error[validationRule.id];
             }
             return isValid;
         }
 
-        function setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages) {
+        function setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, validFns, messages) {
             validationRuleType[validationRule.id] = type;
             ngModelCtrl.$validators[validationRule.id] = function () {
-                return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                return getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl, validFns);
             };
             messages.set(validationRule.id, validationRule.message);
         }
@@ -48,10 +48,26 @@ angular.module('nemo')
                     validityChange(ngModelCtrl, validationRule.id, true);
                 },
                 refreshValidity: function () {
-                    refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                    var validFns = getValidationRuleInterfaceFns(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+                    refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl, validFns);
                 },
                 getType: function (validationRuleId) {
                     return validationRuleType[validationRuleId];
+                },
+                getValue: function () {
+                    return ngModelCtrl.$viewValue;
+                },
+                isEmpty: function (value) {
+                    return ngModelCtrl.$isEmpty(value);
+                },
+                isActive: function () {
+                    return ngModelCtrl.isActive;
+                },
+                setDirty: function () {
+                    return ngModelCtrl.$setDirty();
+                },
+                setTouched: function () {
+                    return ngModelCtrl.$setTouched();
                 }
             };
         }
@@ -61,8 +77,8 @@ angular.module('nemo')
             ngModelCtrl.forcedValidityValue = newValidity;
         }
 
-        function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl) {
-            var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl);
+        function refreshValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl, validFns) {
+            var isValid = getValidity(validateFn, validationRule, ngModelCtrl, formHandlerCtrl, validFns);
             ngModelCtrl.$setValidity(validationRule.id, isValid);
         }
 
@@ -75,11 +91,11 @@ angular.module('nemo')
                 validationRules.forEach(function (validationRule) {
                     var validFns = getValidationRuleInterfaceFnsObject(scope, validateFn, validationRule, ngModelCtrl, formHandlerCtrl, options);
 
-                    setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, messages);
+                    setupValidationRule(type, validationRule, ngModelCtrl, formHandlerCtrl, validateFn, validFns, messages);
                     registerValidationRule(validationRule, formHandlerCtrl, validFns);
 
                     if (options.linkFn) {
-                        options.linkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns);
+                        options.linkFn(scope, element, attrs, formHandlerCtrl, validFns);
                     }
                 });
             };

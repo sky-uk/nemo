@@ -31,8 +31,8 @@ angular.module('nemo')
                     });
             }
 
-            function manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, linkFn) {
-                (linkFn || angular.noop)(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http);
+            function manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http, linkFn) {
+                (linkFn || angular.noop)(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http);
             }
 
             function validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl) {
@@ -51,17 +51,18 @@ angular.module('nemo')
                 });
             }
 
-            function getLinkFn(options, $compile, $http, nemoMessages) {
+            function getLinkFn(options, $compile, $http) {
                 return function (scope, element, attrs, controllers) {
                     var ngModelCtrl = controllers[0],
                         formHandlerCtrl = controllers[1],
                         parentNgModelCtrl = controllers[2];
                     validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl);
 
-                    var interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, options.fieldInterfaceFns);
+                    var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl),
+                        interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, fieldInterfaceFns, options.fieldInterfaceFns);
                     interfaceFuns.setupBusinessRules();
 
-                    manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, options.linkFn);
+                    manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http, options.linkFn);
                     manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                     handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
                 };
@@ -74,9 +75,8 @@ angular.module('nemo')
                 };
             }
 
-            function registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, customFieldInterfaceFns) {
-                var fieldInterfaceFns = getFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl),
-                    customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
+            function registerField(scope, element, ngModelCtrl, formHandlerCtrl, fieldInterfaceFns, customFieldInterfaceFns) {
+                var customerFieldInterface = customFieldInterfaceFns ? customFieldInterfaceFns(scope, element, ngModelCtrl, formHandlerCtrl) : {};
                 angular.extend(fieldInterfaceFns, customerFieldInterface);
                 formHandlerCtrl.registerField(scope.model.name, fieldInterfaceFns);
                 return fieldInterfaceFns;
@@ -159,13 +159,13 @@ angular.module('nemo')
                 return isFieldNowActive;
             }
 
-            function getDirectiveDefinitionObject(options, $compile, $http, nemoMessages) {
+            function getDirectiveDefinitionObject(options, $compile, $http) {
                 return {
                     require: ['ngModel', '^nemoFormHandler', '?^^ngModel'],
                     template: getTemplateWithAttributes(options.template),
                     replace: true,
                     restrict: 'A',
-                    link: getLinkFn(options, $compile, $http, nemoMessages),
+                    link: getLinkFn(options, $compile, $http),
                     controller: options.controller
                 };
             }
@@ -174,8 +174,8 @@ angular.module('nemo')
                 $compileProvider.directive
                     .apply(null, [
                         'input' + utilsProvider.capitalise(type),
-                        ['$compile', '$http', 'nemoMessages', function ($compile, $http, nemoMessages) {
-                            return getDirectiveDefinitionObject(options, $compile, $http, nemoMessages);
+                        ['$compile', '$http', function ($compile, $http) {
+                            return getDirectiveDefinitionObject(options, $compile, $http);
                         }]]);
                 return this;
             }
