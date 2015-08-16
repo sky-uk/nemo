@@ -246,10 +246,9 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
                 'Your browser does not support audio' +
             '</audio>' +
         '</div>',
-        linkFn: function (scope, element, attrs, controllers) {
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1],
-                watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
+        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl) {
+
+            var watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
                     if(newVal !== oldVal) {
                         ngModelCtrl.$setDirty();
                         watcherUnbind();
@@ -297,11 +296,9 @@ angular.module('nemo').provider('checkbox', [function () {
             'style="position: absolute; top: 0; left: 0; width: 0; height: 0; opacity: 0; cursor: pointer; font-size: 0; color: transparent; text-indent: 100%; padding: 0; border: none;" />' +
         '</div>',
         defaultValue: false,
-        linkFn: function (scope, element, attrs, controllers) {
+        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl) {
 
-            var ngModelCtrl = controllers[0],
-                formHandlerCtrl = controllers[1],
-                fieldValue = scope.model.value,
+            var fieldValue = scope.model.value,
                 fieldName = scope.model.name,
                 hasGenuineFocus = false;
 
@@ -379,8 +376,8 @@ angular.module('nemo')
                     });
             }
 
-            function manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, linkFn) {
-                (linkFn || angular.noop)(scope, element, attrs, controllers, $compile, $http);
+            function manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, linkFn) {
+                (linkFn || angular.noop)(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http);
             }
 
             function validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl) {
@@ -409,7 +406,7 @@ angular.module('nemo')
                     var interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, options.fieldInterfaceFns);
                     interfaceFuns.setupBusinessRules();
 
-                    manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
+                    manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, options.linkFn);
                     manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                     handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
                 };
@@ -537,8 +534,7 @@ angular.module('nemo')
 
 angular.module('nemo').provider('serverValidation', function () {
     return {
-        linkFn: function (scope, element, attrs, controllers, validFns) {
-            var ngModelCtrl = controllers[0];
+        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns) {
 
             scope.$watch(function () {
                 return ngModelCtrl.$viewValue;
@@ -632,7 +628,7 @@ angular.module('nemo')
                     registerValidationRule(validationRule, formHandlerCtrl, validFns);
 
                     if (options.linkFn) {
-                        options.linkFn(scope, element, attrs, controllers, validFns);
+                        options.linkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns);
                     }
                 });
             };

@@ -1,7 +1,6 @@
 angular.module('nemo').provider('serverValidation', function () {
     return {
-        linkFn: function (scope, element, attrs, controllers, validFns) {
-            var ngModelCtrl = controllers[0];
+        linkFn: function (scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns) {
 
             scope.$watch(function () {
                 return ngModelCtrl.$viewValue;

@@ -79,7 +79,7 @@ angular.module('nemo')
                     registerValidationRule(validationRule, formHandlerCtrl, validFns);
 
                     if (options.linkFn) {
-                        options.linkFn(scope, element, attrs, controllers, validFns);
+                        options.linkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, validFns);
                     }
                 });
             };

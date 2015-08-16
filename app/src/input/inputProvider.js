@@ -31,8 +31,8 @@ angular.module('nemo')
                     });
             }
 
-            function manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, linkFn) {
-                (linkFn || angular.noop)(scope, element, attrs, controllers, $compile, $http);
+            function manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, linkFn) {
+                (linkFn || angular.noop)(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http);
             }
 
             function validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl) {
@@ -61,7 +61,7 @@ angular.module('nemo')
                     var interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, nemoMessages, options.fieldInterfaceFns);
                     interfaceFuns.setupBusinessRules();
 
-                    manageCustomLinkFn(scope, element, attrs, controllers, $compile, $http, options.linkFn);
+                    manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, ngModelCtrl, $compile, $http, options.linkFn);
                     manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                     handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
                 };
