@@ -5,8 +5,8 @@ angular.module('nemo')
     .directive('nemoIcon', [function () {
         return {
             template:'<div class="field-icon field-icon_{{type}}" ' +
-                        'data-ng-mouseover="onHover(fieldName)" ' +
-                        'data-ng-mouseleave="onBlur(fieldName)" ' +
+                        'data-ng-mouseover="onHover({fieldName: fieldName})" ' +
+                        'data-ng-mouseleave="onBlur({fieldName: fieldName})" ' +
                         'data-ng-show="type">' +
                         '{{getText(type)}}' +
                     '</div>',
