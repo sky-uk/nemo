@@ -18,7 +18,7 @@ module.exports = function (config) {
             'test/helpers/**/*.js',
             'test/validationData.js',
             'app/src/app.js',
-            'app/src/validation/messagesProvider.js',
+            'app/src/messages/messagesProvider.js',
             'app/src/utilsProvider.js',
             'app/src/**/*.js',
             'test/specs/**/*Spec.js'
@@ -72,4 +72,6 @@ module.exports = function (config) {
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: false
     });
+
+
 };

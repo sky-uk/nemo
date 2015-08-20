@@ -15,7 +15,7 @@ angular.module('nemo')
                 dynamicContentElement.attr(dynamicContentId, true);
                 dynamicContentElement.attr('field-name', '{{fieldName}}');
                 dynamicContentElement.attr('help', 'help');
-                element.append(dynamicContentElement);
+                angular.element(element.children()[0]).append(dynamicContentElement);
                 $compile(dynamicContentElement)(scope);
             }
         }

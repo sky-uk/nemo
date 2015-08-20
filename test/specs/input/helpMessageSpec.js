@@ -16,7 +16,7 @@ describe('help messages directive', function() {
                     code: 'message.code.key'
                 };
 
-                markup = '<div data-nemo-help-message model="model" fieldName="exampleField"></div>';
+                markup = '<div data-nemo-help-messages model="model" fieldName="exampleField"></div>';
             });
 
             when(function () {
@@ -30,7 +30,7 @@ describe('help messages directive', function() {
     );
 
     it('creates an element to be used as a custom help message directive with field name and help attributes',
-        inject(function () {
+        function () {
 
             var markup, model, compiled, replaceStub, customHelpDirective;
 
@@ -41,7 +41,7 @@ describe('help messages directive', function() {
                     code: { replace: replaceStub }
                 };
 
-                markup = '<div data-nemo-help-message model="model" fieldName="exampleField"></div>';
+                markup = '<div data-nemo-help-messages model="model" fieldName="exampleField"></div>';
             });
 
             when(function () {
@@ -49,11 +49,12 @@ describe('help messages directive', function() {
             });
 
             and(function () {
-                customHelpDirective = angular.element(compiled.children()[0]);
+                customHelpDirective = angular.element(angular.element(compiled.children()[0]).children()[0]);
             });
 
             then("this is kind of a weird thing to test", function () {
                 expect(replaceStub).toHaveBeenCalled(/\./g, '-');
+
             });
 
             and(function () {
@@ -61,8 +62,7 @@ describe('help messages directive', function() {
                 expect(customHelpDirective.attr('field-name')).toBeDefined();
                 expect(customHelpDirective.attr('help')).toBe('help');
             });
-        })
-    );
+        });
 
     describe('custom help directives', function () {
 
@@ -89,7 +89,7 @@ describe('help messages directive', function() {
                         code: 'message.code.key'
                     };
 
-                    markup = '<div data-nemo-help-message model="model" fieldName="exampleField"></div>';
+                    markup = '<div data-nemo-help-messages model="model" fieldName="exampleField"></div>';
                 });
 
                 when(function () {

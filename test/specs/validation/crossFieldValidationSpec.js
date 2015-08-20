@@ -96,7 +96,7 @@ describe('validation', function () {
                 and(function () {
                     firstFieldElement = angular.element(formElement.children()[0]);
                     secondFieldElement = angular.element(formElement.children()[1]);
-                    validationMessagesElement = angular.element(formElement.children()[2]);
+                    validationMessagesElement = angular.element(angular.element(formElement.children()[2]).children()[0]);
                 });
 
                 then(function () {
@@ -134,7 +134,6 @@ describe('validation', function () {
                 });
 
                 and(function () {
-                    expect(validationMessagesElement.children().length).toBe(flow.validationMessagesText ? 1 : 0);
                     expect(validationMessagesElement.text()).toBe(flow.validationMessagesText);
                 });
             });
