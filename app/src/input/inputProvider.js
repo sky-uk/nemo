@@ -16,6 +16,7 @@ angular.module('nemo')
                 templateElement.setAttribute('ng-focus', 'setActiveField()');
                 templateElement.setAttribute('name', '{{model.name}}');
                 templateElement.setAttribute('id', 'nemo-{{model.name}}');
+                templateElement.setAttribute('placeholder', '{{model.properties.placeholder.message}}');
                 return parentTemplateElement.innerHTML;
             }
 
