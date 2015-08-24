@@ -131,7 +131,7 @@ angular.module('nemo')
                 self = this;
             if(this.isFieldTouched(fieldName)) {
                 angular.forEach(ngModelCtrl.$error, function (validationRuleValue, validationRuleId) {
-                    var validationRuleType = self.getValidationRuleType(validationRuleId),
+                    var validationRuleType = self.getValidationRuleType(validationRuleId, true) || validationRuleId,
                         currentValidationTracking = validationTracking[fieldName][validationRuleType];
                     validationTracking[fieldName][validationRuleType] = currentValidationTracking + 1 || 1;
                 });
