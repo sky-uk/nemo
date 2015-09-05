@@ -99,7 +99,8 @@ Gets the list of values for each field of the form.
 
 <label class="method-section">Parameters</label>
 
-[None]
+\-
+
 <span class="method-section">Returns</span>
 
 <label class="var-type var-type-object">Object</label> The list of values for each field of the form.
