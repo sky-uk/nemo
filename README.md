@@ -6,8 +6,6 @@
 	.method {
 		margin-top: 25px;
 		font-size: 20px;
-		padding: 5px;
-		background-color: #eee;
 		display: inline-block;
 	}
 	
@@ -91,9 +89,103 @@ To contribute please create a branch from master. Before commiting your changes 
 
 Then talk to/email NowTV Web to let them know your code is ready for review!
 
-## API
+## API - Registering components
 
-<label class="method">getFieldValues()</label>
+Nemo supports the registration of custom input types and validation rules through the corresponding exposed providers.
+
+### Input types (`nemoInputDirectiveCreatorProvider`)
+
+<label class="method">`input(type, options)`</label>
+
+Sets the value of an input.
+
+<label class="method-section">Parameters</label>
+
+<table style="padding: 0; margin: 0;">
+	<tr style="background-color: #eee;">
+		<th>Param</th>
+		<th>Type</th>
+		<th>Details</th>		
+	</tr>
+	<tr style="background-color: #fff;">
+		<td>type</td>
+		<td><label class="var-type var-type-string">String</label></td>
+		<td>The type of input to be registered</td>
+	</tr>
+	<tr style="background-color: #fff;">
+		<td>options</td>
+		<td><label class="var-type var-type-object">Object</label></td>
+		<td>
+			<ul>
+				<li>template</li>
+				<li>controller</li>
+				<li>defaultValue</li>
+				<li>fieldInterfaceFns</li>
+				<li>link
+					<ul>
+						<li>scope</li>
+						<li>element</li>
+						<li>attrs</li>
+						<li>formHandlerCtrl</li>
+						<li>fieldInterfaceFns</li>
+					<ul>
+				</li>
+			</ul>	
+		</td>
+	</tr>
+</table>
+	
+<span class="method-section">Returns</span>
+
+<label class="var-type var-type-object">Object</label> A reference to `nemoInputDirectiveCreatorProvider`
+
+
+### Validation rules (`nemoValidationDirectiveCreatorProvider`)
+
+<label class="method">`validation(type, options)`</label>
+
+Validates the value of the input where the validation rule is attached to.
+
+<label class="method-section">Parameters</label>
+
+<table style="padding: 0; margin: 0;">
+	<tr style="background-color: #eee;">
+		<th>Param</th>
+		<th>Type</th>
+		<th>Details</th>		
+	</tr>
+	<tr style="background-color: #fff;">
+		<td>type</td>
+		<td><label class="var-type var-type-string">String</label></td>
+		<td>The type of input to be registered</td>
+	</tr>
+	<tr style="background-color: #fff;">
+		<td>options</td>
+		<td><label class="var-type var-type-object">Object</label></td>
+		<td>
+			<ul>
+				<li>link</li>
+				<li>validationRuleInterfaceFns</li>
+				<li>validateFn
+					<ul>
+						<li>viewValue</li>
+						<li>validationRule</li>
+						<li>formHandlerCtrl</li>
+						<li>validFns</li>
+					<ul>
+				</li>
+			</ul>			
+		</td>
+	</tr>
+</table>
+	
+<span class="method-section">Returns</span>
+
+<label class="var-type var-type-object">Object</label> A reference to `nemoValidationDirectiveCreatorProvider`
+
+## API - Interacting with the `formHandlerCtrl`
+
+<label class="method">`getFieldValues()`</label>
 
 Gets the list of values for each field of the form.
 
@@ -105,7 +197,7 @@ Gets the list of values for each field of the form.
 
 <label class="var-type var-type-object">Object</label> The list of values for each field of the form.
 
-<label class="method">setFieldValue(fieldName, value, [skipRegisteredCheck])</label>
+<label class="method">`setFieldValue(fieldName, value, [skipRegisteredCheck])`</label>
 
 Sets the value of a field.
 
@@ -138,7 +230,7 @@ Sets the value of a field.
 
 \-
 
-<label class="method">getFieldValue(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`getFieldValue(fieldName, [skipRegisteredCheck])`</label>
 
 Gets the value of a field.
 
@@ -166,7 +258,7 @@ Gets the value of a field.
 
 <label class="var-type var-type-all">*</label> The value of the field
 
-<label class="method">isFieldValid(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`isFieldValid(fieldName, [skipRegisteredCheck])`</label>
 
 Checks whether the field is valid or not.
 
@@ -194,7 +286,7 @@ Checks whether the field is valid or not.
 
 <label class="var-type var-type-boolean">Boolean</label> The field validity.
 
-<label class="method">isFieldTouched(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`isFieldTouched(fieldName, [skipRegisteredCheck])`</label>
 
 Checks whether the field has been touched or not.
 
@@ -222,7 +314,7 @@ Checks whether the field has been touched or not.
 
 <label class="var-type var-type-boolean">Boolean</label> True if the field has been touched. False otherwise.
 
-<label class="method">hasHelp(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`hasHelp(fieldName, [skipRegisteredCheck])`</label>
 
 Determines whether the field has contextual help attached to it or not.
 
@@ -250,7 +342,7 @@ Determines whether the field has contextual help attached to it or not.
 
 <label class="var-type var-type-boolean">Boolean</label> True if the field has contextual help. False otherwise.
 
-<label class="method">isFieldActive(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`isFieldActive(fieldName, [skipRegisteredCheck])`</label>
 
 Cheks whether the field is active or not.
 
@@ -284,7 +376,7 @@ NOTE: A field is consider active if:
 
 <label class="var-type var-type-boolean">Boolean</label> True if the field is active. False otherwise.
 
-<label class="method">getFielNgModelCtrl(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`getFielNgModelCtrl(fieldName, [skipRegisteredCheck])`</label>
 
 Gets the ngModel controller of a field.
 
@@ -312,7 +404,7 @@ Gets the ngModel controller of a field.
 
 <label class="var-type var-type-object">Object</label> The ngModel controller associated to the field.
 
-<label class="method">forceInvalid(validationRuleCode, [skipRegisteredCheck])</label>
+<label class="method">`forceInvalid(validationRuleCode, [skipRegisteredCheck])`</label>
 
 Sets a field as invalid.
 
@@ -340,7 +432,7 @@ Sets a field as invalid.
 
 \-
 
-<label class="method">forceServerFieldInvalid(fieldName, errorMessage, Index, [skipRegisteredCheck])</label>
+<label class="method">`forceServerFieldInvalid(fieldName, errorMessage, Index, [skipRegisteredCheck])`</label>
 
 Forces a field as invalid.
 
@@ -370,7 +462,7 @@ Opposite to the ```forceInvalid``` method, this one manages an ad-hoc error inst
 
 \-
 
-<label class="method">setActiveField(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`setActiveField(fieldName, [skipRegisteredCheck])`</label>
 
 Marks a field as active.
 
@@ -398,7 +490,7 @@ Marks a field as active.
 
 \-
 
-<label class="method">releaseActiveField(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`releaseActiveField(fieldName, [skipRegisteredCheck])`</label>
 
 Releases the active state of a field.
 
@@ -426,7 +518,7 @@ Releases the active state of a field.
 
 \-
 
-<label class="method">setFieldDirtyTouched(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`setFieldDirtyTouched(fieldName, [skipRegisteredCheck])`</label>
 
 Marks a field as dirty and touched.
 
@@ -454,7 +546,7 @@ Marks a field as dirty and touched.
 
 \-
 
-<label class="method">validateForm([skipRegisteredCheck])</label>
+<label class="method">`validateForm([skipRegisteredCheck])`</label>
 
 Checks the validity of the form.
 
@@ -477,7 +569,7 @@ Checks the validity of the form.
 
 \-
 
-<label class="method">validateFormAndSetDirtyTouched()</label>
+<label class="method">`validateFormAndSetDirtyTouched()`</label>
 
 Checks the validity of all the fields of the form, marking them as dirty and touched
 
@@ -489,7 +581,7 @@ Checks the validity of all the fields of the form, marking them as dirty and tou
 
 \-
 
-<label class="method">giveFieldFocus(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`giveFieldFocus(fieldName, [skipRegisteredCheck])`</label>
 
 Sets the focus into a field.
 
@@ -517,7 +609,7 @@ Sets the focus into a field.
 
 \-
 
-<label class="method">giveFirstFieldInvalidFocus()</label>
+<label class="method">`giveFirstFieldInvalidFocus()`</label>
 
 Sets the focus into the first invalid field of the form.
 
@@ -529,7 +621,7 @@ Sets the focus into the first invalid field of the form.
 
 \-
 
-<label class="method">registerField(fieldName, [skipRegisteredCheck])</label>
+<label class="method">`registerField(fieldName, [skipRegisteredCheck])`</label>
 
 Registers a field into the form controller, so its public interface methods will be reachable from there afterwards.
 
@@ -557,7 +649,7 @@ Registers a field into the form controller, so its public interface methods will
 
 \-
 
-<label class="method">validationRuleCode(validationRuleCode, [skipRegisteredCheck])</label>
+<label class="method">`validationRuleCode(validationRuleCode, [skipRegisteredCheck])`</label>
 
 Registers a validation rule code into the form controller, so its public interface methods will be reachable from there afterwards.
 
