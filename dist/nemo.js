@@ -845,7 +845,8 @@ angular.module('nemo')
         };
 
         this.forceServerFieldInvalid = function (fieldName, errorMessage, index, skipRegisteredCheck) {
-            return getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
+            getFieldInterfaceFn(fieldName, 'forceServerInvalid', skipRegisteredCheck)(errorMessage, index);
+            this.trackActiveField(fieldName);
         };
 
         this.setActiveField = function (activeFieldName, skipRegisteredCheck) {
