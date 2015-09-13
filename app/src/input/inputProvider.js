@@ -31,8 +31,8 @@ angular.module('nemo')
                     });
             }
 
-            function manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http, linkFn) {
-                (linkFn || angular.noop)(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http);
+            function manageCustomLinkFn(scope, element, attrs, fieldInterfaceFns, formHandlerCtrl, $injector, linkFn) {
+                (linkFn || angular.noop)(scope, element, attrs, fieldInterfaceFns, formHandlerCtrl, fieldInterfaceFns, $injector);
             }
 
             function validateFormOnFieldChange(scope, ngModelCtrl, formHandlerCtrl) {
@@ -51,7 +51,7 @@ angular.module('nemo')
                 });
             }
 
-            function getLinkFn(options, $compile, $http) {
+            function getLinkFn(options, $injector) {
                 return function (scope, element, attrs, controllers) {
                     var ngModelCtrl = controllers[0],
                         formHandlerCtrl = controllers[1],
@@ -62,7 +62,7 @@ angular.module('nemo')
                         interfaceFuns = registerField(scope, element, ngModelCtrl, formHandlerCtrl, fieldInterfaceFns, options.fieldInterfaceFns);
                     interfaceFuns.setupBusinessRules();
 
-                    manageCustomLinkFn(scope, element, attrs, formHandlerCtrl, fieldInterfaceFns, $compile, $http, options.linkFn);
+                    manageCustomLinkFn(scope, element, attrs, fieldInterfaceFns, formHandlerCtrl, $injector, (options.link || options.linkFn));
                     manageDefaultValue(scope, formHandlerCtrl, options.defaultValue);
                     handleActivationState(scope, formHandlerCtrl, parentNgModelCtrl);
                 };
@@ -159,13 +159,13 @@ angular.module('nemo')
                 return isFieldNowActive;
             }
 
-            function getDirectiveDefinitionObject(options, $compile, $http) {
+            function getDirectiveDefinitionObject(options, $injector) {
                 return {
                     require: ['ngModel', '^nemoFormHandler', '?^^ngModel'],
                     template: getTemplateWithAttributes(options.template),
                     replace: true,
                     restrict: 'A',
-                    link: getLinkFn(options, $compile, $http),
+                    link: getLinkFn(options, $injector),
                     controller: options.controller
                 };
             }
@@ -174,8 +174,8 @@ angular.module('nemo')
                 $compileProvider.directive
                     .apply(null, [
                         'input' + utilsProvider.capitalise(type),
-                        ['$compile', '$http', function ($compile, $http) {
-                            return getDirectiveDefinitionObject(options, $compile, $http);
+                        ['$injector', function ($injector) {
+                            return getDirectiveDefinitionObject(options, $injector);
                         }]]);
                 return this;
             }

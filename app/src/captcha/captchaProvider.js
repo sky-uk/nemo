@@ -9,11 +9,11 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
                 'Your browser does not support audio' +
             '</audio>' +
         '</div>',
-        linkFn: function (scope, element, attrs, formHandlerCtrl, validationInterfaceFns) {
+        linkFn: function (scope, element, attrs, fieldInterfaceFns, formHandlerCtrl) {
 
             var watcherUnbind = scope.$watch('model.value', function (newVal, oldVal) {
                     if(newVal !== oldVal) {
-                        validationInterfaceFns.setDirty();
+                        fieldInterfaceFns.setDirty();
                         watcherUnbind();
                     }
                 });
@@ -33,7 +33,7 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
             };
 
             scope.setTouchedCaptchaField = function () {
-                validationInterfaceFns.setTouched();
+                fieldInterfaceFns.setTouched();
             };
         },
         fieldInterfaceFns: function(scope, element, ngModelCtrl) {

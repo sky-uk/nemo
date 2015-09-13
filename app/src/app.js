@@ -37,7 +37,7 @@ angular.module('nemo', [])
             validationProvider
 
                 .validation('required', {
-                    validateFn: function (value, validationRule, formHandlerController, validationInterfaceFns) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         return (validationRule.value) ? !validationInterfaceFns.isEmpty(value) : true;
                     }
                 })
@@ -61,21 +61,21 @@ angular.module('nemo', [])
                 })
 
                 .validation('mustnotcontain', {
-                    validateFn: function (value, validationRule, formHandlerController) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
                     }
                 })
 
                 .validation('mustmatch', {
-                    validateFn: function (value, validationRule, formHandlerController) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
                     }
                 })
 
                 .validation('mustmatchcaseinsensitive', {
-                    validateFn: function (value, validationRule, formHandlerController) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
                     }
@@ -109,7 +109,7 @@ angular.module('nemo', [])
                 })
 
                 .validation('dependentpattern', {
-                    validateFn: function (value, validationRule, formHandlerController) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             regex = validationRule.patterns[otherFieldValue];
                         return (value) ? new RegExp(regex, 'i').test(value) : true;
@@ -117,7 +117,7 @@ angular.module('nemo', [])
                 })
 
                 .validation('dependentrequired', {
-                    validateFn: function (value, validationRule, formHandlerController, validationInterfaceFns) {
+                    validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             required = utilsProvider.contains(validationRule.when, otherFieldValue);
 
