@@ -290,8 +290,8 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
 }]);
 angular.module('nemo').provider('checkbox', [function () {
     return {
-        template: '<div data-ng-click="toggle()" data-ng-keyup="toggleIfEnter($event)" data-ng-class="{checked: isChecked, focused: isFocused()}">' +
-        '<label class="tick" data-ng-show="isChecked">\u2714</label>' +
+        template: '<div data-ng-click="toggle()" data-ng-keyup="toggleIfEnter($event)" data-ng-class="{checked: isChecked(), focused: isFocused()}">' +
+        '<label class="tick" data-ng-show="isChecked()">\u2714</label>' +
         '<input type="text" data-ng-focus="setFocus()" data-ng-blur="releaseFocus()" ' +
             'style="position: absolute; top: 0; left: 0; width: 0; height: 0; opacity: 0; cursor: pointer; font-size: 0; color: transparent; text-indent: 100%; padding: 0; border: none;" />' +
         '</div>',
@@ -308,8 +308,12 @@ angular.module('nemo').provider('checkbox', [function () {
                 return hasGenuineFocus && validationInterfaceFns.isActive;
             };
 
+            scope.isChecked = function () {
+                return formHandlerCtrl.getFieldValue(fieldName);
+            };
+
             scope.toggle = function () {
-                setValue(!scope.isChecked);
+                setValue(!scope.isChecked());
                 scope.setFocus();
                 formHandlerCtrl.setFieldDirtyTouched(fieldName);
             };
@@ -332,7 +336,6 @@ angular.module('nemo').provider('checkbox', [function () {
             };
 
             function setValue(value) {
-                scope.isChecked = value;
                 formHandlerCtrl.setFieldValue(fieldName, value);
             }
 
