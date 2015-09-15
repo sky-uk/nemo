@@ -5,13 +5,13 @@ describe('icon directive', function () {
     [
         { type: 'error', expectedText: '!'},
         { type: 'help', expectedText: '?'},
-        { type: 'valid', expectedText: '✔'},
-        { type: 'foo', expectedText: ''}
+        { type: 'valid', expectedText: '&#10004;'},
+        { type: 'foo', expectedText: ' '}
 
     ].forEach(function (scenario) {
 
         it('must return ' + scenario.expectedText + ' icon text if type is ' + scenario.type +
-        ' when calling the getText method of the scope', function () {
+        ' when calling the getText method of the scope', inject(function ($sce) {
 
             var element, scope, text;
 
@@ -25,9 +25,9 @@ describe('icon directive', function () {
             });
 
             then(function () {
-                expect(text).toBe(scenario.expectedText);
+                expect(text.$$unwrapTrustedValue()).toBe(scenario.expectedText);
             });
-        });
+        }));
     });
 
 
