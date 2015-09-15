@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('nemo')
 
     .directive('nemoIcon', [function () {
@@ -19,8 +17,11 @@ angular.module('nemo')
             },
             link: function (scope) {
                 scope.getText = function (type) {
-                    var iconText;
+                    var iconText = '';
                     switch (type) {
+                        case 'valid':
+                            iconText = '✔';
+                            break;
                         case 'error':
                             iconText = '!';
                             break;
@@ -31,5 +32,5 @@ angular.module('nemo')
                     return iconText;
                 };
             }
-        }
+        };
     }]);
