@@ -10,7 +10,7 @@ angular.module('nemo', [])
                     defaultValue: ''
                 })
 
-                .input('select', {
+                .input('dropdown', {
                     template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>',
                     defaultValue: ''
                 })
