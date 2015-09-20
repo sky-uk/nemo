@@ -241,7 +241,8 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
             '<img class="nemo-captcha-img" ng-src="{{captchaModel.getImageUri()}}">' +
             '<div class="nemo-captcha-play" ng-click="playAudio($event)"></div>' +
             '<p class="nemo-captcha-refresh" ng-click="refreshCaptcha($event)">{{getRequestCaptchaCopy()}}</p>' +
-            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput" ng-focus="setActiveCaptchaField()" ng-blur="setTouchedCaptchaField()">' +
+            '<input class="nemo-captcha-input" type="text" ng-model="model.value" name="captchaInput" ' +
+                'placeholder="{{model.properties.placeholder.message}}" ng-focus="setActiveCaptchaField()" ng-blur="setTouchedCaptchaField()">' +
             '<audio class="nemo-captcha-audio" ng-src="{{captchaModel.getAudioUri()}}">' +
                 'Your browser does not support audio' +
             '</audio>' +
@@ -363,7 +364,8 @@ angular.module('nemo')
                 templateElement.setAttribute('ng-model', 'model.value');
                 templateElement.setAttribute('ng-focus', 'setActiveField()');
                 templateElement.setAttribute('name', '{{model.name}}');
-                templateElement.setAttribute('id', 'nemo-{{model.name}}');
+                templateElement.setAttribute('id', '{{model.id || model.name}}');
+                templateElement.setAttribute('placeholder', '{{model.properties.placeholder.message}}');
                 return parentTemplateElement.innerHTML;
             }
 
@@ -1030,7 +1032,7 @@ angular.module('nemo')
                 dynamicContentElement.attr(dynamicContentId, true);
                 dynamicContentElement.attr('field-name', '{{fieldName}}');
                 dynamicContentElement.attr('help', 'help');
-                element.append(dynamicContentElement);
+                angular.element(element.children()[0]).append(dynamicContentElement);
                 $compile(dynamicContentElement)(scope);
             }
         }

@@ -13,7 +13,7 @@ describe('nemo validation messages', function () {
                 {
                     validation: validation.required(),
                     flows: [
-                        {viewValue: undefined, fieldValidity: false, validationMessagesText: ''},
+                        {viewValue: undefined, fieldValidity: false, validationMessagesText: 'Please enter something'},
                         {viewValue: 'foo', fieldValidity: true, validationMessagesText: ''},
                         {viewValue: '', fieldValidity: false, validationMessagesText: 'Please enter something'}
                     ]
@@ -151,7 +151,7 @@ describe('nemo validation messages', function () {
 
                 and(function () {
                     fieldElement = angular.element(formElement.children()[0]);
-                    validationMessagesElement = angular.element(formElement.children()[1]);
+                    validationMessagesElement = angular.element(angular.element(formElement.children()[1]).children()[0]);
                 });
 
                 then(function () {
@@ -182,7 +182,6 @@ describe('nemo validation messages', function () {
                     });
 
                     and(function () {
-                        expect(validationMessagesElement.children().length).toBe(flow.validationMessagesText ? 1 : 0);
                         expect(validationMessagesElement.text()).toBe(flow.validationMessagesText);
                     });
                 });
