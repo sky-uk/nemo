@@ -1,6 +1,6 @@
 angular.module('nemo').provider('serverValidation', function () {
     return {
-        linkFn: function (scope, element, attrs, formHandlerCtrl, validationInterfaceFns) {
+        linkFn: function (scope, element, attrs, validationInterfaceFns) {
 
             scope.$watch(function () {
                 return validationInterfaceFns.getValue();
