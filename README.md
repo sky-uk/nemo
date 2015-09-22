@@ -120,13 +120,13 @@ Sets the value of an input.
 				<li>template</li>
 				<li>controller</li>
 				<li>defaultValue</li>
-				<li>fieldInterfaceFns</li>
+				<li>fieldInterfaceCtrl</li>
 				<li>link
 					<ul>
 						<li>scope</li>
 						<li>element</li>
 						<li>attrs</li>
-						<li>fieldInterfaceFns</li>
+						<li>fieldInterfaceCtrl</li>
 						<li>formHandlerCtrl</li>
 						<li>$injector</li>
 					<ul>
@@ -170,8 +170,7 @@ Validates the value of the input where the validation rule is attached to.
 				<li>validate
 					<ul>
 						<li>viewValue</li>
-						<li>validationRule</li>
-						<li>validationInterfaceFns</li>
+						<li>validationRule</li>						<li>validationInterfaceFns</li>
 						<li>formHandlerCtrl</li>
 						<li>$injector</li>
 					<ul>
