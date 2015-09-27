@@ -4,6 +4,7 @@ TESTDATA.validation = {
     required: function () {
         return {
             "type": "required",
+            "attrName": "required",
             "rules": [
                 {
                     "value": true,
@@ -13,9 +14,10 @@ TESTDATA.validation = {
             ]
         };
     },
-    minlength: function (minLength) {
+    minLength: function (minLength) {
         return {
-            "type": "minlength",
+            "type": "minLength",
+            "attrName": "min-length",
             "rules": [
                 {
                     "value": minLength,
@@ -25,9 +27,10 @@ TESTDATA.validation = {
             ]
         };
     },
-    maxlength: function (maxLength) {
+    maxLength: function (maxLength) {
         return {
-            "type": "maxlength",
+            "type": "maxLength",
+            "attrName": "max-length",
             "rules": [
                 {
                     "value": maxLength,
@@ -40,6 +43,7 @@ TESTDATA.validation = {
     email: function () {
         return {
             "type" : "email",
+            "attrName": "email",
             "rules" :
                 [
                     {
@@ -50,9 +54,10 @@ TESTDATA.validation = {
                 ]
         };
     },
-    mustbeequal: function () {
+    mustBeEqual: function () {
         return {
-            "type" : "mustbeequal",
+            "type" : "mustBeEqual",
+            "attrName": "must-be-equal",
             "rules" :
                 [
                     {
@@ -63,9 +68,10 @@ TESTDATA.validation = {
                 ]
         };
     },
-    inlist: function () {
+    inList: function () {
         return {
-            "type" : "inlist",
+            "type" : "inList",
+            "attrName": "in-list",
             "rules" :
                 [
                     {
@@ -84,6 +90,7 @@ TESTDATA.validation = {
     pattern: function () {
         return {
             "type" : "pattern",
+            "attrName": "pattern",
             "rules" :
                 [
                     {
@@ -99,9 +106,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    notpattern: function () {
+    notPattern: function () {
         return {
-            "type" : "notpattern",
+            "type" : "notPattern",
+            "attrName": "not-pattern",
             "rules" :
                 [
                     {
@@ -117,9 +125,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    mustnotcontain: function () {
+    mustNotContain: function () {
         return {
-            "type" : "mustnotcontain",
+            "type" : "mustNotContain",
+            "attrName": "must-not-contain",
             "rules":
                 [
                     {
@@ -130,9 +139,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    mustmatch: function () {
+    mustMatch: function () {
         return {
-            "type" : "mustmatch",
+            "type" : "mustMatch",
+            "attrName": "must-match",
             "rules":
                 [
                     {
@@ -143,9 +153,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    mustmatchcaseinsensitive: function () {
+    mustMatchCaseInsensitive: function () {
         return {
-            "type" : "mustmatchcaseinsensitive",
+            "type" : "mustMatchCaseInsensitive",
+            "attrName": "must-match-case-insensitive",
             "rules":
                 [
                     {
@@ -156,9 +167,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    dependentpattern: function () {
+    dependentPattern: function () {
         return {
-            "type" : "dependentpattern",
+            "type" : "dependentPattern",
+            "attrName": "dependent-pattern",
             "rules":
                 [
                     {
@@ -173,9 +185,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    dependentrequired: function () {
+    dependentRequired: function () {
         return {
-            "type" : "dependentrequired",
+            "type" : "dependentRequired",
+            "attrName": "dependent-required",
             "rules":
                 [
                     {
@@ -189,9 +202,10 @@ TESTDATA.validation = {
                 ]
         }
     },
-    usernameserver: function () {
+    usernameServer: function () {
         return {
             "type" : "server",
+            "attrName": "server",
             "rules":
                 [
                     {

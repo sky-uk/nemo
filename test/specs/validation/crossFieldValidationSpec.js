@@ -8,7 +8,7 @@ describe('validation', function () {
 
     [
         {
-            validation: validation.mustnotcontain(),
+            validation: validation.mustNotContain(),
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'fooUsername', fieldValidity: false, validationMessagesText: 'Foo cant contain username' },
@@ -19,7 +19,7 @@ describe('validation', function () {
             ]
         },
         {
-            validation: validation.mustmatch(),
+            validation: validation.mustMatch(),
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
@@ -28,7 +28,7 @@ describe('validation', function () {
             ]
         },
         {
-            validation: validation.mustmatchcaseinsensitive(),
+            validation: validation.mustMatchCaseInsensitive(),
             flows: [
                 { viewValue: 'fooUsername', fieldValidity: true, validationMessagesText: ''},
                 { viewValue: 'foousername', fieldValidity: true, validationMessagesText: ''},
@@ -38,7 +38,7 @@ describe('validation', function () {
             ]
         },
         {
-            validation: validation.dependentpattern(),
+            validation: validation.dependentPattern(),
             flows: [
                 { viewValue: undefined, fieldValidity: true, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: '1', fieldValidity: true, validationMessagesText: ''},
@@ -50,7 +50,7 @@ describe('validation', function () {
             ]
         },
         {
-            validation: validation.dependentrequired(),
+            validation: validation.dependentRequired(),
             flows: [
                 { viewValue: undefined, fieldValidity: false, validationMessagesText: '', forceValidationOfForm: true},
                 { viewValue: 'foo', fieldValidity: true, validationMessagesText: ''},
@@ -100,7 +100,7 @@ describe('validation', function () {
                 });
 
                 then(function () {
-                    expect(firstFieldElement.attr('validation-' + validationScenario.type)).toBe('model.properties.validation[0].rules');
+                    expect(firstFieldElement.attr('validation-' + validationScenario.attrName)).toBe('model.properties.validation[0].rules');
                 });
 
                 when(function () {

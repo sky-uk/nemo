@@ -19,7 +19,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.minlength(5),
+                    validation: validation.minLength(5),
                     flows: [
                         {viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         {viewValue: 'foo', fieldValidity: false, validationMessagesText: 'Please type a longer text'},
@@ -28,7 +28,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.maxlength(10),
+                    validation: validation.maxLength(10),
                     flows: [
                         {viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         {
@@ -50,7 +50,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.mustbeequal(),
+                    validation: validation.mustBeEqual(),
                     flows: [
                         {viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         {viewValue: false, fieldValidity: false, validationMessagesText: 'The value must be true'},
@@ -60,7 +60,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.inlist(),
+                    validation: validation.inList(),
                     flows: [
                         {viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         {
@@ -99,7 +99,7 @@ describe('nemo validation messages', function () {
                     ]
                 },
                 {
-                    validation: validation.notpattern(),
+                    validation: validation.notPattern(),
                     flows: [
                         {viewValue: undefined, fieldValidity: true, validationMessagesText: ''},
                         {viewValue: '2', fieldValidity: false, validationMessagesText: 'Please type bigger numbers'},
@@ -155,7 +155,7 @@ describe('nemo validation messages', function () {
                 });
 
                 then(function () {
-                    expect(fieldElement.attr('validation-' + validationScenario.validation.type)).toBe('model.properties.validation[0].rules');
+                    expect(fieldElement.attr('validation-' + validationScenario.validation.attrName)).toBe('model.properties.validation[0].rules');
                 });
 
                 validationScenario.flows.forEach(function (flow) {
@@ -204,7 +204,7 @@ describe('nemo validation messages', function () {
                     name: 'foo',
                     value: '',
                     properties: {
-                        validation: [validation.minlength(5), validation.usernameserver()]
+                        validation: [validation.minLength(5), validation.usernameServer()]
                     }
                 };
             });
