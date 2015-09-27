@@ -42,7 +42,7 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('inlist', {
+                .validation('inList', {
                     validateFn: function (value, validationRule) {
                         return (value) ? utilsProvider.contains(validationRule.value, value) : true;
                     }
@@ -54,40 +54,40 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('notpattern', {
+                .validation('notPattern', {
                     validateFn: function (value, validationRule) {
                         return (value) ? !(new RegExp(validationRule.value).test(value)) : true;
                     }
                 })
 
-                .validation('mustnotcontain', {
+                .validation('mustNotContain', {
                     validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
                     }
                 })
 
-                .validation('mustmatch', {
+                .validation('mustMatch', {
                     validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value) ? value === targetValue : true;
                     }
                 })
 
-                .validation('mustmatchcaseinsensitive', {
+                .validation('mustMatchCaseInsensitive', {
                     validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
                         return (value && targetValue) ? value.toLowerCase() === targetValue.toLowerCase() : true;
                     }
                 })
 
-                .validation('minlength', {
+                .validation('minLength', {
                     validateFn: function (value, validationRule) {
                         return (value && validationRule) ? value.length >= validationRule.value : true;
                     }
                 })
 
-                .validation('maxlength', {
+                .validation('maxLength', {
                     validateFn: function (value, validationRule) {
                         return (value && validationRule) ? value.length <= validationRule.value : true;
                     }
@@ -102,13 +102,13 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('mustbeequal', {
+                .validation('mustBeEqual', {
                     validateFn: function (value, validationRule) {
                         return (value || value === false) ? value === validationRule.value : true;
                     }
                 })
 
-                .validation('dependentpattern', {
+                .validation('dependentPattern', {
                     validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             regex = validationRule.patterns[otherFieldValue];
@@ -116,7 +116,7 @@ angular.module('nemo', [])
                     }
                 })
 
-                .validation('dependentrequired', {
+                .validation('dependentRequired', {
                     validateFn: function (value, validationRule, validationInterfaceFns, formHandlerController) {
                         var otherFieldValue = formHandlerController.getFieldValue(validationRule.value, true),
                             required = utilsProvider.contains(validationRule.when, otherFieldValue);
@@ -471,11 +471,11 @@ angular.module('nemo')
                         ngModelCtrl.$setTouched();
                     },
                     setupBusinessRules: function () {
-                        if (scope.model.properties && scope.model.properties.businessrules) {
-                            if (utilsProvider.contains(scope.model.properties.businessrules, 'noAutocomplete')) {
+                        if (scope.model.properties && scope.model.properties.businessRules) {
+                            if (utilsProvider.contains(scope.model.properties.businessRules, 'noAutocomplete')) {
                                 element.attr('autocomplete', 'off');
                             }
-                            if (utilsProvider.contains(scope.model.properties.businessrules, 'noPaste')) {
+                            if (utilsProvider.contains(scope.model.properties.businessRules, 'noPaste')) {
                                 element.attr('onPaste', 'return false;');
                             }
                         }
@@ -539,7 +539,7 @@ angular.module('nemo')
 
 angular.module('nemo').provider('serverValidation', function () {
     return {
-        linkFn: function (scope, element, attrs, formHandlerCtrl, validationInterfaceFns) {
+        linkFn: function (scope, element, attrs, validationInterfaceFns) {
 
             scope.$watch(function () {
                 return validationInterfaceFns.getValue();

@@ -122,11 +122,11 @@ angular.module('nemo')
                         ngModelCtrl.$setTouched();
                     },
                     setupBusinessRules: function () {
-                        if (scope.model.properties && scope.model.properties.businessrules) {
-                            if (utilsProvider.contains(scope.model.properties.businessrules, 'noAutocomplete')) {
+                        if (scope.model.properties && scope.model.properties.businessRules) {
+                            if (utilsProvider.contains(scope.model.properties.businessRules, 'noAutocomplete')) {
                                 element.attr('autocomplete', 'off');
                             }
-                            if (utilsProvider.contains(scope.model.properties.businessrules, 'noPaste')) {
+                            if (utilsProvider.contains(scope.model.properties.businessRules, 'noPaste')) {
                                 element.attr('onPaste', 'return false;');
                             }
                         }

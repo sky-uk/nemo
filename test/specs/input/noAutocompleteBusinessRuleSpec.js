@@ -30,7 +30,7 @@ describe('noAutocompleteBusinessRule', function () {
                     name: 'confirmUsername',
                     value: '',
                     properties: {
-                        businessrules: scenario.noAutocomplete ? ['noAutocomplete'] : []
+                        businessRules: scenario.noAutocomplete ? ['noAutocomplete'] : []
                     }
                 };
             });

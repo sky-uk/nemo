@@ -30,7 +30,7 @@ describe('noPasteBusinessRule', function () {
                     name: 'confirmUsername',
                     value: '',
                     properties: {
-                        businessrules: scenario.disallowedPaste ? ['noPaste'] : []
+                        businessRules: scenario.disallowedPaste ? ['noPaste'] : []
                     }
                 };
             });
