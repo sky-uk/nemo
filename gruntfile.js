@@ -47,8 +47,7 @@ module.exports = function (grunt) {
                 jshintrc: true
             },
             src: [
-                'app/src/**/*.js',
-                '!app/src/vendor/**/*.js'
+                'app/src/**/*.js'
             ]
         }
 	});
