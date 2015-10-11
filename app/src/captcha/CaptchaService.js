@@ -8,5 +8,5 @@ angular.module('nemo').service('Captcha', ['$http', 'CaptchaModel', function ($h
 
     return {
         getCaptcha: getCaptcha
-    }
+    };
 }]);

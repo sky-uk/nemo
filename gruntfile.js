@@ -31,12 +31,25 @@ module.exports = function (grunt) {
 			scripts: {
 				files: ['app/**/*.js'],
 				tasks: ['build']
-			}
+			},
+            jshint: {
+                files: ['app/src/**/*.js'],
+                tasks: ['jshint']
+            }
 		},
         clean: {
             npm: {
                 src: ['node_modules']
             }
+        },
+        jshint: {
+            options: {
+                jshintrc: true
+            },
+            src: [
+                'app/src/**/*.js',
+                '!app/src/vendor/**/*.js'
+            ]
         }
 	});
 
@@ -45,6 +58,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-express');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	grunt.registerTask('build', ['concat']);
 	grunt.registerTask('build-and-min', ['build', 'uglify']);

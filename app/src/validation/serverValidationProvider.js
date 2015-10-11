@@ -11,5 +11,5 @@ angular.module('nemo').provider('serverValidation', function () {
             });
         },
         $get: {}
-    }
+    };
 });

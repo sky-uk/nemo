@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('nemo')
 
     .provider('nemoValidationDirectiveCreator', ['$compileProvider', 'nemoUtilsProvider', function ($compileProvider, utilsProvider) {
@@ -119,7 +117,7 @@ angular.module('nemo')
                     return getDirectiveDefinitionObject(type, options, directiveName, (options.validate || options.validateFn), $injector, messages);
                 }]]);
 
-            return this;
+            return this; // jshint ignore:line
         }
 
         function storeValidationOptionsInCache(type, options) {

@@ -1,7 +1,5 @@
 angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtils', function ($scope, Captcha, utils) {
 
-    var debouncedGetCaptchaInfo = utils.debounce(getCaptchaInfo, 1000, true);
-
     function getCaptchaInfo() {
         $scope.model.value = '';
         return Captcha.getCaptcha($scope.model.action).then(function (captchaModel) {
@@ -9,6 +7,8 @@ angular.module('nemo').controller('CaptchaCtrl', ['$scope', 'Captcha', 'nemoUtil
             $scope.updateCaptchaId($scope.captchaModel.getId());
         });
     }
+
+    var debouncedGetCaptchaInfo = utils.debounce(getCaptchaInfo, 1000, true);
 
     $scope.refreshCaptcha = function ($event) {
         if ($event) {

@@ -30,5 +30,5 @@ angular.module('nemo').factory('CaptchaModel', ['$sce', function ($sce) {
         create: function (data) {
             return new CaptchaModel(data);
         }
-    }
+    };
 }]);

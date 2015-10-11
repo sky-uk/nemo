@@ -12,8 +12,6 @@ angular.module('nemo').provider('checkbox', [function () {
                 fieldName = scope.model.name,
                 hasGenuineFocus = false;
 
-            setValue(fieldValue === true || fieldValue === 'true');
-
             scope.isFocused = function () {
                 return hasGenuineFocus && validationInterfaceFns.isActive;
             };
@@ -52,7 +50,9 @@ angular.module('nemo').provider('checkbox', [function () {
             function setActiveState() {
                 formHandlerCtrl.setActiveField(fieldName);
             }
+
+            setValue(fieldValue === true || fieldValue === 'true');
         },
         $get: angular.noop
-    }
+    };
 }]);

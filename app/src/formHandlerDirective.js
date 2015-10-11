@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('nemo')
 
     .controller('nemoFormHandlerCtrl', ['$scope', '$timeout', '$element', function ($scope, $timeout, $element) {
@@ -123,7 +121,7 @@ angular.module('nemo')
 
         this.giveFirstInvalidFieldFocus = function () {
             $timeout(function() {
-                angular.element($element).find('input.ng-invalid,select.ng-invalid,.field.ng-invalid input, .field.ng-invalid select').first().focus()
+                angular.element($element).find('input.ng-invalid,select.ng-invalid,.field.ng-invalid input, .field.ng-invalid select').first().focus();
             });
         };
 

@@ -1,4 +1,3 @@
-'use strict';
 angular.module('nemo')
 
     .directive('nemoHelpMessages', ['$compile', function ($compile) {
@@ -18,5 +17,5 @@ angular.module('nemo')
                 angular.element(element.children()[0]).append(dynamicContentElement);
                 $compile(dynamicContentElement)(scope);
             }
-        }
+        };
     }]);

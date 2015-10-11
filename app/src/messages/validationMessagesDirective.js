@@ -1,4 +1,3 @@
-'use strict';
 angular.module('nemo')
 
     .directive('nemoValidationMessages', ['nemoMessages', function (messages) {
@@ -20,5 +19,5 @@ angular.module('nemo')
                     }
                 };
             }
-        }
+        };
     }]);

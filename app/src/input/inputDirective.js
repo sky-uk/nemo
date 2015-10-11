@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('nemo')
 
     .directive('nemoInput', ['$compile', 'nemoValidationDirectiveCreator', function ($compile, validation) {
@@ -63,7 +61,7 @@ angular.module('nemo')
                 manageValidationRules(scope.model.properties, fieldElement);
                 replaceTemplate(element, fieldElement);
                 compileTemplate(fieldElement, scope);
-            }
+            };
         }
 
         return {
@@ -74,5 +72,5 @@ angular.module('nemo')
                 hasFocus: '='
             },
             link: getLinkFn()
-        }
+        };
     }]);

@@ -46,9 +46,9 @@ angular.module('nemo').provider('captcha', ['nemoUtilsProvider', function (utils
                     scope.refreshCaptcha();
                     utilsProvider.forceServerInvalid(errorMessage, errorIndex, scope, ngModelCtrl);
                 }
-            }
+            };
         },
         controller: 'CaptchaCtrl',
         $get: {}
-    }
+    };
 }]);

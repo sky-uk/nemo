@@ -1,4 +1,3 @@
-'use strict';
 angular.module('nemo')
 
     .provider('nemoMessages', [function () {
@@ -10,7 +9,7 @@ angular.module('nemo')
         }
 
         function get(key) {
-            return messages[key]
+            return messages[key];
         }
 
         return {
@@ -20,7 +19,7 @@ angular.module('nemo')
                 return {
                     set: set,
                     get: get
-                }
+                };
             }
-        }
+        };
     }]);
