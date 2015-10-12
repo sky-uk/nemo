@@ -131,8 +131,8 @@ from the main (upstream) repository:
 
 ## <a name="rules"></a> Coding Rules
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
-* Don't create methods with more than 10 lines each.
-* Don't create components with more than 100 lines each.
+* Don't create methods with more than **10 lines each**.
+* Don't create components with more than **100 lines each**.
 * keep just up to one `var` statement for each method, at the very beginning of its main closure.
 * Keep just op to one `return` statement, at the very end of its main closure.
 * With the exceptions listed below, we follow the rules contained in [Google's JavaScript Style Guide][js-style-guide]:
