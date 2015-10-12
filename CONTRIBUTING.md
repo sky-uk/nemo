@@ -176,7 +176,7 @@ the SHA of the commit being reverted.
 
 ### Author
 The github account of the responsible of the commit.
-Don't use this UNLESS the commit is triggered from a corporate account.
+Don't use this **unless** the commit is triggered from a corporate account.
 
 ### Type
 Must be one of the following:
