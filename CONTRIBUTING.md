@@ -68,11 +68,6 @@ Before you submit your pull request consider the following guidelines:
 * Run the full Nemo test suite, and ensure that all tests pass.
 Nemo tests are's based on Karma, so if you need any help with the test runner, please have a look to
 its [config](https://github.com/karma-runner/karma).
-* Run JSHint
-
-     ```shell
-     grunt jshint
-     ```
 * Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit-message-format)
 Adherence to the [commit message conventions](#commit-message-format) is required because release
 notes are automatically generated from these messages.
