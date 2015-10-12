@@ -214,7 +214,7 @@ reference GitHub issues that this commit **Closes**.
 A detailed explanation can be found in this [AngularJs document][commit-message-format].
 
 
-[email]: dl-nowtv-webteam@sky.uk
+[email]: mailto:dl-nowtv-webteam@sky.uk
 [commit-message-format]: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
 [github]: https://github.com/sky-uk/nowtv-web-nemo
 [js-style-guide]: http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml
