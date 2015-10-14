@@ -2,7 +2,7 @@ angular.module('nemo')
 
     .directive('nemoIcon', ['$sce', function ($sce) {
         return {
-            template:'<div class="field-icon field-icon_{{type}}  field-icon_{{fieldName}}" ' +
+            template:'<div class="field-icon field-icon_{{type}} field-icon_{{fieldName}}" ' +
                         'data-ng-mouseover="onHover(fieldName)" ' +
                         'data-ng-mouseleave="onBlur(fieldName)" ' +
                         'data-ng-show="type" ng-bind-html="getText(type)">' +
