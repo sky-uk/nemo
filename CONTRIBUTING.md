@@ -152,7 +152,7 @@ Each commit message consists of a **header**, a **body** and a **footer**.  The 
 format that includes a **type**, a **scope** and a **subject**:
 
 ```
-<@author> <type>(<scope>): <subject>
+<(@)author> <type>(<scope>): <subject>
 <BLANK LINE>
 <body>
 <BLANK LINE>
@@ -171,7 +171,7 @@ the SHA of the commit being reverted.
 
 ### Author
 The github account of the responsible of the commit.
-Don't use this **unless** the commit is triggered from a corporate account.
+Please use the '@' preffix if the author points to an actual gitHub username.
 
 ### Type
 Must be one of the following:
