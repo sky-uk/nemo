@@ -37,16 +37,16 @@ describe('nemo input', function () {
         { model: { "value": null,     "type": "checkbox" }, expectedType: undefined,   expectedTag: 'div',     expectedValue: false },
         { model: { "value": undefined,"type": "checkbox" }, expectedType: undefined,   expectedTag: 'div',     expectedValue: false },
         { model: {                    "type": "checkbox" }, expectedType: undefined,   expectedTag: 'div',     expectedValue: false },
-        //Select
-        { model: { "value": 'MrsValue',"type": "select", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
+        //Dropdown
+        { model: { "value": 'MrsValue',"type": "dropdown", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
             expectedType: undefined, expectedTag: 'select', expectedValue: 'MrsValue' },
-        { model: { "value": '', "type": "select", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
+        { model: { "value": '', "type": "dropdown", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
             expectedType: undefined, expectedTag: 'select', expectedValue: '' },
-        { model: { "value": null, "type": "select", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
+        { model: { "value": null, "type": "dropdown", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
             expectedType: undefined, expectedTag: 'select', expectedValue: '' },
-        { model: { "value": undefined, "type": "select", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
+        { model: { "value": undefined, "type": "dropdown", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
             expectedType: undefined, expectedTag: 'select', expectedValue: '' },
-        { model: { "type": "select", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
+        { model: { "type": "dropdown", options: [{ text: 'MrText', value: 'MrValue' }, { text: 'MrsText', value: 'MrsValue' }] },
             expectedType: undefined, expectedTag: 'select', expectedValue: '' }
     ];
 

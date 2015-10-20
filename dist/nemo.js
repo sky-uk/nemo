@@ -10,7 +10,7 @@ angular.module('nemo', [])
                     defaultValue: ''
                 })
 
-                .input('select', {
+                .input('dropdown', {
                     template: '<select data-ng-options="option.value as option.text for option in model.options"><option value="">Please select...</option></select>',
                     defaultValue: ''
                 })
@@ -364,7 +364,7 @@ angular.module('nemo')
                 templateElement.setAttribute('ng-model', 'model.value');
                 templateElement.setAttribute('ng-focus', 'setActiveField()');
                 templateElement.setAttribute('name', '{{model.name}}');
-                templateElement.setAttribute('id', 'nemo-{{model.name}}');
+                templateElement.setAttribute('id', '{{model.id || model.name}}');
                 templateElement.setAttribute('placeholder', '{{model.properties.placeholder.message}}');
                 return parentTemplateElement.innerHTML;
             }
@@ -997,17 +997,14 @@ angular.module('nemo')
         }
     }]);
 
-'use strict';
-
 angular.module('nemo')
 
-    .directive('nemoIcon', [function () {
+    .directive('nemoIcon', ['$sce', function ($sce) {
         return {
-            template:'<div class="field-icon field-icon_{{type}}" ' +
+            template:'<div class="field-icon field-icon_{{type}} field-icon_{{fieldName}}" ' +
                         'data-ng-mouseover="onHover(fieldName)" ' +
                         'data-ng-mouseleave="onBlur(fieldName)" ' +
-                        'data-ng-show="type">' +
-                        '{{getText(type)}}' +
+                        'data-ng-show="type" ng-bind-html="getText(type)">' +
                     '</div>',
             replace: true,
             scope: {
@@ -1018,8 +1015,11 @@ angular.module('nemo')
             },
             link: function (scope) {
                 scope.getText = function (type) {
-                    var iconText;
+                    var iconText = ' ';
                     switch (type) {
+                        case 'valid':
+                            iconText = '&#10004;';
+                            break;
                         case 'error':
                             iconText = '!';
                             break;
@@ -1027,10 +1027,10 @@ angular.module('nemo')
                             iconText = '?';
                             break;
                     }
-                    return iconText;
+                    return $sce.trustAsHtml(iconText);
                 };
             }
-        }
+        };
     }]);
 'use strict';
 angular.module('nemo')
