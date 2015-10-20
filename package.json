@@ -4,7 +4,8 @@
   "description": "A small library for rendering and validating forms based on siren (Rango) data",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "coverall": "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js"
   },
   "private": "true",
   "engine": "node >= 0.10.28",
@@ -15,6 +16,7 @@
   "author": "dl-nowtv-webteam@bskyb.com dl-id-rango@bskyb.com",
   "license": "ISC",
   "devDependencies": {
+    "coveralls": "^2.11.4",
     "express": "^4.11.2",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
@@ -26,6 +28,7 @@
     "jasmine-jquery": "^2.0.5",
     "karma": "~0.12.0",
     "karma-chrome-launcher": "^0.1.7",
+    "karma-coverage": "^0.5.2",
     "karma-firefox-launcher": "0.1.3",
     "karma-jasmine": "~0.1.0",
     "karma-junit-reporter": "0.2.1"

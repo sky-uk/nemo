@@ -1,4 +1,4 @@
-# Congratulations! You found Nemo!
+# Congratulations! You found Nemo! [![Coverage Status](https://coveralls.io/repos/sky-uk/nemo/badge.svg?branch=master&service=github)](https://coveralls.io/github/sky-uk/nemo?branch=master)
 
 This project is for rendering form elements and validating user input. It supports a particular data structure, defined [here](https://git.bskyb.com/kim.westley/nemo/wikis/data-structure)
 
