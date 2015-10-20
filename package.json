@@ -4,7 +4,7 @@
   "description": "A small library for rendering and validating forms based on siren (Rango) data",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Firefox --reporters=dots"
+    "test": "./node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers Firefox --reporters dots"
   },
   "engine": "node >= 0.10.28",
   "repository": {
