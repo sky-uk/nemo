@@ -1,4 +1,4 @@
-# Congratulations! You found Nemo!
+# Congratulations! You found Nemo! [![Build Status](https://travis-ci.org/sky-uk/nemo.svg)](https://travis-ci.org/sky-uk/nemo)
 
 This project is for rendering form elements and validating user input. It supports a particular data structure, defined [here](https://git.bskyb.com/kim.westley/nemo/wikis/data-structure)
 
