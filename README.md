@@ -1,4 +1,4 @@
-# Congratulations! You found Nemo! [![Coverage Status](https://coveralls.io/repos/sky-uk/nemo/badge.svg?branch=master&service=github)](https://coveralls.io/github/sky-uk/nemo?branch=master)
+# Congratulations! You found Nemo! [![Build Status](https://travis-ci.org/sky-uk/nemo.svg)](https://travis-ci.org/sky-uk/nemo)[![Coverage Status](https://coveralls.io/repos/sky-uk/nemo/badge.svg?branch=master&service=github)](https://coveralls.io/github/sky-uk/nemo?branch=master)
 
 This project is for rendering form elements and validating user input. It supports a particular data structure, defined [here](https://git.bskyb.com/kim.westley/nemo/wikis/data-structure)
 
@@ -41,7 +41,7 @@ There's a sample page available at `localhost:3333/app/sample/index.html`
 
 The test suite can be launched by triggering the following command:
 
-`{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
+`npm test`
 
 ## Contributing
 To contribute please create a branch from master. Before commiting your changes to the branch, please run
