@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "coverall": "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
-    "test": "./node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers Firefox --single-run"
+    "test": "./node_modules/karma/bin/karma start test/conf/karma.conf.js --single-run"
   },
   "engine": "node >= 0.10.28",
   "repository": {
