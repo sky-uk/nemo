@@ -5,3 +5,4 @@ bower_components
 *.log
 cleanup.sh
 test-results.xml
+coverage
