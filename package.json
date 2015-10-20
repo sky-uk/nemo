@@ -2,15 +2,14 @@
   "name": "nemo",
   "version": "0.0.1",
   "description": "A small library for rendering and validating forms based on siren (Rango) data",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots"
   },
-  "private": "true",
   "engine": "node >= 0.10.28",
   "repository": {
     "type": "git",
-    "url": "gitlab@git.bskyb.com:kim.westley/nemo.git"
+    "url": "git@github.com:sky-uk/nemo.git"
   },
   "author": "dl-nowtv-webteam@bskyb.com dl-id-rango@bskyb.com",
   "license": "ISC",
