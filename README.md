@@ -42,7 +42,4 @@ The test suite can be launched by triggering the following command:
 `{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
 
 ## Contributing
-To contribute please create a branch from master. Before commiting your changes to the branch, please run
-`node_modules/grunt-cli/bin/grunt build` to create a new distributable.
-
-Then talk to/email NowTV Web to let them know your code is ready for review!
+To contribute please check the [contributing guidelines](https://github.com/sky-uk/nemo/blob/master/CONTRIBUTING.md)
