@@ -41,5 +41,9 @@ The test suite can be launched by triggering the following command:
 
 `{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
 
+## Documentation
+
+The [Wiki space](https://github.com/sky-uk/nemo/wiki) contains a list of references to the Nemo APIs and components. A development guide will be added soon.
+
 ## Contributing
 To contribute please check the [contributing guidelines](https://github.com/sky-uk/nemo/blob/master/CONTRIBUTING.md)
