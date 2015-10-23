@@ -1,13 +1,11 @@
 # Congratulations! You found Nemo!
 
-This project is for rendering form elements and validating user input. It supports a particular data structure, defined [here](https://git.bskyb.com/kim.westley/nemo/wikis/data-structure)
+This project is for rendering form elements and validating user input.
 
 It will NOT:
 - Render labels for elements
-- Render help text/tool tips for elements
-- Submit the form
 - Fetch any data
-- Ensure that validation codes/rules are unique see [here](https://git.bskyb.com/kim.westley/nemo/wikis/unique-codes) for more info.
+- Submit the form
 
 ## Getting Started
 
