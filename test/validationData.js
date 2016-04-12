@@ -130,6 +130,25 @@ TESTDATA.validation = {
                 ]
         }
     },
+
+    mustnotcontainmatchedgroup: function () {
+        return {
+            "type" : "mustnotcontainmatchedgroup",
+            "rules":
+                [
+                    {
+                        "value" : {"field": "username", match: "([\\w]{2,})"},
+                        "id" : "foo.contains.username",
+                        "message" : "Password cant contain username"
+                    },
+                    {
+                        "value" : {"field": "email", match: "(.{2,})@"},
+                        "id" : "foo.contains.email",
+                        "message" : "Password cant contain email"
+                    }
+                ]
+        }
+    },
     mustmatch: function () {
         return {
             "type" : "mustmatch",

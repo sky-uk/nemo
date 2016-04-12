@@ -139,4 +139,91 @@ describe('validation', function () {
             });
         });
     });
+
+    describe('mustnotcontainmatchedgroup', function() {
+        var mustnotcontainmatchedgroup = validation.mustnotcontainmatchedgroup();
+
+        [
+            {usernameValue: 'foo', emailValue: undefined, passwordValue: 'bar', fieldValidity: true, validationMessagesText: '', fieldValidityErrorIds: []},
+            {usernameValue: 'foo', emailValue: 'email', passwordValue: 'bar', fieldValidity: true, validationMessagesText: '', fieldValidityErrorIds: []},
+            {usernameValue: undefined, emailValue: 'email', passwordValue: 'bar', fieldValidity: true, validationMessagesText: '', fieldValidityErrorIds: []},
+            {usernameValue: undefined, emailValue: undefined, passwordValue: 'bar', fieldValidity: true, validationMessagesText:'', fieldValidityErrorIds: []},
+            {usernameValue: undefined, emailValue: undefined, passwordValue: undefined, fieldValidity: true, validationMessagesText:'', fieldValidityErrorIds: []},
+            {usernameValue: 'bar foo', emailValue: undefined, passwordValue: 'foo', fieldValidity: true, validationMessagesText:'', fieldValidityErrorIds: []},
+            {usernameValue: 'foo bar', emailValue: undefined, passwordValue: 'foo', fieldValidity: false, validationMessagesText:'Password cant contain username', fieldValidityErrorIds: ['foo.contains.username']},
+            {usernameValue: 'foo', emailValue: undefined, passwordValue: 'foo', fieldValidity: false, validationMessagesText:'Password cant contain username', fieldValidityErrorIds: ['foo.contains.username']},
+            {usernameValue: 'foo', emailValue: 'email@test.com', passwordValue: 'email', fieldValidity: false, validationMessagesText:'Password cant contain email', fieldValidityErrorIds: ['foo.contains.email']}
+        ].forEach(function(scenario) {
+            it('checks the cross validity for mustnotcontainmatchedgroup', function() {
+                var passwordModel, usernameModel, emailModel, formElement, passwordElement, usernameElement, emailElement, validationMessagesElement;
+                given(function () {
+                    passwordModel = {
+                        type: 'text',
+                        name: 'pwd',
+                        value: '',
+                        properties: {
+                            validation: [mustnotcontainmatchedgroup]
+                        }
+                    };
+
+                    usernameModel = {
+                        type: 'text',
+                        name: 'username',
+                        value: scenario.usernameValue,
+                        properties: {
+                            validation: []
+                        }
+                    };
+
+                    emailModel = {
+                        type: 'email',
+                        name: 'email',
+                        value: scenario.emailValue,
+                        properties: {
+                            validation: []
+                        }
+                    };
+                });
+
+                when(function () {
+                    formElement = compileDirective('<form name="bla" nemo-form-handler>' +
+                    '<nemo-input model="field"></nemo-input>' +
+                    '<nemo-input model="field2"></nemo-input>' +
+                    '<nemo-input model="field3"></nemo-input>' +
+                    '<nemo-validation-messages model="bla[field.name]"></nemo-validation-messages>' +
+                    '</form>', { $rootScope: { field: passwordModel, field2: usernameModel, field3: emailModel} });
+
+                });
+
+                and(function () {
+                    passwordElement = angular.element(formElement.children()[0]);
+                    usernameElement = angular.element(formElement.children()[1]);
+                    emailElement = angular.element(formElement.children()[2]);
+                    validationMessagesElement = angular.element(angular.element(formElement.children()[3]).children()[0]);
+                });
+
+                then(function () {
+                    expect(passwordElement.attr('validation-' + mustnotcontainmatchedgroup.type)).toBe('model.properties.validation[0].rules');
+                });
+
+                when(function () {
+                    passwordElement.controller('ngModel').$setViewValue(scenario.passwordValue);
+                    passwordElement.scope().$digest();
+                });
+
+                then(function () {
+                    expect(passwordElement.controller('ngModel').$valid).toBe(scenario.fieldValidity);
+                    expect(formElement.controller('form').$valid).toBe(scenario.fieldValidity);
+                });
+
+                and(function () {
+                    expect(Object.keys(formElement.controller('form').$error)).toEqual(scenario.fieldValidityErrorIds);
+                });
+
+                and(function () {
+                    expect(validationMessagesElement.text()).toBe(scenario.validationMessagesText);
+                });
+            });
+        });
+    });
 });
