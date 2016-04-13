@@ -1,6 +1,6 @@
 {
   "name": "nemo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A small library for rendering and validating forms based on siren (Rango) data",
   "main": "index.js",
   "scripts": {
