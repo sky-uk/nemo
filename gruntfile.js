@@ -49,5 +49,5 @@ module.exports = function (grunt) {
 	grunt.registerTask('build', ['concat']);
 	grunt.registerTask('build-and-min', ['build', 'uglify']);
 
-	grunt.registerTask('dev', ['build', 'express', 'watch'])
+	grunt.registerTask('dev', ['build', 'express', 'watch']);
 };

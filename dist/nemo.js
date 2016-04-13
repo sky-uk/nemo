@@ -67,6 +67,17 @@ angular.module('nemo', [])
                     }
                 })
 
+                .validation('mustnotcontainmatchedgroup', {
+                    validateFn: function (value, validationRule, formHandlerController) {
+                        var targetValue = formHandlerController.getFieldValue(validationRule.value.field, true);
+                        if(targetValue) {
+                            var matchedTargetValue = targetValue.match(validationRule.value.match);
+                            targetValue = matchedTargetValue && matchedTargetValue[1];
+                        }
+                        return (value && targetValue) ? value.toLowerCase().indexOf(targetValue.toLowerCase()) < 0 : true;
+                    }
+                })
+
                 .validation('mustmatch', {
                     validateFn: function (value, validationRule, formHandlerController) {
                         var targetValue = formHandlerController.getFieldValue(validationRule.value, true);
