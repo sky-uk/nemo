@@ -1,4 +1,4 @@
-# Congratulations! You found Nemo!
+# Congratulations! You found Nemo! [![Build Status](https://travis-ci.org/sky-uk/nemo.svg)](https://travis-ci.org/sky-uk/nemo)
 
 This project is for rendering form elements and validating user input.
 
@@ -39,7 +39,7 @@ There's a sample page available at `localhost:3333/app/sample/index.html`
 
 The test suite can be launched by triggering the following command:
 
-`{path-to-node} node_modules/karma/bin/karma start test/conf/karma.conf.js --browsers=Chrome --reporters=dots`
+`npm test`
 
 ## Documentation
 
