@@ -403,7 +403,8 @@ describe('nemo form handler directive', function () {
         { formInterface: 'isFieldTouched', elInterface: 'isTouched' },
         { formInterface: 'hasHelp', elInterface: 'hasHelp' },
         { formInterface: 'setFieldDirtyTouched', elInterface: 'setFilthy' },
-        { formInterface: 'giveFieldFocus', elInterface: 'setFocus' }
+        { formInterface: 'giveFieldFocus', elInterface: 'setFocus' },
+        { formInterface: 'getFieldInputElement', elInterface: 'getInputElement'}
     ].forEach(
         function (scenario) {
             it('must call the ' + scenario.elInterface + ' function of the registered field whenever ' +
@@ -439,4 +440,61 @@ describe('nemo form handler directive', function () {
             });
         }
     );
+
+    describe('setup input change events', function () {
+
+        var formHandlerCtrl, field1InterfaceFns, scope, triggerStub, timeout;
+
+        beforeEach(function () {
+            inject(function ($rootScope, $timeout) {
+                scope = $rootScope.$new();
+                timeout = $timeout;
+            });
+        });
+
+
+        it('must set the new value of field on change of input element', function () {
+            given(function () {
+                formHandlerCtrl = compileController('nemoFormHandlerCtrl', {$scope: scope});
+            });
+
+            and(function () {
+                triggerStub = sinon.stub();
+                field1InterfaceFns = {
+                    getValue: sinon.stub().returns('foo'),
+                    setValue: sinon.stub(),
+                    getInputElement: sinon.stub().returns({
+                        val: function () {
+                            return '1';
+                        },
+                        trigger: triggerStub
+                    })
+                };
+            });
+
+            when(function () {
+                formHandlerCtrl.registerField('field1', field1InterfaceFns);
+                sinon.spy(formHandlerCtrl, 'getFieldInputElement');
+            });
+
+            and(function () {
+                formHandlerCtrl.setupInputChangeListeners();
+            });
+
+            and(function () {
+                scope.$apply();
+                //$timeout.flush();
+            });
+
+            and(function () {
+                timeout.flush();
+            });
+
+            then(function () {
+                expect(formHandlerCtrl.getFieldInputElement).toHaveBeenCalledWith('field1');
+                expect(field1InterfaceFns.setValue).toHaveBeenCalledWith('1');
+                expect(triggerStub).toHaveBeenCalled();
+            });
+        });
+    });
 });

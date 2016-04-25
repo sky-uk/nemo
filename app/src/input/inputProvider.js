@@ -113,6 +113,15 @@ angular.module('nemo')
                         ngModelCtrl.$setViewValue(value);
                         ngModelCtrl.$render();
                     },
+                    getInputElement: function() {
+                        if (element.find('input').length > 0) {
+                            return element.find('input');
+                        } else if (element.find('select').length > 0) {
+                            return element.find('select');
+                        } else {
+                            return element;
+                        }
+                    },
                     getNgModelCtrl: function () {
                         return ngModelCtrl;
                     },
