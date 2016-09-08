@@ -15,6 +15,7 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'app/lib/angular/angular.js',
+            'node_modules/angular-sanitize/angular-sanitize.min.js',
             'test/helpers/**/*.js',
             'test/validationData.js',
             'app/src/app.js',
