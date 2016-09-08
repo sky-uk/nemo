@@ -6,9 +6,7 @@ angular.module('nemo')
             scope: {
                 validation: '=model'
             },
-            template:   '<div data-t-validation-code="{{validationCode}}" class="validation-messages">' +
-                            '{{getValidationMessage()}}' +
-                        '</div>',
+            template:   '<div data-t-validation-code="{{validationCode}}" data-ng-bind-html="getValidationMessage()" class="validation-messages"></div>',
             link: function(scope) {
 
                 scope.getValidationMessage = function() {
