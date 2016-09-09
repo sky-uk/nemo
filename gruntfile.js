@@ -5,7 +5,8 @@ module.exports = function (grunt) {
 			dist: {
 				src: [
 					'app/src/app.js',
-					'app/src/messages/messagesProvider.js',
+                    'node_modules/angular-sanitize/angular-sanitize.min.js',
+                    'app/src/messages/messagesProvider.js',
 					'app/src/utilsProvider.js',
 					'app/src/**/*Provider.js',
 					'app/src/**/*.js'],

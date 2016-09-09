@@ -1,4 +1,4 @@
-angular.module('nemo', [])
+angular.module('nemo', ['ngSanitize'])
 
     .config(['nemoInputDirectiveCreatorProvider', 'nemoValidationDirectiveCreatorProvider', 'nemoUtilsProvider', 'captchaProvider', 'checkboxProvider', 'serverValidationProvider',
         function (inputProvider, validationProvider, utilsProvider, captchaProvider, checkboxProvider, serverValidation) {
