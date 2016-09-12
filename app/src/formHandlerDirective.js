@@ -127,6 +127,27 @@ angular.module('nemo')
         this.registerValidationRule = function (validationRuleCode, registerValidationRuleFns) {
             registeredValidationRulesFns[validationRuleCode] = registerValidationRuleFns;
         };
+
+        this.setupInputChangeListeners = function () {
+            var self = this;
+
+            angular.forEach(registeredFieldsFns, function (registeredFieldsFn, fieldName) {
+                $scope.$watch(function () {
+                    return self.getFieldInputElement(fieldName).val();
+                }, function (val) {
+                    if (self.getFieldValue(fieldName) !== val) {
+                        self.setFieldValue(fieldName, val);
+                        $timeout(function () {
+                            self.getFieldInputElement(fieldName).trigger('input');
+                        }, 0);
+                    }
+                })
+            });
+        };
+
+        this.getFieldInputElement = function (fieldName, skipRegisteredCheck) {
+            return getFieldInterfaceFn(fieldName, 'getInputElement', skipRegisteredCheck)();
+        };
     }])
 
     .directive('nemoFormHandler', [function () {
